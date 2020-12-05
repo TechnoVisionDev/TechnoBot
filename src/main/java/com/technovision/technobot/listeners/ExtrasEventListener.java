@@ -1,7 +1,10 @@
 package com.technovision.technobot.listeners;
 
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.internal.entities.CategoryImpl;
+import net.dv8tion.jda.internal.entities.GuildImpl;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -79,7 +82,11 @@ public class ExtrasEventListener extends ListenerAdapter {
             event.getMessage().addReaction("\uD83D\uDE20").queue();
             triggered = true;
         } else if (msg.equalsIgnoreCase("hello")) {
-            event.getChannel().sendMessage("https://nohello.com/").queue();
+            CategoryImpl categoryGeneral = new CategoryImpl(599345363102597132L, (GuildImpl) event.getGuild());
+
+            if (categoryGeneral.getChannels().contains(event.getChannel())) {
+                event.getChannel().sendMessage("https://nohello.com/").queue();
+            }
         }
 
         if (triggered) COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
