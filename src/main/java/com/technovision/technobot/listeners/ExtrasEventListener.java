@@ -1,15 +1,10 @@
 package com.technovision.technobot.listeners;
 
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.internal.entities.CategoryImpl;
-import net.dv8tion.jda.internal.entities.GuildImpl;
-import net.dv8tion.jda.internal.entities.TextChannelImpl;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -84,15 +79,10 @@ public class ExtrasEventListener extends ListenerAdapter {
             event.getMessage().addReaction("\uD83D\uDE20").queue();
             triggered = true;
         } else if (msg.equalsIgnoreCase("hello")) {
-            List<GuildChannel> categoryGeneral = new CategoryImpl(599345363102597132L, (GuildImpl) event.getGuild())
-                    .getChannels();
-            TextChannelImpl programmingChannel = new TextChannelImpl(739159751518322818L, (GuildImpl) event.getGuild());
-
-            // Remove the programming channel so the bot will still send a message there
-            categoryGeneral.remove(programmingChannel);
-
-            if (categoryGeneral.contains(event.getChannel())) {
-                event.getChannel().sendMessage("https://nohello.com/").queue();
+            if (event.getJDA().getCategoryById(599345363102597132L).getChannels().contains(event.getChannel())) {
+                if (!event.getChannel().getId().equals("739159751518322818") /* #programming channel id */) {
+                    event.getChannel().sendMessage("https://nohello.com/").queue();
+                }
             }
         }
 
