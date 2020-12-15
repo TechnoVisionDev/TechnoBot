@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Bot registry maintaining listeners and commands.
+ *
  * @author Sparky
  */
 @Loggable(display = "BotRegistry")
@@ -21,7 +22,8 @@ public class BotRegistry {
     private final List<ListenerAdapter> eventListeners = new ArrayList<ListenerAdapter>();
     private final List<Command> commands = new ArrayList<Command>();
 
-    public BotRegistry() {}
+    public BotRegistry() {
+    }
 
     public void registerEventListener(@NotNull ListenerAdapter listener) {
         eventListeners.add(listener);
@@ -34,8 +36,8 @@ public class BotRegistry {
     public void addListeners(@NotNull JDA jda) {
         logger.log(Logger.LogLevel.INFO, "Beginning EventListener Initialization Process");
 
-        for(ListenerAdapter listener : eventListeners) {
-            logger.log(Logger.LogLevel.INFO, "Adding EventListener: "+listener.getClass().getName());
+        for (ListenerAdapter listener : eventListeners) {
+            logger.log(Logger.LogLevel.INFO, "Adding EventListener: " + listener.getClass().getName());
             jda.addEventListener(listener);
         }
 
@@ -43,9 +45,9 @@ public class BotRegistry {
     }
 
     public void registerCommands(Command... commands) {
-        logger.log(Logger.LogLevel.INFO, "Beginning Command Registry Protocol for "+commands.length+" commands.");
-        for(Command c : commands) {
-            logger.log(Logger.LogLevel.INFO, "Registering Command: "+c.name);
+        logger.log(Logger.LogLevel.INFO, "Beginning Command Registry Protocol for " + commands.length + " commands.");
+        for (Command c : commands) {
+            logger.log(Logger.LogLevel.INFO, "Registering Command: " + c.name);
         }
         this.commands.addAll(Arrays.asList(commands));
         logger.log(Logger.LogLevel.INFO, "Finished Command Registry Protocol");

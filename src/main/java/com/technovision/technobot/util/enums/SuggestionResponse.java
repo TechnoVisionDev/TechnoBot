@@ -6,7 +6,7 @@ public enum SuggestionResponse {
 
     APPROVE("Approved", PREFIX + "approve", 0xd2ffd0),
     DENY("Denied", PREFIX + "deny", 0xffd0ce),
-    CONSIDER("Considered", PREFIX + "consider",  0xfdff91),
+    CONSIDER("Considered", PREFIX + "consider", 0xfdff91),
     IMPLEMENTED("Implemented", PREFIX + "implement", 0x91fbff);
 
     private final String response;
@@ -19,9 +19,15 @@ public enum SuggestionResponse {
         this.color = color;
     }
 
-    public String getResponse() { return response; }
+    public String getResponse() {
+        return response;
+    }
 
-    public String getCommand() { return cmd; }
+    public String getCommand() {
+        return cmd;
+    }
 
-    public int getColor() { return color; }
+    public int getColor() {
+        return color;
+    }
 }

@@ -33,7 +33,7 @@ public class CommandRank extends Command {
         long id = user.getIdLong();
         if (args.length > 0) {
             if (args[0].startsWith("<@!") && args[0].endsWith(">")) {
-                id = Long.parseLong(args[0].substring(3, args[0].length()-1));
+                id = Long.parseLong(args[0].substring(3, args[0].length() - 1));
                 user = event.getJDA().retrieveUserById(id).complete();
             } else {
                 return true;
@@ -97,11 +97,21 @@ public class CommandRank extends Command {
 
             int rank = TechnoBot.getInstance().getLevelManager().getRank(id);
             int xModifier = 0;
-            if (rank >= 10) { xModifier += 15; }
-            if (rank >= 100) { xModifier += 15; }
-            if (rank >= 1000) { xModifier += 15; }
-            if (rank >= 10000) { xModifier += 15; }
-            if (rank == 0) { rank = event.getGuild().getMemberCount(); }
+            if (rank >= 10) {
+                xModifier += 15;
+            }
+            if (rank >= 100) {
+                xModifier += 15;
+            }
+            if (rank >= 1000) {
+                xModifier += 15;
+            }
+            if (rank >= 10000) {
+                xModifier += 15;
+            }
+            if (rank == 0) {
+                rank = event.getGuild().getMemberCount();
+            }
             g.drawString("Rank #" + rank, 740 - xModifier, 110);
 
             g.drawString("Level " + profile.getInteger("level"), 300, 180);
@@ -109,9 +119,15 @@ public class CommandRank extends Command {
             String xp = format(profile.getInteger("xp"));
             String maxXP = format(TechnoBot.getInstance().getLevelManager().getMaxXP(profile.getInteger("level")));
             xModifier = 0;
-            if (xp.length() > 2) { xModifier += 10; }
-            if (xp.length() > 3 || maxXP.length() > 3) { xModifier += 10; }
-            if (xp.length() > 4 || maxXP.length() > 4) { xModifier += 10; }
+            if (xp.length() > 2) {
+                xModifier += 10;
+            }
+            if (xp.length() > 3 || maxXP.length() > 3) {
+                xModifier += 10;
+            }
+            if (xp.length() > 4 || maxXP.length() > 4) {
+                xModifier += 10;
+            }
             g.drawString(xp + " / " + maxXP, 775 - xModifier, 180);
 
             //XP Bar

@@ -11,7 +11,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandWork extends Command {
 
-    public CommandWork() { super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY); }
+    public CommandWork() {
+        super("work", "Work for some cash", "{prefix}work", Command.Category.ECONOMY);
+    }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
@@ -23,7 +25,7 @@ public class CommandWork extends Command {
             int amount = ThreadLocalRandom.current().nextInt(230) + 20;
             TechnoBot.getInstance().getEconomy().addMoney(event.getAuthor(), amount, EconManager.Activity.WORK);
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getEffectiveAvatarUrl());
-            embed.setDescription("You work for the day and receive " + EconManager.SYMBOL +  amount);
+            embed.setDescription("You work for the day and receive " + EconManager.SYMBOL + amount);
             embed.setColor(EconManager.SUCCESS_COLOR);
         } else {
             embed.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());

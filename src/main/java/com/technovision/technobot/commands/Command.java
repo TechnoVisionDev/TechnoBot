@@ -8,6 +8,7 @@ import java.util.Set;
 
 /**
  * Discord Executable Command
+ *
  * @author Sparky
  */
 public abstract class Command {
@@ -35,6 +36,6 @@ public abstract class Command {
     }
 
     public enum Category {
-        STAFF,LEVELS,MUSIC,OTHER,ECONOMY
+        STAFF, LEVELS, MUSIC, OTHER, ECONOMY
     }
 }

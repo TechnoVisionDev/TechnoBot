@@ -24,11 +24,11 @@ public class CommandUnmute extends Command {
         Member target = null;
         try {
             target = event.getMessage().getMentionedMembers().get(0);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // there was no mentioned user, using second check
         }
 
-        if(!executor.hasPermission(Permission.KICK_MEMBERS)) {
+        if (!executor.hasPermission(Permission.KICK_MEMBERS)) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: You do not have permission to do that!");
@@ -36,25 +36,26 @@ public class CommandUnmute extends Command {
             return true;
         }
 
-        if(target==null) {
+        if (target == null) {
             try {
                 target = event.getGuild().getMemberById(args[0]);
-            } catch(Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
-        if(target==null) {
+        if (target == null) {
             event.getChannel().sendMessage("Could not find user!").queue();
             return true;
         }
-        if(executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
+        if (executor.getUser().getId().equalsIgnoreCase(target.getUser().getId())) {
             event.getChannel().sendMessage("You can't mute yourself \uD83E\uDD26\u200D").queue();
             return true;
         }
-        if(!executor.canInteract(target)) {
+        if (!executor.canInteract(target)) {
             event.getChannel().sendMessage("You can't mute that user!").queue();
             return true;
         }
 
-        if(args.length==0) {
+        if (args.length == 0) {
             event.getChannel().sendMessage("Please specify a user!").queue();
             return true;
         }
@@ -66,7 +67,7 @@ public class CommandUnmute extends Command {
             event.getChannel().sendMessage(new EmbedBuilder()
                     .setAuthor(target.getUser().getAsTag() + " has been un-muted", null, target.getUser().getEffectiveAvatarUrl()).build()).queue();
             TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), target.getUser(), event.getAuthor(), AutoModLogger.Infraction.UNMUTE);
-        } catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             TechnoBot.getInstance().getLogger().log(Logger.LogLevel.WARNING, "Mute role does not exist!");
         }
         return true;

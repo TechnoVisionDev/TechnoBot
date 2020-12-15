@@ -28,6 +28,7 @@ import java.net.URL;
 
 /**
  * Multi-Purpose Bot for TechnoVision Discord.
+ *
  * @author TechnVision
  * @author Sparky
  * @version 0.5
@@ -36,8 +37,6 @@ import java.net.URL;
 public class TechnoBot {
 
     private static TechnoBot instance;
-
-    private Logger logger;
     private final JDA jda;
     private final BotRegistry registry;
     private final SuggestionManager suggestionManager;
@@ -46,20 +45,22 @@ public class TechnoBot {
     private final AutoModLogger autoModLogger;
     private final MongoDatabase mongoDatabase;
     private final LevelManager levelManager;
-    private final Configuration config = new Configuration("data/config/","botconfig.json"){
+    private final Configuration config = new Configuration("data/config/", "botconfig.json") {
         @Override
         public void load() {
             super.load();
-            if(!getJson().has("token")) getJson().put("token", "");
-            if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
-            if(!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
-            if(!getJson().has("mongo-client-uri")) getJson().put("mongo-client-uri", "");
+            if (!getJson().has("token")) getJson().put("token", "");
+            if (!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
+            if (!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
+            if (!getJson().has("mongo-client-uri")) getJson().put("mongo-client-uri", "");
         }
     };
+    private Logger logger;
 
     /**
      * Public TechnoBot Constructor.
      * Initializes the JDABuilder and Bot Registry.
+     *
      * @throws LoginException Malformed bot token.
      */
     public TechnoBot() throws LoginException {
@@ -80,6 +81,37 @@ public class TechnoBot {
         econManager = new EconManager();
         autoModLogger = new AutoModLogger();
         levelManager = new LevelManager();
+    }
+
+    /**
+     * Accessor for instance of the bot.
+     *
+     * @return instance of TechnoBot.
+     */
+    public static TechnoBot getInstance() {
+        return instance;
+    }
+
+    /**
+     * initialize bot and register listeners.
+     *
+     * @param args ignored
+     */
+    public static void main(String[] args) {
+        try {
+            TechnoBot bot = new TechnoBot();
+            getInstance().logger = new Logger(bot);
+        } catch (LoginException e) {
+            throw new RuntimeException(e);
+        }
+
+        getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
+        getInstance().setupImages();
+        GuildMemberEvents.loadJoinMessage();
+
+        new CommandRegistry();
+        getInstance().getRegistry().registerEventListeners(new AutomodListener(), new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), getInstance().levelManager, new CommandEventListener(), new GuildMemberEvents());
+        getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 
     public LevelManager getLevelManager() {
@@ -107,15 +139,8 @@ public class TechnoBot {
     }
 
     /**
-     * Accessor for instance of the bot.
-     * @return instance of TechnoBot.
-     */
-    public static TechnoBot getInstance() {
-        return instance;
-    }
-
-    /**
      * Accessor for the bot's JSON configuration file.
+     *
      * @return JSON config file.
      */
     public Configuration getBotConfig() {
@@ -124,6 +149,7 @@ public class TechnoBot {
 
     /**
      * Accessor for the console logger.
+     *
      * @return logger.
      */
     public Logger getLogger() {
@@ -132,6 +158,7 @@ public class TechnoBot {
 
     /**
      * Accessor for the JDA API instance.
+     *
      * @return JDA API instance.
      */
     public JDA getJDA() {
@@ -140,6 +167,7 @@ public class TechnoBot {
 
     /**
      * Accessor for the bot registry
+     *
      * @return Bot registry
      */
     public BotRegistry getRegistry() {
@@ -148,13 +176,16 @@ public class TechnoBot {
 
     /**
      * Accessor for the securely stored bot token
+     *
      * @return Bot token
      */
     private String getToken() {
         return getInstance().getBotConfig().getJson().getString("token");
     }
 
-    /** Download and store images needed for rank-card creation */
+    /**
+     * Download and store images needed for rank-card creation
+     */
     private void setupImages() {
         try {
             System.setProperty("http.agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2");
@@ -171,24 +202,5 @@ public class TechnoBot {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * initialize bot and register listeners.
-     * @param args ignored
-     */
-    public static void main(String[] args)  {
-        try {
-            TechnoBot bot = new TechnoBot();
-            getInstance().logger = new Logger(bot);
-        } catch(LoginException e) { throw new RuntimeException(e); }
-
-        getInstance().getLogger().log(Logger.LogLevel.INFO, "Bot Starting...");
-        getInstance().setupImages();
-        GuildMemberEvents.loadJoinMessage();
-
-        new CommandRegistry();
-        getInstance().getRegistry().registerEventListeners(new AutomodListener(), new ExtrasEventListener(), new MusicManager(), new GuildLogEventListener(), getInstance().levelManager, new CommandEventListener(), new GuildMemberEvents());
-        getInstance().getRegistry().addListeners(getInstance().getJDA());
     }
 }

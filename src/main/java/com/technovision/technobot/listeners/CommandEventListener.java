@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Command Listener and Executor.
+ *
  * @author TechnoVision
  * @author Sparky
  */
@@ -18,7 +19,9 @@ public class CommandEventListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) { return; }
+        if (event.getAuthor().isBot()) {
+            return;
+        }
         String[] mArray = event.getMessage().getContentRaw().split(" ");
         String command = mArray[0];
         if (command.startsWith(Command.PREFIX)) {
@@ -32,13 +35,13 @@ public class CommandEventListener extends ListenerAdapter {
             for (Command cmd : registry.getCommands()) {
                 if ((Command.PREFIX + cmd.name).equalsIgnoreCase(command)) {
                     if (!cmd.execute(event, args)) {
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
+                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '" + cmd.name + "' failed to execute!");
                     }
                     return;
                 }
-                if(cmd.getAliases().contains(command.substring(1).toLowerCase())) {
-                    if(!cmd.execute(event,args)) {
-                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '"+cmd.name+"' failed to execute!");
+                if (cmd.getAliases().contains(command.substring(1).toLowerCase())) {
+                    if (!cmd.execute(event, args)) {
+                        TechnoBot.getInstance().getLogger().log(Logger.LogLevel.SEVERE, "Command '" + cmd.name + "' failed to execute!");
                     }
                     return;
                 }

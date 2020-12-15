@@ -31,7 +31,7 @@ public class CommandSuggest extends Command {
             });
             EmbedBuilder response = new EmbedBuilder()
                     .setColor(EMBED_COLOR)
-                    .setDescription("Your suggestion has been added to <#"+ channel.getId() +">!");
+                    .setDescription("Your suggestion has been added to <#" + channel.getId() + ">!");
             event.getChannel().sendMessage(response.build()).queue();
         } else {
             EmbedBuilder embed = new EmbedBuilder()

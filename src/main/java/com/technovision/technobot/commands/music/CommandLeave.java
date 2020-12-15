@@ -12,7 +12,7 @@ public class CommandLeave extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+        if (event.getMember() == null || event.getMember().getVoiceState() == null || !event.getMember().getVoiceState().inVoiceChannel() || event.getMember().getVoiceState().getChannel() == null) {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }

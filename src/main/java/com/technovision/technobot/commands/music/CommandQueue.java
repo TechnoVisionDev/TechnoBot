@@ -20,14 +20,14 @@ public class CommandQueue extends Command {
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+        if (MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()) == null) {
             embed.setDescription(":x: There's no song in the queue for me to play. **!play** a song first.");
             embed.setColor(ERROR_EMBED_COLOR);
             event.getChannel().sendMessage(embed.build()).queue();
             return true;
         }
         List<AudioTrack> tracks = MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy();
-        if(tracks.size()==0||tracks.get(0)==null) {
+        if (tracks.size() == 0 || tracks.get(0) == null) {
             embed.setDescription(":x: There's no song in the queue for me to play. **!play** a song first.");
             embed.setColor(ERROR_EMBED_COLOR);
             event.getChannel().sendMessage(embed.build()).queue();
@@ -37,19 +37,20 @@ public class CommandQueue extends Command {
         int totalLength = 0;
         String description = "";
         int finish = tracks.size();
-        if (finish > 11) { finish = 11; }
+        if (finish > 11) {
+            finish = 11;
+        }
         for (int i = 0; i < finish; i++) {
             AudioTrack track = tracks.get(i);
             long msPos = track.getInfo().length;
-            long minPos = msPos/60000;
-            msPos = msPos%60000;
-            int secPos = (int) Math.floor((float)msPos/1000f);
+            long minPos = msPos / 60000;
+            msPos = msPos % 60000;
+            int secPos = (int) Math.floor((float) msPos / 1000f);
             String length = minPos + ":" + ((secPos < 10) ? "0" + secPos : secPos);
             String song = "[" + track.getInfo().title + "](" + track.getInfo().uri + ")";
             if (i == 0) {
                 description += "__Now Playing:__";
-            }
-            else if (i == 1) {
+            } else if (i == 1) {
                 description += "\n__Up Next:__";
             }
 

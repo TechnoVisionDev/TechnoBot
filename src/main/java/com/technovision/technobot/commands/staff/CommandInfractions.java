@@ -25,11 +25,11 @@ public class CommandInfractions extends Command {
         Member target = null;
         try {
             target = event.getMessage().getMentionedMembers().get(0);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // there was no mentioned user, using second check
         }
 
-        if(!executor.hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (!executor.hasPermission(Permission.MESSAGE_MANAGE)) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: You do not have permission to do that!");
@@ -38,18 +38,19 @@ public class CommandInfractions extends Command {
         }
 
 
-        if(target==null) {
+        if (target == null) {
             try {
                 target = event.getGuild().getMemberById(args[0]);
-            } catch(Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
-        if(target==null&&args.length>0) {
+        if (target == null && args.length > 0) {
             event.getGuild().retrieveMemberById(args[0]).queue(member -> {
                 complete(event, member);
             });
             return true;
         }
-        if(target==null) {
+        if (target == null) {
             target = executor;
         }
 
@@ -59,11 +60,11 @@ public class CommandInfractions extends Command {
 
     @Override
     public @NotNull Set<String> getAliases() {
-        return Sets.newHashSet("warnings","warns");
+        return Sets.newHashSet("warnings", "warns");
     }
 
     private void complete(MessageReceivedEvent event, Member target) {
-        if(!infractionConfig.getJson().has(target.getId())) {
+        if (!infractionConfig.getJson().has(target.getId())) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setAuthor(target.getUser().getAsTag() + " has no infractions", null, target.getUser().getEffectiveAvatarUrl());
             event.getChannel().sendMessage(embed.build()).queue();
@@ -71,14 +72,17 @@ public class CommandInfractions extends Command {
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setAuthor(target.getUser().getAsTag() +"'s Infractions", null, target.getUser().getEffectiveAvatarUrl())
-                .setDescription(infractionConfig.getJson().getJSONArray(target.getId()).length()+" total infractions on account.");
+                .setAuthor(target.getUser().getAsTag() + "'s Infractions", null, target.getUser().getEffectiveAvatarUrl())
+                .setDescription(infractionConfig.getJson().getJSONArray(target.getId()).length() + " total infractions on account.");
 
-        for(Object o : infractionConfig.getJson().getJSONArray(target.getId())) {
-            JSONObject infraction = (JSONObject)o;
+        for (Object o : infractionConfig.getJson().getJSONArray(target.getId())) {
+            JSONObject infraction = (JSONObject) o;
             Member m = event.getGuild().getMemberById(infraction.getLong("issuer"));
-            if(m!=null) builder.addField(infraction.getString("type")+" At "+infraction.getString("date"), "Issued By: "+m.getUser().getAsTag()+"\nReason: "+infraction.getString("reason"), false);
-            else event.getGuild().retrieveMemberById(infraction.getLong("issuer")).queue(mem -> {builder.addField(infraction.getString("type")+" At "+infraction.getString("date"), "Issued By: "+mem+"\nReason: "+infraction.getString("reason"), false);});
+            if (m != null)
+                builder.addField(infraction.getString("type") + " At " + infraction.getString("date"), "Issued By: " + m.getUser().getAsTag() + "\nReason: " + infraction.getString("reason"), false);
+            else event.getGuild().retrieveMemberById(infraction.getLong("issuer")).queue(mem -> {
+                builder.addField(infraction.getString("type") + " At " + infraction.getString("date"), "Issued By: " + mem + "\nReason: " + infraction.getString("reason"), false);
+            });
         }
 
         event.getChannel().sendMessage(builder.build()).queue();

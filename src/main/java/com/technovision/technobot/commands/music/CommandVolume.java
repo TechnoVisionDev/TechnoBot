@@ -12,25 +12,25 @@ public class CommandVolume extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null||MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+        if (MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()) == null || MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size() == 0) {
             event.getChannel().sendMessage("There are no songs playing.").queue();
             return true;
         }
-        
-        if(Integer.parseInt(args[0])>=400||Integer.parseInt(args[0])<=50) {
+
+        if (Integer.parseInt(args[0]) >= 400 || Integer.parseInt(args[0]) <= 50) {
             event.getChannel().sendMessage("The volume is out of range! [50-400]").queue();
             return true;
         }
 
         try {
             MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.setVolume(Integer.parseInt(args[0]));
-        } catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             event.getChannel().sendMessage("Please specify a volume!").queue();
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             event.getChannel().sendMessage("That is not a number!").queue();
         }
 
-        event.getChannel().sendMessage("🔈 Set volume to "+args[0]+"!").queue();
+        event.getChannel().sendMessage("🔈 Set volume to " + args[0] + "!").queue();
         return true;
     }
 }

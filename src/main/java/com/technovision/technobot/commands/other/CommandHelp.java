@@ -11,20 +11,20 @@ import java.util.*;
 
 public class CommandHelp extends Command {
     public CommandHelp() {
-        super("help", "Displays a list of available commands","{prefix}help [category|command]", Command.Category.OTHER);
+        super("help", "Displays a list of available commands", "{prefix}help [category|command]", Command.Category.OTHER);
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        Map<Category, List<Command>> categories = new HashMap<Category,List<Command>>();
+        Map<Category, List<Command>> categories = new HashMap<Category, List<Command>>();
 
-        for(Category c : Category.values()) {
+        for (Category c : Category.values()) {
             categories.put(c, new ArrayList<>());
         }
-        for(Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
+        for (Command c : TechnoBot.getInstance().getRegistry().getCommands()) {
             categories.get(c.category).add(c);
         }
-        if(args.length == 0) {
+        if (args.length == 0) {
             event.getChannel().sendMessage(new EmbedBuilder() {{
                 setTitle("TechnoBot Commands");
                 setColor(EMBED_COLOR);
@@ -48,13 +48,13 @@ public class CommandHelp extends Command {
                 builder.setDescription(description);
                 event.getChannel().sendMessage(builder.build()).queue();
             } catch (IllegalArgumentException e) {
-                for(Command cmd : TechnoBot.getInstance().getRegistry().getCommands()) {
-                    if(args[0].equalsIgnoreCase(cmd.name)) {
+                for (Command cmd : TechnoBot.getInstance().getRegistry().getCommands()) {
+                    if (args[0].equalsIgnoreCase(cmd.name)) {
                         EmbedBuilder builder = new EmbedBuilder()
                                 .setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1))
                                 .setColor(EMBED_COLOR)
                                 .setDescription(cmd.description)
-                                .addField("Category", (""+cmd.category.name().charAt(0)).toUpperCase()+cmd.category.name().substring(1).toLowerCase(), true)
+                                .addField("Category", ("" + cmd.category.name().charAt(0)).toUpperCase() + cmd.category.name().substring(1).toLowerCase(), true)
                                 .addField("Usage", "`" + cmd.usage.replace("{prefix}", PREFIX) + "`", true);
                         event.getChannel().sendMessage(builder.build()).queue();
                         return true;
@@ -68,6 +68,6 @@ public class CommandHelp extends Command {
 
     @Override
     public @NotNull Set<String> getAliases() {
-        return Sets.newHashSet("commands","cmds");
+        return Sets.newHashSet("commands", "cmds");
     }
 }

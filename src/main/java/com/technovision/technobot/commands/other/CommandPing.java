@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CommandPing extends Command {
 
     public CommandPing() {
-        super("ping","Pings the Discord API","{prefix}ping", Command.Category.OTHER);
+        super("ping", "Pings the Discord API", "{prefix}ping", Command.Category.OTHER);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class CommandPing extends Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(":ping_pong: Pong!");
         embed.addField("Latency", latency + "ms", false);
-        embed.addField("API","2ms", false);
+        embed.addField("API", "2ms", false);
         embed.setColor(EMBED_COLOR);
         event.getChannel().sendMessage(embed.build()).queue();
         msg.delete().queue();

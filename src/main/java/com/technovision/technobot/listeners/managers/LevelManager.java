@@ -17,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Manager for member levels and ranks.
+ *
  * @author Sparky
  * @author TechnoVision
  */
@@ -36,12 +37,22 @@ public class LevelManager extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) { return; }
-        if (event.getMessage().getContentRaw().startsWith("!")) { return; }
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+        if (event.getMessage().getContentRaw().startsWith("!")) {
+            return;
+        }
         if (event.getChannel().getParent() != null) {
-            if (event.getChannel().getParent().getIdLong() == 729856082410864690L) { return; } // Bot Category
-            if (event.getChannel().getParent().getIdLong() == 599346627131605015L) { return; } // Staff Category
-            if (event.getChannel().getParent().getIdLong() == 739158546469486614L) { return; } // Info Category
+            if (event.getChannel().getParent().getIdLong() == 729856082410864690L) {
+                return;
+            } // Bot Category
+            if (event.getChannel().getParent().getIdLong() == 599346627131605015L) {
+                return;
+            } // Staff Category
+            if (event.getChannel().getParent().getIdLong() == 739158546469486614L) {
+                return;
+            } // Info Category
         }
 
         // Access Profile
@@ -125,13 +136,15 @@ public class LevelManager extends ListenerAdapter {
             leaderboard.add(index, profile);
             return;
         }
-        Document ahead = leaderboard.get(index-1);
+        Document ahead = leaderboard.get(index - 1);
         int aheadTotalXP = ahead.getInteger("totalXP");
         int totalXP = profile.getInteger("totalXP");
         while (totalXP > aheadTotalXP) {
             index--;
-            if (index <= 0) { break; }
-            ahead = leaderboard.get(index-1);
+            if (index <= 0) {
+                break;
+            }
+            ahead = leaderboard.get(index - 1);
             aheadTotalXP = ahead.getInteger("totalXP");
         }
         leaderboard.remove(originalIndex);
@@ -150,7 +163,9 @@ public class LevelManager extends ListenerAdapter {
         levels.updateMany(profile, updates);
     }
 
-    public LinkedList<Document> getLeaderboard() { return leaderboard; }
+    public LinkedList<Document> getLeaderboard() {
+        return leaderboard;
+    }
 
     public int getIndex(Document profile) {
         long id = profile.getLong("id");
@@ -173,7 +188,7 @@ public class LevelManager extends ListenerAdapter {
             doc = leaderboard.get(i);
             currID = doc.getLong("id");
             if (currID == id) {
-                return i+1;
+                return i + 1;
             }
         }
         return leaderboard.size();

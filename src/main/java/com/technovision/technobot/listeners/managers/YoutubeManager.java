@@ -23,7 +23,8 @@ public class YoutubeManager {
         try {
             key = TechnoBot.getInstance().getBotConfig().getJson().getString("youtube-api-key");
             youtube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), new JacksonFactory(),
-                    request -> {}).setApplicationName("technobot-discord-bot").build();
+                    request -> {
+                    }).setApplicationName("technobot-discord-bot").build();
             List<String> properties = new ArrayList<>();
             properties.add("id");
             properties.add("snippet");
@@ -42,7 +43,8 @@ public class YoutubeManager {
                     .setQ(keywords)
                     .execute();
             if (searchResponse.getItems().size() == 0) {
-                return null; }
+                return null;
+            }
 
             // Loop through results until you find a video
             for (SearchResult result : searchResponse.getItems()) {
@@ -51,7 +53,8 @@ public class YoutubeManager {
                     return "https://www.youtube.com/watch?v=" + rId.getVideoId();
                 }
             }
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
         return null;
     }
 }

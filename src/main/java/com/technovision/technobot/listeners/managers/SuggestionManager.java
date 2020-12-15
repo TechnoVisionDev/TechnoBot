@@ -20,7 +20,7 @@ public class SuggestionManager {
     private final Configuration suggestions;
 
     public SuggestionManager() {
-        suggestions = new Configuration("data/","suggestions.json") {
+        suggestions = new Configuration("data/", "suggestions.json") {
             @Override
             public void load() {
                 super.load();
@@ -68,7 +68,7 @@ public class SuggestionManager {
     }
 
     public void respond(MessageReceivedEvent event, String[] args, SuggestionResponse response) {
-        if(!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+        if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(Command.ERROR_EMBED_COLOR)
                     .setDescription(":x: You do not have permission to do that!");
@@ -94,7 +94,7 @@ public class SuggestionManager {
             } catch (NumberFormatException e) {
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(Command.ERROR_EMBED_COLOR)
-                        .setDescription(":x: " + "\"" + args[0] +"\" is not a valid suggestion ID.");
+                        .setDescription(":x: " + "\"" + args[0] + "\" is not a valid suggestion ID.");
                 event.getChannel().sendMessage(embed.build()).queue();
                 return;
             }

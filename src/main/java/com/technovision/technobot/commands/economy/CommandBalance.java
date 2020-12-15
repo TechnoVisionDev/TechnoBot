@@ -29,7 +29,7 @@ public class CommandBalance extends Command {
             List<Member> mentions = event.getMessage().getMentionedMembers();
             if (mentions.size() > 0) {
                 user = mentions.get(0).getUser();
-            }  else {
+            } else {
                 return true;
             }
         }

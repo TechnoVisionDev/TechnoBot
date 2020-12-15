@@ -23,7 +23,7 @@ public class CommandClear extends Command {
     public boolean execute(MessageReceivedEvent event, String[] args) {
         TextChannel channel = event.getTextChannel();
 
-        if(!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: You do not have permission to do that!");
@@ -40,7 +40,9 @@ public class CommandClear extends Command {
         }
         try {
             int amt = Integer.parseInt(args[0]);
-            if (amt < 2 || amt > 100) { throw new NumberFormatException(); }
+            if (amt < 2 || amt > 100) {
+                throw new NumberFormatException();
+            }
             OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
             new Thread(() -> {
                 event.getMessage().delete().queue();
@@ -52,7 +54,8 @@ public class CommandClear extends Command {
                     Thread.sleep(3000);
                     m.delete().queue();
                     TechnoBot.getInstance().getAutoModLogger().log(event.getGuild(), event.getTextChannel(), event.getAuthor(), event.getAuthor(), AutoModLogger.Infraction.CLEAR);
-                } catch (InterruptedException ignored) { }
+                } catch (InterruptedException ignored) {
+                }
             }).start();
         } catch (NumberFormatException e) {
             EmbedBuilder embed = new EmbedBuilder();

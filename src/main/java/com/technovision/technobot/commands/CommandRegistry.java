@@ -11,6 +11,7 @@ import com.technovision.technobot.commands.staff.*;
 
 /**
  * Registers commands and their execution.
+ *
  * @author TechnoVision
  * @author Sparky
  */

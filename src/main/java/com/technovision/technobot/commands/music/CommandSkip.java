@@ -16,15 +16,15 @@ public class CommandSkip extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+        if (event.getMember() == null || event.getMember().getVoiceState() == null || !event.getMember().getVoiceState().inVoiceChannel() || event.getMember().getVoiceState().getChannel() == null) {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong())==null) {
+        if (MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()) == null) {
             event.getChannel().sendMessage("Please use `!join` first!").queue();
             return true;
         }
-        if(MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size()==0) {
+        if (MusicManager.getInstance().handlers.get(event.getGuild().getIdLong()).trackScheduler.getQueueCopy().size() == 0) {
             event.getChannel().sendMessage("There are no songs playing.").queue();
             return true;
         }

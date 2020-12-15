@@ -20,7 +20,7 @@ public class CommandPlay extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+        if (event.getMember() == null || event.getMember().getVoiceState() == null || !event.getMember().getVoiceState().inVoiceChannel() || event.getMember().getVoiceState().getChannel() == null) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: Please connect to a voice channel first!");
@@ -48,7 +48,7 @@ public class CommandPlay extends Command {
                 embed.setDescription(":x: You have reached the maximum quota for today!");
                 event.getChannel().sendMessage(embed.build()).queue();
             }
-        } catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: Please specify a song a to play.");

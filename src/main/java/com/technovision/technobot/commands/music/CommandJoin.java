@@ -12,12 +12,12 @@ public class CommandJoin extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if(event.getMember()==null||event.getMember().getVoiceState()==null||!event.getMember().getVoiceState().inVoiceChannel()||event.getMember().getVoiceState().getChannel()==null) {
+        if (event.getMember() == null || event.getMember().getVoiceState() == null || !event.getMember().getVoiceState().inVoiceChannel() || event.getMember().getVoiceState().getChannel() == null) {
             event.getChannel().sendMessage("You are not in a voice channel!").queue();
             return true;
         }
         MusicManager.getInstance().joinVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel(), event.getChannel());
-        event.getChannel().sendMessage("Joined `"+event.getMember().getVoiceState().getChannel().getName()+"`").queue();
+        event.getChannel().sendMessage("Joined `" + event.getMember().getVoiceState().getChannel().getName() + "`").queue();
         return true;
     }
 }

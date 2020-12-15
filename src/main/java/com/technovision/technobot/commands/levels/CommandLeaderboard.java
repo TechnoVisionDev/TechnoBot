@@ -32,7 +32,9 @@ public class CommandLeaderboard extends Command {
                 int page = Integer.parseInt(args[0]);
                 if (page > 1) {
                     int comparison = (leaderboard.size() / usersPerPage) + 1;
-                    if (leaderboard.size() % usersPerPage != 0) { comparison++; }
+                    if (leaderboard.size() % usersPerPage != 0) {
+                        comparison++;
+                    }
                     if (page >= comparison) {
                         EmbedBuilder embed = new EmbedBuilder()
                                 .setColor(ERROR_EMBED_COLOR)
@@ -53,8 +55,12 @@ public class CommandLeaderboard extends Command {
 
         String msg = "";
         int finish = start + usersPerPage;
-        if (start != 0) { finish++; }
-        if (start != 0) { start++; }
+        if (start != 0) {
+            finish++;
+        }
+        if (start != 0) {
+            start++;
+        }
         for (int i = start; i < finish; i++) {
             try {
                 Document doc = leaderboard.get(i);
@@ -62,15 +68,21 @@ public class CommandLeaderboard extends Command {
                 int lvl = doc.getInteger("level");
                 long id = doc.getLong("id");
                 msg += (i + 1) + ". <@!" + id + "> " + formatter.format(totalXP) + "xp " + "lvl " + lvl + "\n";
-            } catch (IndexOutOfBoundsException e) { break; }
+            } catch (IndexOutOfBoundsException e) {
+                break;
+            }
         }
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(":trophy: Rank Leaderboard");
         builder.setColor(EMBED_COLOR);
         builder.setDescription(msg);
         int maxPage = leaderboard.size() / usersPerPage;
-        if (maxPage * usersPerPage != leaderboard.size()) { maxPage++; }
-        if (maxPage == 0) { maxPage++; }
+        if (maxPage * usersPerPage != leaderboard.size()) {
+            maxPage++;
+        }
+        if (maxPage == 0) {
+            maxPage++;
+        }
         builder.setFooter("Page " + (1 + (start / usersPerPage)) + "/" + maxPage);
         event.getChannel().sendMessage(builder.build()).queue();
         return true;
