@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class AutoPastebinManager extends ListenerAdapter {
-    private static String GITHUB_TOKEN;
+    private final String GITHUB_TOKEN;
 
     public AutoPastebinManager(final TechnoBot bot) {
         GITHUB_TOKEN = bot.getBotConfig().getJson().getString("github-token");
