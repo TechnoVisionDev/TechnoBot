@@ -38,10 +38,32 @@ public class CommandWithdraw extends Command {
                     return true;
                 }
             } catch (NumberFormatException e) {
-                embed.setColor(ERROR_EMBED_COLOR);
-                embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`withdraw <amount>`");
-                event.getChannel().sendMessage(embed.build()).queue();
-                return true;
+                if (args[0].equalsIgnoreCase("all") || args[0].equalsIgnoreCase("half")) {
+                    String amount = args[0];
+
+                    try {
+                        bot.getEconomy().withdraw(event.getAuthor(), amount);
+
+                        embed.setColor(EconManager.SUCCESS_COLOR);
+                        embed.setDescription(":white_check_mark: Withdrew " + amount + " of your money from your bank!");
+                        event.getChannel().sendMessage(embed.build()).queue();
+
+                        return true;
+                    } catch (InvalidBalanceException ee) {
+                        embed.setColor(ERROR_EMBED_COLOR);
+                        long bankBal = bot.getEconomy().getBalance(event.getAuthor()).getRight();
+                        String bankBalFormat = EconManager.FORMATTER.format(bankBal);
+                        embed.setDescription(String.format(":x: You don't have that much money to withdraw! You currently have %s%s in the bank.", EconManager.SYMBOL, bankBalFormat));
+                        event.getChannel().sendMessage(embed.build()).queue();
+                        return true;
+                    }
+
+                } else {
+                    embed.setColor(ERROR_EMBED_COLOR);
+                    embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`withdraw <amount>`");
+                    event.getChannel().sendMessage(embed.build()).queue();
+                    return true;
+                }
             }
         }
         embed.setColor(ERROR_EMBED_COLOR);

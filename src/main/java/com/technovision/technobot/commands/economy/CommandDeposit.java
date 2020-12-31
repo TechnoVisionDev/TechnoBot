@@ -42,10 +42,32 @@ public class CommandDeposit extends Command {
                     return true;
                 }
             } catch (NumberFormatException e) {
-                embed.setColor(ERROR_EMBED_COLOR);
-                embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`deposit <amount>`");
-                event.getChannel().sendMessage(embed.build()).queue();
-                return true;
+                if (args[0].equalsIgnoreCase("all") || args[0].equalsIgnoreCase("half")) {
+                    String amount = args[0];
+
+                    try {
+                        bot.getEconomy().deposit(event.getAuthor(), amount);
+
+                        embed.setColor(EconManager.SUCCESS_COLOR);
+                        embed.setDescription(":white_check_mark: Deposited " + amount + " of your money to your bank!");
+                        event.getChannel().sendMessage(embed.build()).queue();
+
+                        return true;
+
+                    } catch (InvalidBalanceException ee) {
+                        embed.setColor(ERROR_EMBED_COLOR);
+                        long bal = bot.getEconomy().getBalance(event.getAuthor()).getLeft();
+                        String balFormat = EconManager.FORMATTER.format(bal);
+                        embed.setDescription(String.format(":x: You don't have that much money to deposit! You currently have %s%s on hand", EconManager.SYMBOL, balFormat));
+                        event.getChannel().sendMessage(embed.build()).queue();
+                        return true;
+                    }
+                } else {
+                    embed.setColor(ERROR_EMBED_COLOR);
+                    embed.setDescription(":x: Invalid `<amount>` argument given\n\nUsage:\n`deposit <amount>`");
+                    event.getChannel().sendMessage(embed.build()).queue();
+                    return true;
+                }
             }
         }
         embed.setColor(ERROR_EMBED_COLOR);

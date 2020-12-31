@@ -18,7 +18,7 @@ public class EconManager {
     private final Configuration economy;
 
     public EconManager() {
-        economy = new Configuration("data/","economy.json") {
+        economy = new Configuration("data/", "economy.json") {
             @Override
             public void load() {
                 super.load();
@@ -39,25 +39,79 @@ public class EconManager {
         JSONObject profile = getProfile(user);
         long bal = profile.getLong("balance");
         long newBalance = bal - amount;
-        if (newBalance < 0) { throw new InvalidBalanceException(); }
+        if (newBalance < 0) {
+            throw new InvalidBalanceException();
+        }
         long bank = profile.getLong("bank");
         profile.put("bank", bank + amount);
         profile.put("balance", newBalance);
+    }
+
+    public void deposit(User user, String amount) throws InvalidBalanceException {
+        if (amount.equalsIgnoreCase("all")) {
+            JSONObject profile = getProfile(user);
+            long bal = profile.getLong("balance");
+            long newBalance = 0;
+            if (newBalance < 0) {
+                throw new InvalidBalanceException();
+            }
+            long bank = profile.getLong("bank");
+            profile.put("bank", bank + bal);
+            profile.put("balance", newBalance);
+        } else if (amount.equalsIgnoreCase("half")) {
+            JSONObject profile = getProfile(user);
+            long bal = profile.getLong("balance");
+            long newBalance = bal - (bal / 2);
+            if (newBalance < 0) {
+                throw new InvalidBalanceException();
+            }
+            long bank = profile.getLong("bank");
+            profile.put("bank", bank + (bal / 2));
+            profile.put("balance", newBalance);
+        }
     }
 
     public void withdraw(User user, long amount) throws InvalidBalanceException {
         JSONObject profile = getProfile(user);
         long bank = profile.getLong("bank");
         long newBank = bank - amount;
-        if (newBank < 0) { throw new InvalidBalanceException(); }
+        if (newBank < 0) {
+            throw new InvalidBalanceException();
+        }
         long bal = profile.getLong("balance");
         profile.put("bank", newBank);
         profile.put("balance", bal + amount);
     }
 
+    public void withdraw(User user, String amount) throws InvalidBalanceException {
+        if (amount.equalsIgnoreCase("all")) {
+            JSONObject profile = getProfile(user);
+            long bank = profile.getLong("bank");
+            long newBank = 0;
+            if (newBank < 0) {
+                throw new InvalidBalanceException();
+            }
+            long bal = profile.getLong("balance");
+            profile.put("bank", newBank);
+            profile.put("balance", bank);
+        } else if (amount.equalsIgnoreCase("half")) {
+            JSONObject profile = getProfile(user);
+            long bank = profile.getLong("bank");
+            long newBank = bank / 2;
+            if (newBank < 0) {
+                throw new InvalidBalanceException();
+            }
+            long bal = profile.getLong("balance");
+            profile.put("bank", newBank);
+            profile.put("balance", bal / 2);
+        }
+    }
+
     public long rob(JSONObject robber, JSONObject victim) throws InvalidBalanceException {
         long bal = victim.getLong("balance");
-        if (bal <= 0) { throw new InvalidBalanceException(); }
+        if (bal <= 0) {
+            throw new InvalidBalanceException();
+        }
         long amount = (long) (bal * 0.3);
 
         removeMoney(victim, amount, Activity.NULL);
@@ -85,7 +139,9 @@ public class EconManager {
         JSONObject receiverProfile = getProfile(receiver);
 
         long senderBal = senderProfile.getLong("balance");
-        if (senderBal - amount < 0) { throw new InvalidBalanceException(); }
+        if (senderBal - amount < 0) {
+            throw new InvalidBalanceException();
+        }
         senderProfile.put("balance", senderBal - amount);
 
         long receiverBal = receiverProfile.getLong("balance");
