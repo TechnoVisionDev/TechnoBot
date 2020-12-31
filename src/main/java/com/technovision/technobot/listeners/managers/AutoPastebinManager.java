@@ -31,9 +31,15 @@ public class AutoPastebinManager extends ListenerAdapter {
             if (!event.getMessage().getAttachments().isEmpty()) {
                 Message.Attachment logOrJavaFile = event.getMessage().getAttachments().stream()
                         .filter(attachment -> attachment.getFileExtension().equals("log") ||
-                                              attachment.getFileExtension().equals("java"))
+                                              attachment.getFileExtension().equals("java") ||
+                                              attachment.getFileExtension().equals("txt") ||
+                                              attachment.getFileExtension().equals("kt") ||
+                                              attachment.getFileExtension().equals("json") ||
+                                              attachment.getFileExtension().equals("gradle")
+                        )
                         .findFirst()
-                        .orElseThrow(() -> new NullPointerException("Couldn't find a .java or a .log file."));
+                        .orElseThrow(() ->
+                                new NullPointerException("Couldn't find a recognizable code or log file."));
 
                 GitHubClient gitHubClient = new GitHubClient();
                 gitHubClient.setOAuth2Token(GITHUB_TOKEN);
@@ -42,11 +48,11 @@ public class AutoPastebinManager extends ListenerAdapter {
 
                 try {
                     GistFile gistFile = new GistFile();
-                    var stringifiedFile = IOUtils.toString(logOrJavaFile.retrieveInputStream().get(), Charset.defaultCharset());
+                    String stringifiedFile = IOUtils.toString(logOrJavaFile.retrieveInputStream().get(), Charset.defaultCharset());
                     gistFile.setContent(!stringifiedFile.isEmpty() ? stringifiedFile : "idk why this file is empty.");
 
                     gist.setFiles(Collections.singletonMap(logOrJavaFile.getFileName(), gistFile));
-                    gist.setDescription(logOrJavaFile.getFileExtension().equals("java") ? "My Java code" : "latest.log");
+                    gist.setDescription("My stuff");
 
                     GistService gistService = new GistService();
                     gistService.getClient().setOAuth2Token(GITHUB_TOKEN);
