@@ -35,7 +35,7 @@ import java.net.URL;
 @Loggable(display = "TechnoBot")
 public class TechnoBot {
 
-    private Logger logger;
+    public static Logger logger;
     private final JDA jda;
     private final BotRegistry registry;
     private final SuggestionManager suggestionManager;
@@ -46,6 +46,7 @@ public class TechnoBot {
     private final LevelManager levelManager;
     private final MusicManager musicManager;
     private final TicketManager ticketManager;
+    private final AutoPastebinManager autoPastebinManager;
     private final StarboardManager starboardManager;
     private final Configuration config = new Configuration("data/config/","botconfig.json"){
         @Override
@@ -55,6 +56,7 @@ public class TechnoBot {
             if(!getJson().has("guildlogs-webhook")) getJson().put("guildlogs-webhook", "");
             if(!getJson().has("youtube-api-key")) getJson().put("youtube-api-key", "");
             if(!getJson().has("mongo-client-uri")) getJson().put("mongo-client-uri", "");
+            if (!getJson().has("github-token")) getJson().put("github-token", "");
         }
     };
 
@@ -83,6 +85,7 @@ public class TechnoBot {
         musicManager = new MusicManager(this);
         ticketManager = new TicketManager(this);
         starboardManager = new StarboardManager();
+        autoPastebinManager = new AutoPastebinManager(this);
     }
 
     public MusicManager getMusicManager() {
@@ -115,6 +118,10 @@ public class TechnoBot {
 
     public TicketManager getTicketManager() {
         return ticketManager;
+    }
+
+    public AutoPastebinManager getAutoPastebinManager() {
+        return autoPastebinManager;
     }
 
     /**
@@ -194,7 +201,7 @@ public class TechnoBot {
         GuildMemberEvents.loadJoinMessage();
 
         new CommandRegistry(bot);
-        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.starboardManager, bot.ticketManager);
+        bot.getRegistry().registerEventListeners(new AutomodListener(bot), new ExtrasEventListener(), bot.musicManager, new GuildLogEventListener(bot), bot.levelManager, new CommandEventListener(bot), new GuildMemberEvents(), bot.starboardManager, bot.ticketManager, bot.autoPastebinManager);
         bot.getRegistry().addListeners(bot.getJDA());
     }
 }
