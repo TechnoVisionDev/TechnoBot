@@ -64,9 +64,9 @@ public class AutoPastebinManager extends ListenerAdapter {
                 }
 
                 MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Send in Pastebin!")
-                        .addField("We prefer not to download files, so we've made a Pastebin for you!", gist.getHtmlUrl(), false)
-                        .addField("WARNING", "Please refrain from sending files in the future, and use pastebin instead.", false)
+                        .setTitle("Send in GH Gist!")
+                        .addField("We prefer not to download files, so we've made a Gist for you!", gist.getHtmlUrl(), false)
+                        .addField("WARNING", "Please refrain from sending files in the future, and use Pastebin or GH Gists instead.", false)
                         .build();
 
                 event.getChannel().sendMessage(embed).queue();
