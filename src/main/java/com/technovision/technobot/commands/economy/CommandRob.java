@@ -35,11 +35,20 @@ public class CommandRob extends Command {
             return true;
         }
 
-        User victim;
+        User victim = null;
         List<Member> mentions = event.getMessage().getMentionedMembers();
         if (mentions.size() > 0) {
             victim = mentions.get(0).getUser();
-        } else {
+        }
+
+        if (victim == null) {
+            try {
+                victim = event.getGuild().getMemberById(args[0]).getUser();
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (victim == null) {
             embed.setColor(ERROR_EMBED_COLOR);
             embed.setDescription(":x: Invalid `[user]` argument given\n\nUsage:\n`rob [user]`");
             event.getChannel().sendMessage(embed.build()).queue();
