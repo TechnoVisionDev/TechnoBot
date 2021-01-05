@@ -81,7 +81,8 @@ public class Hangman {
                 game.addGuessed(guess.toLowerCase().charAt(0));
                 game.addGuessed(guess.toLowerCase().charAt(0));
             } else {
-                channel.sendMessage(guess + " has already been guessed.").queue();
+                channel.sendMessage("Great job! " + game.getWord() + " was the right word.").queue();
+                game.finish();
             }
         } else {
             if (game.getWord().equalsIgnoreCase(guess)) {
@@ -95,6 +96,7 @@ public class Hangman {
 
         }
         if (game.getLivesLeft() == 0) {
+            channel.sendMessage("You ran out of lives. The word was " + game.getWord() + ".").queue();
             game.finish();
             return;
         }
@@ -103,7 +105,6 @@ public class Hangman {
     }
 
     public void finish() {
-        channel.sendMessage("You ran out of lives. The word was " + word + ".").queue();
         GAMES.remove(channel);
     }
 
