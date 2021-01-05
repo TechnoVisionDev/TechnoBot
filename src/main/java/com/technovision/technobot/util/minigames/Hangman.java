@@ -63,7 +63,7 @@ public class Hangman {
                     channel.sendMessage("The word doesn't contain letter " + guess + ".").queue();
                     game.livesLeft--;
                 }
-                game.addGuessed(guess.toLowerCase().charAt(0));
+                game.addGuessed(guess.charAt(0));
             } else {
                 channel.sendMessage(guess + " has already been guessed.").queue();
             }
