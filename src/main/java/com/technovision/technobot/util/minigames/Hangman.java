@@ -2,10 +2,16 @@ package com.technovision.technobot.util.minigames;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Discord Minigame
@@ -15,6 +21,8 @@ import java.util.HashMap;
 public class Hangman {
 
     public static final HashMap<Long, Hangman> GAMES = new HashMap<>();
+    
+    private final Configuration saveConfig = new Configuration("data/config/", "hangmanSave.json") {
 
     private final String word;
     private int livesLeft;
@@ -31,6 +39,14 @@ public class Hangman {
         name = user.getName();
         //this.user = user;
         guessed = new ArrayList<>();
+    }
+    
+    private Hangman(Long userID, String name, String word, int lives, ArrayList<Character> guessed){
+        this.userID = userID;
+        this.name = name;
+        this.word = word;
+        livesLeft = lives;
+        this.guessed = guessed;
     }
 
     public static void startGame(User user, TextChannel channel) {
@@ -52,7 +68,7 @@ public class Hangman {
      * */
     public void addGuessed(char guessed) {
         this.guessed.add(guessed);
-        Collections.sort(this.guessed);
+        this.guessed = this.guessed.stream().sorted();
     }
 
     public String getWord() {
@@ -139,5 +155,72 @@ public class Hangman {
 
         //channel.sendMessage(user.getName() + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
         channel.sendMessage(name + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
+    }
+    
+    public static void save() {
+        JSONObject json = new JSONObject();
+
+        for (Map.Entry entry : GAMES.entrySet()) {
+            JSONObject game = new JSONObject();
+            Hangman hangmanGame = (Hangman) entry.getValue();
+
+            //simple data
+            game.put("userID", hangmanGame.userID);
+            game.put("name", hangmanGame.name);
+            game.put("word", hangmanGame.word);
+            game.put("lives", hangmanGame.livesLeft);
+
+            //adding guessed letters
+            String guesses = "";
+            for (char c : hangmanGame.guessed) {
+                guesses += c;
+            }
+
+            game.put("guesses", guesses);
+            json.put("game", game);
+        }
+
+        //writing actual file
+        try {
+            FileWriter fileWriter = new FileWriter(new File (String.valueOf(saveConfig.getJson())));
+
+            fileWriter.write(json.toString());
+            fileWriter.flush();
+            fileWriter.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void load() {
+
+        try {
+            FileReader reader = new FileReader(new File (String.valueOf(saveConfig.getJson())));
+
+            Object obj = new JSONParser().parse(reader);
+            JSONObject jsonObject = (JSONObject) obj;
+
+            for (int i = 1; jsonObject.containsKey("" + i); i++) {
+                JSONObject game = (JSONObject) jsonObject.get("" + i);
+
+                Long userID = (Long) game.get("userID");
+                String name = game.get("name").toString();
+                String word = game.get("word").toString();
+                int lives = (int) (long) game.get("lives");
+
+                ArrayList<Character> guesses = new ArrayList<>();
+                String guessesS = game.get("guesses").toString();
+                for(int  i2 = 0; i2 < guessesS.length(); i2 ++){
+                    guesses.add(guessesS.charAt(i2));
+                }
+
+                GAMES.put(userID, new Hangman(userID, name, word, lives, guesses));
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
     }
 }
