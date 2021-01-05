@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-         if (Hangman.GAMES.containsKey(event.getAuthor().getID())) {  //Checking user has a ongoing game.
+         if (Hangman.GAMES.containsKey(event.getAuthor().getIDLong())) {  //Checking user has an ongoing game.
     
             String guess = event.getMessage().getContentRaw().substring(3);  //  !g e -> e
                                                                              //  !g carpet -> carpet
