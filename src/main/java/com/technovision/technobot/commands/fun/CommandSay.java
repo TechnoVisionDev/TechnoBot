@@ -74,8 +74,11 @@ public class CommandSay extends Command {
         for (int i = startIndex; i < args.length; i++) {
             msg.append(args[i]).append(" ");
         }
+
         if (!isSafe(msg.toString())) { return null; }
-        msg.append("\n\n- <@!").append(author.getIdLong()).append(">");
+
+        msg.append("\n\n- ").append(author.getName());
+
         return msg.toString();
     }
 }
