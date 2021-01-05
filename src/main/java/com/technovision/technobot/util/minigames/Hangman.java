@@ -42,7 +42,7 @@ public class Hangman {
 
     public void addGuessed(char guessed) {
         this.guessed.add(guessed);
-        sort();
+        Collections.sort(this.guessed);
     }
 
     public String getWord() {
@@ -51,10 +51,6 @@ public class Hangman {
 
     public int getLivesLeft() {
         return livesLeft;
-    }
-
-    public void sort() {
-        Collections.sort(guessed);
     }
 
     public static void guess(TextChannel channel, User user, String guess) {
