@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  public class CommandGuess extends Command {
 
     public CommandGuess(final TechnoBot bot) {
-        super(bot, "guess", "Guess something in a game of hangman", "{prefix}g   ", Command.Category.OTHER);
+        super(bot, "guess", "Guess something in a game of hangman", "{prefix}g   ", Command.Category.FUN);
     }
 
     @Override
@@ -25,7 +25,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
             for (int i = 3; i < messageContent.length(); i++) {
                 guess += messageContent.charAt(i);
             }
-            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess.toLowerCase);
+            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess.toLowerCase());
         }
 
         return true;
