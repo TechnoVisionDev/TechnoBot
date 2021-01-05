@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  public class CommandGuess extends Command {
 
     public CommandGuess(final TechnoBot bot) {
-        super(bot, "guess", "Guess something in a game of hangman", "{prefix}g   ", Command.Category.FUN);
+        super(bot, "guess", "Guess something in a game of hangman", "{prefix}g", Command.Category.FUN);
     }
 
     @Override
