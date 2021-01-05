@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
     
             String guess = event.getMessage().getContentRaw().substring(3);  //  !g e -> e
                                                                              //  !g carpet -> carpet
-            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess);
+            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess.toLowerCase());
         }
 
         return true;
