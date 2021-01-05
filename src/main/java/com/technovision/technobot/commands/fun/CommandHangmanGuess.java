@@ -17,13 +17,16 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-         String messageContent = event.getMessage().getContentRaw();
+         if (Hangman.GAMES.containsKey(event.getAuthor())) {
+    
+            String messageContent = event.getMessage().getContentRaw();
 
-        String guess = "";
-        for (int i = 3; i < messageContent.length(); i++) {
-            guess += messageContent.charAt(i);
+            String guess = "";
+            for (int i = 3; i < messageContent.length(); i++) {
+                guess += messageContent.charAt(i);
+            }
+            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess);
         }
-        Hangman.guess(event.getTextChannel(), guess);
 
         return true;
     }
