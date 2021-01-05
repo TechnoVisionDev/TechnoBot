@@ -96,7 +96,6 @@ public class Hangman {
         }
         if (game.getLivesLeft() == 0) {
             game.finish();
-            GAMES.remove(channel);
             return;
         }
 
@@ -105,6 +104,7 @@ public class Hangman {
 
     public void finish() {
         channel.sendMessage("You ran out of lives. The word was " + word + ".").queue();
+        GAMES.remove(channel);
     }
 
     public void sendWord() {
