@@ -66,7 +66,7 @@ public class Hangman {
 
     public static void guess(TextChannel channel, String guess) {
         if (!GAMES.containsKey(channel)) {
-            channel.sendMessage("To start a game type: !play hangman").queue();
+            channel.sendMessage("To start a game type: !start hangman").queue();      //can't be !play because it's already in use at music commands.
             return;
         }
 
