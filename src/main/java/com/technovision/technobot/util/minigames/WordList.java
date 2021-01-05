@@ -13,16 +13,14 @@ import java.util.Scanner;
  */
 public class WordList {
     private static final ArrayList<String> words = new ArrayList<>();
+    
+    private final Configuration config = new Configuration("data/config/", "words.json") {
 
     static{
         try {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            URL url = cl.getResource("words.json");
-            assert url != null;
-            Object obj = new JSONParser().parse(new FileReader(url.getFile()));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray jsonArray = (JSONArray) ((JSONObject) obj).get("words");
-            for(Object word : words){
+            JSONObject jsonObject = config.getJSON();
+            JSONArray jsonArray = (JSONArray) jsonObject.get("words");
+            for(Object word : jsonArray){
                 words.add(word.toString().toLowerCase());
             }
         } catch (Exception e) {
