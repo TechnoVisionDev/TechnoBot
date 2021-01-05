@@ -18,22 +18,29 @@ public class Hangman {
 
     private final String word;
     private int livesLeft;
-    private final User user;
+    private final String userID;
+    private final String name;
+    //private final User user;
     private final ArrayList<Character> guessed;
 
 
     private Hangman(User user) {
         word = WordList.getWord();
         livesLeft = 10;
-        this.user = user;
+        userID = user.getId();
+        name = user.getName();
+        //this.user = user;
         guessed = new ArrayList<>();
     }
 
     public static void startGame(User user, TextChannel channel) {
-        GAMES.remove(user);
-        GAMES.put(user, new Hangman(user));
-        GAMES.get(user).sendWord(channel);
-
+        String userID = user.getId();
+        GAMES.remove(userID);
+        GAMES.put(userID, new Hangman(user));
+        GAMES.get(userID).sendWord(channel);
+        //GAMES.remove(user);
+        //GAMES.put(user, new Hangman(user));
+        //GAMES.get(user).sendWord(channel);
     }
 
     public ArrayList<Character> getGuessed() {
@@ -55,7 +62,8 @@ public class Hangman {
 
     public static void guess(TextChannel channel, User user, String guess) {
 
-        Hangman game = GAMES.get(user);
+        Hangman game = GAMES.get(user.getID());
+        //Hangman game = GAMES.get(user);
 
         if (guess.length() == 1) {
             if (!game.getGuessed().contains(guess.charAt(0))) {
@@ -119,6 +127,7 @@ public class Hangman {
             guessed += c;
         }
 
-        channel.sendMessage(user.getName() + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
+        //channel.sendMessage(user.getName() + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
+        channel.sendMessage(name + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
     }
 }
