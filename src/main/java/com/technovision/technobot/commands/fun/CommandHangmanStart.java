@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CommandHangmanStart extends Command{
 
     public CommandHangmanStart(final Technobot bot) {
-        super(bot, "start-hangman", "Start a game of hangman", "{prefix}start-hangman", Command.Category.FUN);
+        super(bot, "hangman", "Start a game of hangman", "{prefix}hangman", Command.Category.FUN);
     }
 
     @Override
