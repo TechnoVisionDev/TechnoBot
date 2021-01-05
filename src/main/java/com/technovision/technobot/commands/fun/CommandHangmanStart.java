@@ -2,7 +2,8 @@ package com.technovision.technobot.commands.fun;
 
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
-import com.tecgnovision.technobot.                                   //////////
+import com.tecgnovision.technobot.util.minigames.Hangman;
+
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
