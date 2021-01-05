@@ -14,11 +14,11 @@ import java.util.HashMap;
  */
 public class Hangman {
 
-    public static final HashMap<String, Hangman> GAMES = new HashMap<>();
+    public static final HashMap<Long, Hangman> GAMES = new HashMap<>();
 
     private final String word;
     private int livesLeft;
-    private final String userID;
+    private final Long userID;
     private final String name;
     //private final User user;
     private final ArrayList<Character> guessed;
@@ -27,14 +27,14 @@ public class Hangman {
     private Hangman(User user) {
         word = WordList.getWord();
         livesLeft = 10;
-        userID = user.getId();
+        userID = user.getIdLong();
         name = user.getName();
         //this.user = user;
         guessed = new ArrayList<>();
     }
 
     public static void startGame(User user, TextChannel channel) {
-        String userID = user.getId();
+        Long userID = user.getIdLong();
         GAMES.remove(userID);
         GAMES.put(userID, new Hangman(user));
         GAMES.get(userID).sendWord(channel);
@@ -65,7 +65,7 @@ public class Hangman {
 
     public static void guess(TextChannel channel, User user, String guess) {
 
-        Hangman game = GAMES.get(user.getID());
+        Hangman game = GAMES.get(user.getIDLong());
         //Hangman game = GAMES.get(user);
 
         if (guess.length() == 1) { //letter
@@ -102,7 +102,7 @@ public class Hangman {
      * Removes this game from active ones.
      * */
     public void finish() {
-        GAMES.remove(user);
+        GAMES.remove(userID);
     }
     
     /*
