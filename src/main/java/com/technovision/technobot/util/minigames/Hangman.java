@@ -1,7 +1,7 @@
-package com.technovision.technobot.util.minigames;
+package com.adex.adexbot.minigames.hangman;
 
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,29 +14,26 @@ import java.util.HashMap;
  */
 public class Hangman {
 
-    public static final HashMap<TextChannel, Hangman> GAMES = new HashMap<>();
+    public static final HashMap<User, Hangman> GAMES = new HashMap<>();
 
     private final String word;
     private int livesLeft;
-    private final TextChannel channel;
+    private final User user;
     private final ArrayList<Character> guessed;
-    private final ArrayList<Character> wrong;
 
-    private Hangman(TextChannel channel) {
+
+    private Hangman(User user) {
         word = WordList.getWord();
         livesLeft = 10;
-        this.channel = channel;
+        this.user = user;
         guessed = new ArrayList<>();
-        wrong = new ArrayList<>();
     }
 
-    public static void startGame(TextChannel channel) {
-        if (GAMES.containsKey(channel)) {
-            channel.sendMessage("This channel already has a game of Hangman on.").queue();
-        } else {
-            GAMES.put(channel, new Hangman(channel));
-            GAMES.get(channel).sendWord();
-        }
+    public static void startGame(User user, TextChannel channel) {
+        GAMES.remove(user);
+        GAMES.put(user, new Hangman(user));
+        GAMES.get(user).sendWord(channel);
+
     }
 
     public ArrayList<Character> getGuessed() {
@@ -52,10 +49,6 @@ public class Hangman {
         return word;
     }
 
-    public void reduceLive() {
-        livesLeft--;
-    }
-
     public int getLivesLeft() {
         return livesLeft;
     }
@@ -64,34 +57,28 @@ public class Hangman {
         Collections.sort(guessed);
     }
 
-    public static void guess(TextChannel channel, String guess) {
-        if (!GAMES.containsKey(channel)) {
-            channel.sendMessage("To start a game type: !start hangman").queue();      //can't be !play because it's already in use at music commands.
-            return;
-        }
+    public static void guess(TextChannel channel, User user, String guess) {
 
-        Hangman game = GAMES.get(channel);
+        Hangman game = GAMES.get(user);
 
         if (guess.length() == 1) {
             if (!game.getGuessed().contains(guess.charAt(0))) {
                 if (!game.getWord().contains(guess)) {
                     channel.sendMessage("The word doesn't contain letter " + guess + ".").queue();
-                    game.reduceLive();
+                    game.livesLeft--;
                 }
                 game.addGuessed(guess.toLowerCase().charAt(0));
-                game.addGuessed(guess.toLowerCase().charAt(0));
             } else {
-                channel.sendMessage("Great job! " + game.getWord() + " was the right word.").queue();
-                game.finish();
+                channel.sendMessage(guess + " has already been guessed.").queue();
             }
         } else {
             if (game.getWord().equalsIgnoreCase(guess)) {
                 channel.sendMessage("Great job! " + game.getWord() + " was the right word.").queue();
-                GAMES.remove(channel);
+                game.finish();
                 return;
             } else {
                 channel.sendMessage(guess + " was not the word.").queue();
-                game.reduceLive();
+                game.livesLeft--;
             }
 
         }
@@ -101,14 +88,14 @@ public class Hangman {
             return;
         }
 
-        game.sendWord();
+        game.sendWord(channel);
     }
 
     public void finish() {
-        GAMES.remove(channel);
+        GAMES.remove(user);
     }
 
-    public void sendWord() {
+    public void sendWord(TextChannel channel) {
         boolean lastUnknown = false;
         String sendableWord = "";
         for (int i = 0; i < word.length(); i++) {
