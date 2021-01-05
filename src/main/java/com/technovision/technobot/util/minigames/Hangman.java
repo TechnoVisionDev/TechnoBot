@@ -1,4 +1,4 @@
-package com.adex.adexbot.minigames.hangman;
+package com.technovision.technobot.util.minigames;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -47,6 +47,9 @@ public class Hangman {
         return guessed;
     }
 
+    /*
+     * Adds guessed character to the list and sorts it into alphabetical order.
+     * */
     public void addGuessed(char guessed) {
         this.guessed.add(guessed);
         Collections.sort(this.guessed);
@@ -65,22 +68,22 @@ public class Hangman {
         Hangman game = GAMES.get(user.getID());
         //Hangman game = GAMES.get(user);
 
-        if (guess.length() == 1) {
-            if (!game.getGuessed().contains(guess.charAt(0))) {
+        if (guess.length() == 1) { //letter
+            if (!game.getGuessed().contains(guess.charAt(0))) {  //not guessed
                 if (!game.getWord().contains(guess)) {
-                    channel.sendMessage("The word doesn't contain letter " + guess + ".").queue();
+                    channel.sendMessage("The word doesn't contain letter " + guess + ".").queue();  //in word
                     game.livesLeft--;
                 }
                 game.addGuessed(guess.charAt(0));
             } else {
-                channel.sendMessage(guess + " has already been guessed.").queue();
+                channel.sendMessage(guess + " has already been guessed.").queue();  //already guessed
             }
-        } else {
-            if (game.getWord().equalsIgnoreCase(guess)) {
+        } else {  //word
+            if (game.getWord().equals(guess)) {  //right
                 channel.sendMessage("Great job! " + game.getWord() + " was the right word.").queue();
                 game.finish();
                 return;
-            } else {
+            } else {  //wrong
                 channel.sendMessage(guess + " was not the word.").queue();
                 game.livesLeft--;
             }
@@ -94,10 +97,17 @@ public class Hangman {
 
         game.sendWord(channel);
     }
-
+    
+    /*
+     * Removes this game from active ones.
+     * */
     public void finish() {
         GAMES.remove(user);
     }
+    
+    /*
+     * Sends the default game message.
+     * */
 
     public void sendWord(TextChannel channel) {
         boolean lastUnknown = false;
