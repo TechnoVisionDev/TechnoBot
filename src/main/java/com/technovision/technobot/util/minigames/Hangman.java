@@ -119,6 +119,6 @@ public class Hangman {
             guessed += c;
         }
 
-        channel.sendMessage("Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
+        channel.sendMessage(user.getName() + " Word: " + sendableWord + " Lives left: " + livesLeft + "\nGuessed letters: " + guessed).queue();
     }
 }
