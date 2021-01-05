@@ -17,7 +17,10 @@ public class WordList {
 
     static{
         try {
-            Object obj = new JSONParser().parse(new FileReader("C:\\Users\\adex\\Desktop\\AdexBot\\src\\main\\resources\\words.json"));      //Change this
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL url = cl.getResource("words.json");
+            assert url != null;
+            Object obj = new JSONParser().parse(new FileReader(url.getFile()));
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) ((JSONObject) obj).get("words");
             for(Object word : words){
