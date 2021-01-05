@@ -22,7 +22,7 @@ public class Hangman {
 
     public static final HashMap<Long, Hangman> GAMES = new HashMap<>();
     
-    private final Configuration saveConfig = new Configuration("data/config/", "hangmanSave.json") {
+    private static final Configuration saveConfig = new Configuration("data/config/", "hangmanSave.json") {
 
     private final String word;
     private int livesLeft;
