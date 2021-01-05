@@ -19,13 +19,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
     public boolean execute(MessageReceivedEvent event, String[] args) {
          if (Hangman.GAMES.containsKey(event.getAuthor())) {
     
-            String messageContent = event.getMessage().getContentRaw();
+            String guess = event.getMessage().getContentRaw().substring(4);
 
-            String guess = "";
-            for (int i = 3; i < messageContent.length(); i++) {
-                guess += messageContent.charAt(i);
-            }
-            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess.toLowerCase());
+            Hangman.guess(event.getTextChannel(), event.getAuthor() , guess);
         }
 
         return true;
