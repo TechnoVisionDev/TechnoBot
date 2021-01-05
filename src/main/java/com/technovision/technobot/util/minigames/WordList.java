@@ -33,6 +33,6 @@ public class WordList {
     }
 
     public static String getWord(){
-        return words.get(new Random().nextInt(words.size()));
+        return words.get(ThreadLocalRandom.current().nextInt(words.size()));
     }
 }
