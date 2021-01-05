@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class Hangman {
 
-    public static final HashMap<User, Hangman> GAMES = new HashMap<>();
+    public static final HashMap<String, Hangman> GAMES = new HashMap<>();
 
     private final String word;
     private int livesLeft;
