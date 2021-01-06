@@ -55,18 +55,6 @@ public class CommandRegistry {
                 new CommandShuffle(bot),
                 new CommandVolume(bot),
 
-                new CommandQueue(bot),
-                new CommandSkip(bot),
-                new CommandSkipTo(bot),
-                new CommandNp(bot),
-                new CommandSeek(bot),
-                new CommandLoop(bot),
-                new CommandPause(bot),
-                new CommandResume(bot),
-                new CommandDj(bot),
-                new CommandShuffle(bot),
-                new CommandVolume(bot),
-
                 // Staff
                 new CommandInfractions(bot),
                 new CommandClearWarn(bot),
