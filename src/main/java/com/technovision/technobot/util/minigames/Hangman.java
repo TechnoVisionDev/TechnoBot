@@ -54,7 +54,9 @@ public class Hangman {
 
     public static void startGame(User user, TextChannel channel) {
         Long userID = user.getIdLong();
-        GAMES.remove(userID);
+        if(GAMES.containsKey(userID)){
+            channel.sendMessage("Your last game ended. The old word was " + GAMES.get(userID).word + ".").queue();
+        }
         GAMES.put(userID, new Hangman(user));
         GAMES.get(userID).sendWord(channel);
         //GAMES.remove(user);
