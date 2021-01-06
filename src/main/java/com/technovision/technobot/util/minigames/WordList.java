@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WordList {
     private static final ArrayList<String> words = new ArrayList<>();
 
-    private static final Configuration config = new Configuration("data/config/", "words.json");
+    private static final Configuration config = new Configuration("bot_data/", "words.json");
 
     static {
         try {
