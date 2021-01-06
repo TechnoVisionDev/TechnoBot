@@ -3,19 +3,24 @@ package com.technovision.technobot.commands.fun;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandSay extends Command {
-
     public CommandSay(final TechnoBot bot) {
         super(bot, "say", "Send a message using the bot", "{prefix}say [channel] <message>", Category.FUN);
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
+        if (event.getMessage().mentionsEveryone() || (event.getMessage().getMentions(Message.MentionType.HERE).size() >= 0)) {
+            event.getChannel().sendMessage("You cannot mention everyone or here!");
+
+            return true;
+        }
 
         if (args.length > 0) {
             // Check for mentioned channels
