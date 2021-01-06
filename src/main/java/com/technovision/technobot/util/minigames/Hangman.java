@@ -159,6 +159,7 @@ public class Hangman {
     
     public static void save() {
         JSONObject json = new JSONObject();
+        int i = 1;
 
         for (Map.Entry entry : GAMES.entrySet()) {
             JSONObject game = new JSONObject();
@@ -177,7 +178,8 @@ public class Hangman {
             }
 
             game.put("guesses", guesses);
-            json.put("game", game);
+            json.put(i, game);
+            i++;
         }
 
         //writing actual file
