@@ -3,7 +3,6 @@ package com.technovision.technobot.commands.fun;
 import com.technovision.technobot.TechnoBot;
 import com.technovision.technobot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -16,13 +15,6 @@ public class CommandSay extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if (event.getMessage().mentionsEveryone()
-            || !event.getMessage().getMentions(Message.MentionType.HERE).isEmpty()) {
-            event.getChannel().sendMessage("You cannot mention everyone or here!").queue();
-
-            return true;
-        }
-
         if (args.length > 0) {
             // Check for mentioned channels
             if (!event.getMessage().getMentionedChannels().isEmpty()) {
@@ -33,6 +25,12 @@ public class CommandSay extends Command {
                     if (args.length < 2) {
                         // Argument Error
                         event.getChannel().sendMessage(getArgumentError()).queue();
+                        return true;
+                    }
+
+                    if (args[2].contains("@everyone") || args[2].contains("@here")) {
+                        event.getChannel().sendMessage("No.").queue();
+
                         return true;
                     }
 
