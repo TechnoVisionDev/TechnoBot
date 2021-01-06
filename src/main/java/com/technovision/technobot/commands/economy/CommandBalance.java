@@ -24,7 +24,7 @@ public class CommandBalance extends Command {
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
 
-        User user = event.getAuthor();
+        User user = null;
         List<Member> mentions = event.getMessage().getMentionedMembers();
 
         if (args.length > 1) {
@@ -41,19 +41,14 @@ public class CommandBalance extends Command {
             user = mentions.get(0).getUser();
         }
 
-        if (user == event.getAuthor()) {
+        if (user == null) {
             try {
                 user = event.getGuild().getMemberById(args[0]).getUser();
             } catch (Exception ignored) {
-                EmbedBuilder errorEmbed = new EmbedBuilder();
-                errorEmbed.setColor(ERROR_EMBED_COLOR);
-                errorEmbed.setDescription(":x: Invalid `[user]` argument given.\n\nUsage:\n`bal [user]`");
-
-                event.getChannel().sendMessage(errorEmbed.build()).queue();
-
-                return true;
             }
         }
+
+        if (user == null) user = event.getAuthor();
 
         Pair<Long, Long> profile = bot.getEconomy().getBalance(user);
 
