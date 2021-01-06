@@ -99,7 +99,8 @@ public class ExtrasEventListener extends ListenerAdapter {
                     .addField("Official Forge Discord", "https://discord.gg/UvedJ9m", false)
                     .build();
             event.getChannel().sendMessage(embed).queue();
-        }
+        } else if (msg.equalsIgnoreCase("pog")) event.getMessage().addReaction(":Pog:").queue();
+        else if (msg.equalsIgnoreCase("pogu")) event.getMessage().addReaction(":PogU:").queue();
 
         if (triggered) COOLDOWN_MAP.put(authorId, System.currentTimeMillis());
     }
