@@ -16,8 +16,9 @@ public class CommandSay extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
-        if (event.getMessage().mentionsEveryone() || (event.getMessage().getMentions(Message.MentionType.HERE).size() >= 0)) {
-            event.getChannel().sendMessage("You cannot mention everyone or here!");
+        if (event.getMessage().mentionsEveryone()
+            || !event.getMessage().getMentions(Message.MentionType.HERE).isEmpty()) {
+            event.getChannel().sendMessage("You cannot mention everyone or here!").queue();
 
             return true;
         }
@@ -36,11 +37,13 @@ public class CommandSay extends Command {
                     }
 
                     // Send message to specified channel
-                    long channelID = Long.parseLong(args[0].substring(2, args[0].length()-1));
+                    long channelID = Long.parseLong(args[0].substring(2, args[0].length() - 1));
                     TextChannel channel = event.getMessage().getMentionedChannels().get(0);
                     if (channel.getIdLong() == channelID) {
                         String message = buildMessage(1, event.getAuthor(), args);
-                        if (message == null) { return true; }
+                        if (message == null) {
+                            return true;
+                        }
                         if (channel.canTalk(event.getMember())) {
                             channel.sendMessage(message).queue();
                         }
@@ -51,7 +54,9 @@ public class CommandSay extends Command {
 
             // Send in current channel
             String message = buildMessage(0, event.getAuthor(), args);
-            if (message == null) { return true; }
+            if (message == null) {
+                return true;
+            }
             event.getChannel().sendMessage(message).queue();
             return true;
         }
@@ -63,7 +68,9 @@ public class CommandSay extends Command {
 
     private boolean isSafe(String msg) {
         msg = msg.toLowerCase();
-        if (msg.contains("discord.gg/")) { return false; }
+        if (msg.contains("discord.gg/")) {
+            return false;
+        }
         return !msg.contains("<@" + 595024631438508070L + ">");
     }
 
@@ -80,7 +87,9 @@ public class CommandSay extends Command {
             msg.append(args[i]).append(" ");
         }
 
-        if (!isSafe(msg.toString())) { return null; }
+        if (!isSafe(msg.toString())) {
+            return null;
+        }
 
         msg.append("\n\n- ").append(author.getName());
 
