@@ -1,6 +1,5 @@
 target/*
 .idea/*
 data/*
-data/config/botconfig.json
-data/config/hangmanSave.json
+data/config/*
 data/images/*
