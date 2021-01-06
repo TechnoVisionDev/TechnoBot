@@ -29,7 +29,8 @@ public class Hangman {
     private final Long userID;
     private final String name;
     //private final User user;
-    private final ArrayList<Character> guessed;
+    private final HashSet<Character> guessed;
+    //private final ArrayList<Character> guessed;
 
 
     private Hangman(User user) {
@@ -38,10 +39,12 @@ public class Hangman {
         userID = user.getIdLong();
         name = user.getName();
         //this.user = user;
-        guessed = new ArrayList<>();
+        guessed = new HashSet();
+        //guessed = new ArrayList<>();
     }
     
-    private Hangman(Long userID, String name, String word, int lives, ArrayList<Character> guessed){
+    private Hangman(Long userID, String name, String word, int lives, HashSet<Character> guessed){
+    //private Hangman(Long userID, String name, String word, int lives, ArrayList<Character> guessed){
         this.userID = userID;
         this.name = name;
         this.word = word;
@@ -59,7 +62,7 @@ public class Hangman {
         //GAMES.get(user).sendWord(channel);
     }
 
-    public ArrayList<Character> getGuessed() {
+    public HashSet<Character> getGuessed() {
         return guessed;
     }
 
@@ -68,7 +71,11 @@ public class Hangman {
      * */
     public void addGuessed(char guessed) {
         this.guessed.add(guessed);
-        this.guessed = this.guessed.stream().sorted();
+        //this.guessed = this.guessed.stream().sorted();
+        TreeSet<Character> sorted = new TreeSet<>(this.guessed);
+        this.guessed.clear();
+        this.guessed.addAll(sorted);
+    
     }
 
     public String getWord() {
@@ -211,7 +218,8 @@ public class Hangman {
                 String word = game.get("word").toString();
                 int lives = (int) (long) game.get("lives");
 
-                ArrayList<Character> guesses = new ArrayList<>();
+                //ArrayList<Character> guesses = new ArrayList<>();
+                HashSet<Character> guesses = new HashSet<>();
                 String guessesS = game.get("guesses").toString();
                 for(int  i2 = 0; i2 < guessesS.length(); i2 ++){
                     guesses.add(guessesS.charAt(i2));
