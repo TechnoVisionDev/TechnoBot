@@ -8,10 +8,10 @@ assignees: ''
 ---
 
 **Describe the bug**
-Give a clear and detailed explanation on what the bug is.
+<!-- Give a clear and detailed explanation on what the bug is. -->
 
 **How to Replicate**
-Tell us some ways we can replicate this issue. Be clear and detailed.
+<!-- Tell us some ways we can replicate this issue. Be clear and detailed. -->
 
 **Stacktrace**
-Post your stacktrace. If possible, use a service like pastebin for long stacktraces.
+<!-- Post your stacktrace. If possible, use a service like pastebin for long stacktraces. -->

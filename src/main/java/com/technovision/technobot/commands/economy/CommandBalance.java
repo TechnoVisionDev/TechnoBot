@@ -18,23 +18,45 @@ import java.util.Set;
 public class CommandBalance extends Command {
 
     public CommandBalance(final TechnoBot bot) {
-        super(bot,"balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY);
+        super(bot, "balance", "View your account balance", "{prefix}balance", Command.Category.ECONOMY);
     }
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] args) {
 
         User user = event.getAuthor();
-        if (args.length > 0) {
-            List<Member> mentions = event.getMessage().getMentionedMembers();
-            if (mentions.size() > 0) {
-                user = mentions.get(0).getUser();
-            }  else {
+        List<Member> mentions = event.getMessage().getMentionedMembers();
+
+        if (args.length > 1) {
+            EmbedBuilder errorEmbed = new EmbedBuilder();
+            errorEmbed.setColor(ERROR_EMBED_COLOR);
+            errorEmbed.setDescription(":x: Too many arguments given.\n\nUsage:\n`bal [user]`");
+
+            event.getChannel().sendMessage(errorEmbed.build()).queue();
+
+            return true;
+        }
+
+        if (mentions.size() > 0) {
+            user = mentions.get(0).getUser();
+        }
+
+        if (user == event.getAuthor()) {
+            try {
+                user = event.getGuild().getMemberById(args[0]).getUser();
+            } catch (Exception ignored) {
+                EmbedBuilder errorEmbed = new EmbedBuilder();
+                errorEmbed.setColor(ERROR_EMBED_COLOR);
+                errorEmbed.setDescription(":x: Invalid `[user]` argument given.\n\nUsage:\n`bal [user]`");
+
+                event.getChannel().sendMessage(errorEmbed.build()).queue();
+
                 return true;
             }
         }
 
         Pair<Long, Long> profile = bot.getEconomy().getBalance(user);
+
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
                 .addField("Cash:", EconManager.SYMBOL + EconManager.FORMATTER.format(profile.getLeft()), true)
