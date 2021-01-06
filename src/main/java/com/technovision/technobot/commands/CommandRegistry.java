@@ -87,7 +87,7 @@ public class CommandRegistry {
                 new CommandSay(bot),
                 new CommandRoll(bot),
                 new CommandHangmanStart(bot),
-                new CommandHangmanGuess(bot)
+                new CommandGuess(bot)
         );
     }
 }
