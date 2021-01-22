@@ -20,7 +20,7 @@ public class CommandVolume extends Command {
             return true;
         }
 
-        if (Integer.parseInt(args[0]) >= 400 || Integer.parseInt(args[0]) <= 50) {
+        if (Integer.parseInt(args[0]) > 400 || Integer.parseInt(args[0]) < 50) {
             event.getChannel().sendMessage("The volume is out of range! [50-400]").queue();
             return true;
         }
