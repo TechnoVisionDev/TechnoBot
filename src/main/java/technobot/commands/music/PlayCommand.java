@@ -13,6 +13,11 @@ import technobot.util.EmbedUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Command that searches and plays music.
+ *
+ * @author TechnoVision
+ */
 public class PlayCommand extends Command {
 
     public PlayCommand(TechnoBot bot) {
