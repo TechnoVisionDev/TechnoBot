@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.utility.AvatarCommand;
 import technobot.commands.utility.PingCommand;
+import technobot.commands.utility.ServerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,13 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of CivBot.
      */
     public CommandRegistry(TechnoBot bot) {
-        //Economy commands
-        commands.add(new PingCommand(bot));
-        commands.add(new AvatarCommand(bot));
+        //Utility commands
+        commands.addAll(List.of(
+                new PingCommand(bot),
+                new AvatarCommand(bot),
+                new ServerCommand(bot)
+                )
+        );
 
         //Register commands as listeners
         for (Command command : commands) {
