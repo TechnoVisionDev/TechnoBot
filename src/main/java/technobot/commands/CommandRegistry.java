@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.music.PlayCommand;
+import technobot.commands.music.TestCommand;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -26,12 +28,16 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of CivBot.
      */
     public CommandRegistry(TechnoBot bot) {
-        //Economy commands
+        //Music commands
+        commands.add(new PlayCommand(bot));
+        commands.add(new TestCommand(bot));
+
+        //Utility commands
         commands.add(new PingCommand(bot));
         commands.add(new AvatarCommand(bot));
         commands.add(new ServerCommand(bot));
         commands.add(new RollCommand(bot));
-        commands.add(new HelpCommand(bot)); // The help command MUST come last!!!
+        commands.add(new HelpCommand(bot)); // The 'help' command MUST come last!!!
 
         //Register commands as listeners
         for (Command command : commands) {

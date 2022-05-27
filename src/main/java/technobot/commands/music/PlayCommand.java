@@ -1,0 +1,72 @@
+package technobot.commands.music;
+
+import net.dv8tion.jda.api.entities.AudioChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import technobot.TechnoBot;
+import technobot.commands.Category;
+import technobot.commands.Command;
+import technobot.data.cache.MusicPlayer;
+import technobot.util.EmbedUtils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class PlayCommand extends Command {
+
+    public PlayCommand(TechnoBot bot) {
+        super(bot);
+        this.name = "play";
+        this.description = "Add a song to the queue and play it.";
+        this.category = Category.MUSIC;
+        this.args.add(new OptionData(OptionType.STRING, "song", "Song to search for or a link to the song", true));
+    }
+
+    public void execute(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
+        String song = event.getOption("song").getAsString();
+
+        MusicPlayer music = bot.musicHandler.getMusic(event, true);
+        if (music == null) return;
+
+        // Check if member is in the right voice channel
+        AudioChannel channel = event.getMember().getVoiceState().getChannel();
+        if (music.getPlayChannel() != channel) {
+            String text = "You are not in the same voice channel as TechnoBot!";
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            return;
+        }
+
+        // Cannot have more than 100 songs in the queue
+        if (music.getQueue().size() >= 100) {
+            String text = "You cannot queue more than 100 songs!";
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            return;
+        }
+
+        // Find working URL
+        try {
+            String url;
+            try {
+                // Check for real URL
+                url = new URL(song).toString();
+            } catch (MalformedURLException e) {
+                // Else search youtube using args
+                url = "ytsearch:" + song;
+                bot.musicHandler.addTrack(event, url);
+                return;
+            }
+            // Search youtube if using a soundcloud link
+            if (url.contains("https://soundcloud.com/")) {
+                String[] contents = url.split("/");
+                url = "ytsearch:" + contents[3] + "/" + contents[4];
+            }
+            // Otherwise add real URL to queue
+            bot.musicHandler.addTrack(event, url);
+        } catch (IndexOutOfBoundsException e) {
+            String text = "Please specify a song a to play.";
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+        }
+    }
+}

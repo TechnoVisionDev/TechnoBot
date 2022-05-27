@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
+import technobot.data.GuildData;
+import technobot.handlers.MusicHandler;
 
 import javax.security.auth.login.LoginException;
 
@@ -19,6 +21,7 @@ public class TechnoBot {
     public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
     public final @NotNull Database databaseManager;
+    public final @NotNull MusicHandler musicHandler;
 
     /**
      * Builds bot shards and registers commands and modules.
@@ -38,10 +41,15 @@ public class TechnoBot {
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
                 GatewayIntent.GUILD_PRESENCES);
         shardManager = builder.build();
-        shardManager.addEventListener(new CommandRegistry(this));
+        GuildData.init(this);
 
-        //Create Managers & Modules
+        //Create Commands and Handlers
+        CommandRegistry commandRegistry = new CommandRegistry(this);
         databaseManager = new Database(config.get("DATABASE"));
+        musicHandler = new MusicHandler();
+
+        //Register Listeners
+        shardManager.addEventListener(commandRegistry, musicHandler);
     }
 
     /**
