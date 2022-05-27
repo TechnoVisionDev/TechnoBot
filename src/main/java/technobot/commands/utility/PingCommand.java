@@ -17,7 +17,7 @@ public class PingCommand extends Command {
     public PingCommand(TechnoBot bot) {
         super(bot);
         this.name = "ping";
-        this.description = "Check bot latency";
+        this.description = "Display bot latency.";
         this.category = Category.UTILITY;
     }
 

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.utility.AvatarCommand;
 import technobot.commands.utility.PingCommand;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class CommandRegistry extends ListenerAdapter {
     public CommandRegistry(TechnoBot bot) {
         //Economy commands
         commands.add(new PingCommand(bot));
+        commands.add(new AvatarCommand(bot));
 
         //Register commands as listeners
         for (Command command : commands) {
