@@ -6,10 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
-import technobot.commands.utility.AvatarCommand;
-import technobot.commands.utility.HelpCommand;
-import technobot.commands.utility.PingCommand;
-import technobot.commands.utility.ServerCommand;
+import technobot.commands.utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +30,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new PingCommand(bot));
         commands.add(new AvatarCommand(bot));
         commands.add(new ServerCommand(bot));
+        commands.add(new RollCommand(bot));
         commands.add(new HelpCommand(bot)); // The help command MUST come last!!!
 
         //Register commands as listeners
