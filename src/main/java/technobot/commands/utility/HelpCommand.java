@@ -72,6 +72,7 @@ public class HelpCommand extends Command {
             builder.setTitle("Command: " + cmd.name);
             builder.setDescription(cmd.description);
             builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
+            builder.addField("Permission:", getPermissions(cmd), false);
             event.getHook().sendMessageEmbeds(builder.build()).queue();
         } else {
             // Display default menu
@@ -115,7 +116,9 @@ public class HelpCommand extends Command {
      * @return A string of command perms.
      */
     private String getPermissions(Command cmd) {
-        // TODO: Implement
-        return "";
+        if (cmd.permission == null) {
+            return "None";
+        }
+        return cmd.permission.getName();
     }
 }
