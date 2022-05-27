@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.utility.AvatarCommand;
+import technobot.commands.utility.HelpCommand;
 import technobot.commands.utility.PingCommand;
 import technobot.commands.utility.ServerCommand;
 
@@ -30,6 +31,7 @@ public class CommandRegistry extends ListenerAdapter {
     public CommandRegistry(TechnoBot bot) {
         //Utility commands
         commands.addAll(List.of(
+                new HelpCommand(bot),
                 new PingCommand(bot),
                 new AvatarCommand(bot),
                 new ServerCommand(bot)

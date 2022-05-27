@@ -16,11 +16,11 @@ import java.util.List;
  */
 public abstract class Command extends ListenerAdapter {
 
-    protected TechnoBot bot;
-    protected String name;
-    protected String description;
-    protected Category category;
-    protected List<OptionData> args;
+    public TechnoBot bot;
+    public String name;
+    public String description;
+    public Category category;
+    public List<OptionData> args;
 
     public Command(TechnoBot bot) {
         this.bot = bot;
