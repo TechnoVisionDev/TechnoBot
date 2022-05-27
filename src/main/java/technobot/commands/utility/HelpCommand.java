@@ -28,11 +28,15 @@ public class HelpCommand extends Command {
             data.addChoice(name, name);
         }
         this.args.add(data);
+        OptionData data2 = new OptionData(OptionType.STRING, "command", "See details for this command");
+        for (Command cmd : CommandRegistry.commands) {
+            data2.addChoice(cmd.name, cmd.name);
+        }
+        this.args.add(data2);
     }
 
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-
         // Create a hashmap that groups commands by categories.
         HashMap<Category, List<Command>> categories = new HashMap<>();
         EmbedBuilder builder = new EmbedBuilder().setColor(EmbedColor.DEFAULT.color);
@@ -44,17 +48,9 @@ public class HelpCommand extends Command {
         }
 
         OptionMapping option = event.getOption("category");
-        if (option == null) {
-            // Display default category menu.
-            builder.setTitle("TechnoBot Commands");
-            categories.forEach((category, commands) -> {
-                String categoryName = category.name().toLowerCase();
-                String value = "`/help " + categoryName + "`";
-                builder.addField(category.emoji + " " + category.name, value, true);
-            });
-            event.getHook().sendMessageEmbeds(builder.build()).queue();
-        } else {
-            // Display category commands
+        OptionMapping option2 = event.getOption("command");
+        if (option != null) {
+            // Display category commands menu
             Category category = Category.valueOf(option.getAsString().toUpperCase());
             List<Command> commands = categories.get(category);
             EmbedBuilder embed = new EmbedBuilder();
@@ -64,6 +60,29 @@ public class HelpCommand extends Command {
                 embed.appendDescription("`" + getUsage(cmd) + "`\n" + cmd.description + "\n\n");
             }
             event.getHook().sendMessageEmbeds(embed.build()).queue();
+        } else if (option2 != null) {
+            // Display command details menu
+            Command cmd = null;
+            for (Command c : CommandRegistry.commands) {
+                if (c.name.equals(option2.getAsString())) {
+                    cmd = c;
+                }
+            }
+            assert cmd != null;
+            builder.setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1));
+            builder.addField("Description:", cmd.description, false);
+            builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
+            builder.addField("Permissions Needed:", getPermissions(cmd), false);
+            event.getHook().sendMessageEmbeds(builder.build()).queue();
+        } else {
+            // Display default menu
+            builder.setTitle("TechnoBot Commands");
+            categories.forEach((category, commands) -> {
+                String categoryName = category.name().toLowerCase();
+                String value = "`/help " + categoryName + "`";
+                builder.addField(category.emoji + " " + category.name, value, true);
+            });
+            event.getHook().sendMessageEmbeds(builder.build()).queue();
         }
     }
 
@@ -74,20 +93,30 @@ public class HelpCommand extends Command {
      * @return String with name and args stitched together.
      */
     public String getUsage(Command cmd) {
-        StringBuilder usage = new StringBuilder("/" + cmd.name);
-        for (OptionData arg : cmd.args) {
-            if (arg.isRequired()) {
-                usage.append(" <");
-            } else {
-                usage.append(" [");
-            }
-            usage.append(arg.getName());
-            if (arg.isRequired()) {
-                usage.append(">");
-            } else {
-                usage.append("]");
+        String usage = "/" + cmd.name;
+        if (cmd.args.isEmpty()) return usage;
+        boolean isRequired = cmd.args.get(0).isRequired();
+        if (isRequired) { usage += " <"; }
+        else { usage += " ["; }
+        for (int i = 0; i < cmd.args.size(); i++) {
+            usage += args.get(i).getName();
+            if (i+1 != cmd.args.size()) {
+                usage += " | ";
             }
         }
-        return usage.toString();
+        if (isRequired) { usage += ">"; }
+        else { usage += "]"; }
+        return usage;
+    }
+
+    /**
+     * Builds a string of permissions from command.
+     *
+     * @param cmd the command to draw perms from.
+     * @return A string of command perms.
+     */
+    private String getPermissions(Command cmd) {
+        // TODO: Implement
+        return "";
     }
 }

@@ -29,14 +29,11 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of CivBot.
      */
     public CommandRegistry(TechnoBot bot) {
-        //Utility commands
-        commands.addAll(List.of(
-                new HelpCommand(bot),
-                new PingCommand(bot),
-                new AvatarCommand(bot),
-                new ServerCommand(bot)
-                )
-        );
+        //Economy commands
+        commands.add(new PingCommand(bot));
+        commands.add(new AvatarCommand(bot));
+        commands.add(new ServerCommand(bot));
+        commands.add(new HelpCommand(bot)); // The help command MUST come last!!!
 
         //Register commands as listeners
         for (Command command : commands) {
