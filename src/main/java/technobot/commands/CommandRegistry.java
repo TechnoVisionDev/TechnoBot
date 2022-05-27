@@ -6,10 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
-import technobot.commands.music.PauseCommand;
-import technobot.commands.music.PlayCommand;
-import technobot.commands.music.ResumeCommand;
-import technobot.commands.music.SkipCommand;
+import technobot.commands.music.*;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -33,6 +30,7 @@ public class CommandRegistry extends ListenerAdapter {
         //Music commands
         commands.add(new PlayCommand(bot));
         commands.add(new SkipCommand(bot));
+        commands.add(new QueueCommand(bot));
         commands.add(new PauseCommand(bot));
         commands.add(new ResumeCommand(bot));
 
