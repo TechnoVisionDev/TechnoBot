@@ -74,8 +74,20 @@ public class HelpCommand extends Command {
      * @return String with name and args stitched together.
      */
     public String getUsage(Command cmd) {
-        String usage = "/" + cmd.name;
-        //if (!cmd.args.isEmpty()) usage += " " + cmd.args;
-        return usage;
+        StringBuilder usage = new StringBuilder("/" + cmd.name);
+        for (OptionData arg : cmd.args) {
+            if (arg.isRequired()) {
+                usage.append(" <");
+            } else {
+                usage.append(" [");
+            }
+            usage.append(arg.getName());
+            if (arg.isRequired()) {
+                usage.append(">");
+            } else {
+                usage.append("]");
+            }
+        }
+        return usage.toString();
     }
 }
