@@ -69,10 +69,9 @@ public class HelpCommand extends Command {
                 }
             }
             assert cmd != null;
-            builder.setTitle((cmd.name.charAt(0) + "").toUpperCase() + cmd.name.substring(1));
-            builder.addField("Description:", cmd.description, false);
+            builder.setTitle("Command: " + cmd.name);
+            builder.setDescription(cmd.description);
             builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
-            builder.addField("Permissions Needed:", getPermissions(cmd), false);
             event.getHook().sendMessageEmbeds(builder.build()).queue();
         } else {
             // Display default menu
