@@ -36,13 +36,12 @@ public class BanCommand extends Command {
         event.deferReply().queue();
         // Get command and member data
         User user = event.getOption("user").getAsUser();
-        Member target = event.getGuild().getMemberById(user.getIdLong());
         OptionMapping reasonOption = event.getOption("reason");
         String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
 
-        // Kick user from guild
+        // Ban user from guild
         user.openPrivateChannel().queue(privateChannel -> {
-            // Private message user with reason for kick
+            // Private message user with reason for Ban
             String guild = event.getGuild().getName();
             String staff = event.getUser().getAsTag();
             String text = "You got banned from **%s** by **%s**\n\n `Reason: %s`".formatted(guild, staff, reason);
@@ -52,6 +51,7 @@ public class BanCommand extends Command {
             }
         );
 
+        // Start unban timer if temp ban specified
         OptionMapping timeOption = event.getOption("time");
         if (timeOption != null) {
             // TODO: Add banned user to database and start scheduled executor service to unban

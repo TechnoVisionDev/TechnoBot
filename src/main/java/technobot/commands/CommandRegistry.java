@@ -10,6 +10,7 @@ import technobot.commands.music.*;
 import technobot.commands.staff.BanCommand;
 import technobot.commands.staff.ClearCommand;
 import technobot.commands.staff.KickCommand;
+import technobot.commands.staff.UnbanCommand;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new ClearCommand(bot));
         commands.add(new KickCommand(bot));
         commands.add(new BanCommand(bot));
+        commands.add(new UnbanCommand(bot));
 
         //Music commands
         commands.add(new PlayCommand(bot));
