@@ -93,20 +93,17 @@ public class HelpCommand extends Command {
      * @return String with name and args stitched together.
      */
     public String getUsage(Command cmd) {
-        String usage = "/" + cmd.name;
-        if (cmd.args.isEmpty()) return usage;
-        boolean isRequired = cmd.args.get(0).isRequired();
-        if (isRequired) { usage += " <"; }
-        else { usage += " ["; }
+        StringBuilder usage = new StringBuilder("/" + cmd.name);
+        if (cmd.args.isEmpty()) return usage.toString();
         for (int i = 0; i < cmd.args.size(); i++) {
-            usage += cmd.args.get(i).getName();
-            if (i+1 != cmd.args.size()) {
-                usage += " | ";
-            }
+            boolean isRequired = cmd.args.get(i).isRequired();
+            if (isRequired) { usage.append(" <"); }
+            else { usage.append(" ["); }
+            usage.append(cmd.args.get(i).getName());
+            if (isRequired) { usage.append(">"); }
+            else { usage.append("]"); }
         }
-        if (isRequired) { usage += ">"; }
-        else { usage += "]"; }
-        return usage;
+        return usage.toString();
     }
 
     /**
