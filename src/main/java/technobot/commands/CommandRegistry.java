@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
+import technobot.commands.staff.ClearCommand;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of CivBot.
      */
     public CommandRegistry(TechnoBot bot) {
+        //Staff commands
+        commands.add(new ClearCommand(bot));
+
         //Music commands
         commands.add(new PlayCommand(bot));
         commands.add(new SkipCommand(bot));
