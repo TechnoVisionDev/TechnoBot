@@ -99,7 +99,7 @@ public class HelpCommand extends Command {
         if (isRequired) { usage += " <"; }
         else { usage += " ["; }
         for (int i = 0; i < cmd.args.size(); i++) {
-            usage += args.get(i).getName();
+            usage += cmd.args.get(i).getName();
             if (i+1 != cmd.args.size()) {
                 usage += " | ";
             }
