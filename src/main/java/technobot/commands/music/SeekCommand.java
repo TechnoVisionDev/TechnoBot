@@ -11,6 +11,11 @@ import technobot.data.cache.MusicPlayer;
 import technobot.handlers.MusicHandler;
 import technobot.util.EmbedUtils;
 
+/**
+ * Command that jumps to a specified position in the current track.
+ *
+ * @author TechnoVision
+ */
 public class SeekCommand extends Command {
 
     public SeekCommand(TechnoBot bot) {

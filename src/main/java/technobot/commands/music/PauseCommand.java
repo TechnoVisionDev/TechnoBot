@@ -7,6 +7,11 @@ import technobot.commands.Command;
 import technobot.data.cache.MusicPlayer;
 import technobot.util.EmbedUtils;
 
+/**
+ * Command that pauses music player.
+ *
+ * @author TechnoVision
+ */
 public class PauseCommand extends Command {
 
     public PauseCommand(TechnoBot bot) {

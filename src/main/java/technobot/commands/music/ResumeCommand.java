@@ -7,6 +7,11 @@ import technobot.commands.Command;
 import technobot.data.cache.MusicPlayer;
 import technobot.util.EmbedUtils;
 
+/**
+ * Command that un-pauses music player.
+ *
+ * @author TechnoVision
+ */
 public class ResumeCommand extends Command {
 
     public ResumeCommand(TechnoBot bot) {

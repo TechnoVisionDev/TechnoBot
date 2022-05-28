@@ -34,6 +34,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new SeekCommand(bot));
         commands.add(new PauseCommand(bot));
         commands.add(new ResumeCommand(bot));
+        commands.add(new NowPlayingCommand(bot));
 
         //Utility commands
         commands.add(new PingCommand(bot));

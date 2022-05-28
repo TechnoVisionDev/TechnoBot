@@ -17,6 +17,11 @@ import technobot.util.EmbedUtils;
 
 import java.util.ListIterator;
 
+/**
+ * Command that displays an embed to showcases the music queue.
+ *
+ * @author TechnoVision
+ */
 public class QueueCommand extends Command {
 
     public QueueCommand(TechnoBot bot) {
