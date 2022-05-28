@@ -42,11 +42,13 @@ public class MusicPlayer implements AudioSendHandler {
 
     /** Whether the music player is on loop. */
     private boolean isLoop;
+    private boolean isSkip;
 
     public MusicPlayer(@NotNull AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.queue = new LinkedList<>();
         this.isLoop = false;
+        this.isSkip = false;
         TrackScheduler scheduler = new TrackScheduler(this);
         audioPlayer.addListener(scheduler);
     }
@@ -113,7 +115,7 @@ public class MusicPlayer implements AudioSendHandler {
      * Skips the current playing track.
      */
     public void skipTrack() {
-        isLoop = false;
+        isSkip = true;
         audioPlayer.getPlayingTrack().setPosition(audioPlayer.getPlayingTrack().getDuration());
     }
 
@@ -258,12 +260,13 @@ public class MusicPlayer implements AudioSendHandler {
 
         @Override
         public void onTrackEnd(@NotNull AudioPlayer player, @NotNull AudioTrack track, @NotNull AudioTrackEndReason endReason) {
-            if (handler.isLoop()) {
+            if (handler.isLoop() && !handler.isSkip) {
                 // Loop current track
                 handler.queue.set(0, track.makeClone());
                 player.playTrack(handler.queue.getFirst());
             } else if (!handler.queue.isEmpty()) {
                 // Play next track in queue
+                handler.isSkip = false;
                 handler.queue.removeFirst();
                 if (endReason.mayStartNext && handler.queue.size() > 0) {
                     player.playTrack(handler.queue.getFirst());

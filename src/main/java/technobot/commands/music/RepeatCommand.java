@@ -8,30 +8,32 @@ import technobot.data.cache.MusicPlayer;
 import technobot.util.EmbedUtils;
 
 /**
- * Command that skips the current song.
+ * Command that toggles repeat mode for music queue.
  *
  * @author TechnoVision
  */
-public class SkipCommand extends Command {
+public class RepeatCommand extends Command {
 
-    public SkipCommand(TechnoBot bot) {
+    public RepeatCommand(TechnoBot bot) {
         super(bot);
-        this.name = "skip";
-        this.description = "Skip the current song.";
+        this.name = "repeat";
+        this.description = "Toggles the repeat mode.";
         this.category = Category.MUSIC;
     }
 
+    @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         MusicPlayer music = bot.musicHandler.getMusic(event, false);
         if (music == null) return;
 
-        music.skipTrack();
-        event.getHook().sendMessage(":fast_forward: Skipping...").queue(m -> {
-            if (music.getQueue().size() == 1) {
-                String text = ":sound: The music queue is now empty!";
-                m.editMessageEmbeds(EmbedUtils.createDefault(text)).queue();
-            }
-        });
+        music.loop();
+        String text;
+        if (music.isLoop()) {
+            text = ":repeat_one: Loop Enabled!";
+        } else {
+            text = ":repeat_one: Loop Disabled!";
+        }
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }
