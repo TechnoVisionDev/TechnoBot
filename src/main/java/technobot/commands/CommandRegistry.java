@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
 import technobot.commands.staff.ClearCommand;
+import technobot.commands.staff.KickCommand;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class CommandRegistry extends ListenerAdapter {
     public CommandRegistry(TechnoBot bot) {
         //Staff commands
         commands.add(new ClearCommand(bot));
+        commands.add(new KickCommand(bot));
 
         //Music commands
         commands.add(new PlayCommand(bot));
