@@ -5,12 +5,14 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.utils.TimeFormat;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.EmbedColor;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 /**
  * Command that displays relevant server information.
@@ -29,13 +31,7 @@ public class ServerCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         Guild guild = event.getGuild();
-        OffsetDateTime time = guild.getTimeCreated();
-        String guildTime = String.format("%s/%s/%s %s:%s",
-                time.getMonthValue(),
-                time.getDayOfMonth(),
-                time.getYear(),
-                time.getHour(),
-                time.getMinute());
+        String guildTime = TimeFormat.RELATIVE.format(guild.getTimeCreated().toInstant().toEpochMilli());
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
@@ -59,7 +55,7 @@ public class ServerCommand extends Command {
         String channels = String.format("**%s** Text\n**%s** Voice", textChannels, voiceChannels);
         embed.addField(":speech_balloon: Channels (" + (textChannels + voiceChannels) + ")", channels, true);
 
-        String other = "**Region:** North America" + "\n**Verification Level:** " + guild.getVerificationLevel().getKey();
+        String other = "**Verification Level:** " + guild.getVerificationLevel().getKey();
         embed.addField(":earth_africa: Other:", other, true);
 
         String roles = "To see a list with all roles use **/roles**";

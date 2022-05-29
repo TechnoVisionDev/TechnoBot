@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
@@ -36,6 +37,7 @@ public class TechnoBot {
         builder.setActivity(Activity.playing("/help"));
         builder.setChunkingFilter(ChunkingFilter.ALL);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.enableCache(CacheFlag.ONLINE_STATUS);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
