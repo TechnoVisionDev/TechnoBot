@@ -55,6 +55,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new ServerCommand(bot));
         commands.add(new UserCommand(bot));
         commands.add(new RollCommand(bot));
+        commands.add(new RolesCommand(bot));
         commands.add(new HelpCommand(bot)); // The 'help' command MUST come last!!!
 
         //Register commands as listeners
