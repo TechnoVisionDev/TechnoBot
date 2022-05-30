@@ -4,9 +4,13 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.jetbrains.annotations.NotNull;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -18,7 +22,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
  */
 public class Database {
 
-    //public @NotNull MongoCollection<User> users;
+    /** Update option that updates a doc if existing, and inserts if not. */
+    public static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
+
+    /** Collections */
+    public @NotNull MongoCollection<Document> suggestions;
 
     /**
      * Connect to database using MongoDB URI and
@@ -35,9 +43,9 @@ public class Database {
                 .codecRegistry(codecRegistry)
                 .build();
         MongoClient mongoClient = MongoClients.create(clientSettings);
-        MongoDatabase database = mongoClient.getDatabase("CivBot");
+        MongoDatabase database = mongoClient.getDatabase("TechnoBot");
 
         // Initialize collections if they don't exist.
-        //users = database.getCollection("users", User.class);
+        suggestions = database.getCollection("suggestions");
     }
 }

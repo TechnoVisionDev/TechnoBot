@@ -11,6 +11,7 @@ import technobot.commands.staff.BanCommand;
 import technobot.commands.staff.ClearCommand;
 import technobot.commands.staff.KickCommand;
 import technobot.commands.staff.UnbanCommand;
+import technobot.commands.suggestions.SuggestionsCommand;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of CivBot.
      */
     public CommandRegistry(TechnoBot bot) {
+        //Suggestions commands
+        commands.add(new SuggestionsCommand(bot));
+
         //Staff commands
         commands.add(new ClearCommand(bot));
         commands.add(new KickCommand(bot));

@@ -61,7 +61,7 @@ public class EmbedUtils {
     public static @NotNull MessageEmbed createSuccess(String message) {
         return new EmbedBuilder()
                 .setColor(EmbedColor.SUCCESS.color)
-                .setDescription(message)
+                .setDescription(GREEN_TICK + " " + message)
                 .build();
     }
 

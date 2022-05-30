@@ -21,7 +21,7 @@ public class TechnoBot {
 
     public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
-    public final @NotNull Database databaseManager;
+    public final @NotNull Database database;
     public final @NotNull MusicHandler musicHandler;
 
     /**
@@ -47,7 +47,7 @@ public class TechnoBot {
 
         //Create Commands and Handlers
         CommandRegistry commandRegistry = new CommandRegistry(this);
-        databaseManager = new Database(config.get("DATABASE"));
+        database = new Database(config.get("DATABASE"));
         musicHandler = new MusicHandler();
 
         //Register Listeners
