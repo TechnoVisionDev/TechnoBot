@@ -11,6 +11,7 @@ import technobot.commands.staff.BanCommand;
 import technobot.commands.staff.ClearCommand;
 import technobot.commands.staff.KickCommand;
 import technobot.commands.staff.UnbanCommand;
+import technobot.commands.suggestions.ApproveCommand;
 import technobot.commands.suggestions.SuggestCommand;
 import technobot.commands.suggestions.SuggestionsCommand;
 import technobot.commands.utility.*;
@@ -35,6 +36,7 @@ public class CommandRegistry extends ListenerAdapter {
     public CommandRegistry(TechnoBot bot) {
         //Suggestions commands
         commands.add(new SuggestCommand(bot));
+        commands.add(new ApproveCommand(bot));
         commands.add(new SuggestionsCommand(bot));
 
         //Staff commands

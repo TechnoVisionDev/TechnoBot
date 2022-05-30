@@ -4,7 +4,9 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
@@ -210,24 +212,16 @@ public class Suggestions {
     /**
      * Responds to a suggestion by editing the embed and responding to the author.
      *
-     * @param command message with response command.
-     * @param args array of command args.
+     * @param event The slash command event that triggered this method.
+     * @param id the id number of the suggestion to respond to.
+     * @param reasonOption the reason option passed in by user.
      * @param responseType the type of response (approve, deny, etc).
      */
-    public void respond(Message command, String[] args, SuggestionResponse responseType) {
-        // Build response reason
-        StringBuilder reason = new StringBuilder("No reason given");
-        if (args.length >= 3) {
-            reason = new StringBuilder();
-            for (int i = 2; i < args.length; i++) {
-                reason.append(args[i]).append(" ");
-            }
-        }
-
+    public void respond(SlashCommandInteractionEvent event, int id, OptionMapping reasonOption, SuggestionResponse responseType) {
+        String reason = (reasonOption != null) ? reasonOption.getAsString() : "No reason given";
         try {
-            int id = Integer.parseInt(args[1]) - 1;
-            Suggestions suggestions = GuildData.get(command.getGuild()).suggestions;
-            TextChannel channel = command.getGuild().getTextChannelById(suggestions.getChannel());
+            Suggestions suggestions = GuildData.get(event.getGuild()).suggestions;
+            TextChannel channel = event.getGuild().getTextChannelById(suggestions.getChannel());
             if (channel == null) { throw new NullPointerException(); }
 
             // Edit suggestion embed
@@ -237,21 +231,21 @@ public class Suggestions {
                     .setAuthor(embed.getAuthor().getName(), embed.getUrl(), embed.getAuthor().getIconUrl())
                     .setTitle("Suggestion #" + (id+1) + " " + responseType.response)
                     .setDescription(embed.getDescription())
-                    .addField("Reason from " + command.getAuthor().getAsTag(), reason.toString(), false)
+                    .addField("Reason from " + event.getUser().getAsTag(), reason.toString(), false)
                     .setColor(responseType.color)
                     .build();
             suggestionMessage.editMessageEmbeds(editedEmbed).queue();
 
             String lowercaseResponse = responseType.response.toLowerCase();
             String text = "Suggestion #" + (id+1) + " has been " + lowercaseResponse + "!";
-            command.getChannel().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
 
             // DM Author if response DMs are turned on
             if (responseDM) {
-                User author = command.getJDA().getUserById(authors.get(id));
+                User author = event.getJDA().getUserById(authors.get(id));
                 if (author != null) {
                     author.openPrivateChannel().queue(dm -> {
-                        String dmText = "Your suggestion has been " + lowercaseResponse + " by " + command.getAuthor().getAsTag();
+                        String dmText = "Your suggestion has been " + lowercaseResponse + " by " + event.getUser().getAsTag();
                         dm.sendMessage(dmText).setEmbeds(editedEmbed).queue();
                     });
                 }
@@ -260,11 +254,11 @@ public class Suggestions {
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             // Invalid ID format
             String text = "Could not find a suggestion with that id number.";
-            command.getChannel().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         } catch (ErrorResponseException | NullPointerException e) {
             // Invalid channel
             String text = "Could not find that message, was the channel deleted or changed?";
-            command.getChannel().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         }
     }
 
