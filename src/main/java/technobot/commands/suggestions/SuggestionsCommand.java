@@ -123,13 +123,19 @@ public class SuggestionsCommand extends Command {
         }
     }
 
+    /**
+     * Button events for 'reset' option
+     */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getComponentId().equals("yes")) {
-            GuildData.get(event.getGuild()).suggestions.reset(event.getGuild());
-            event.editMessageEmbeds(EmbedUtils.createSuccess("Suggestion system was successfully reset!")).queue();
-        } else if (event.getComponentId().equals("no")) {
-            event.editMessageEmbeds(EmbedUtils.createError("Suggestion system was **NOT** reset!")).queue();
-        }
+        event.deferEdit().queue();
+        event.getHook().editOriginalComponents(new ArrayList<>()).queue(x -> {
+            if (event.getComponentId().equals("yes")) {
+                GuildData.get(event.getGuild()).suggestions.reset(event.getGuild());
+                x.editMessageEmbeds(EmbedUtils.createSuccess("Suggestion system was successfully reset!")).queue();
+            } else if (event.getComponentId().equals("no")) {
+                x.editMessageEmbeds(EmbedUtils.createError("Suggestion system was **NOT** reset!")).queue();
+            }
+        });
     }
 }
