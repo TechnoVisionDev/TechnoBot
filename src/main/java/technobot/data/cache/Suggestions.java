@@ -138,6 +138,15 @@ public class Suggestions {
     }
 
     /**
+     * Checks if suggestion board has a channel set.
+     *
+     * @return true if channel set, otherwise false.
+     */
+    public boolean isSetup() {
+        return channel != null;
+    }
+
+    /**
      * Checks if anonymous mode is turned on/off.
      *
      * @return anonymous mode boolean.
