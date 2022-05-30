@@ -10,6 +10,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.commands.CommandRegistry;
 import technobot.util.EmbedColor;
+import technobot.util.EmbedUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +29,7 @@ public class HelpCommand extends Command {
             data.addChoice(name, name);
         }
         this.args.add(data);
-        OptionData data2 = new OptionData(OptionType.STRING, "command", "See details for this command");
-        this.args.add(data2);
+        this.args.add(new OptionData(OptionType.STRING, "command", "See details for this command"));
     }
 
     public void execute(SlashCommandInteractionEvent event) {
@@ -65,12 +65,16 @@ public class HelpCommand extends Command {
                     cmd = c;
                 }
             }
-            assert cmd != null;
-            builder.setTitle("Command: " + cmd.name);
-            builder.setDescription(cmd.description);
-            builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
-            builder.addField("Permission:", getPermissions(cmd), false);
-            event.getHook().sendMessageEmbeds(builder.build()).queue();
+            if (cmd != null) {
+                builder.setTitle("Command: " + cmd.name);
+                builder.setDescription(cmd.description);
+                builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
+                builder.addField("Permission:", getPermissions(cmd), false);
+                event.getHook().sendMessageEmbeds(builder.build()).queue();
+            } else {
+                // Command specified doesn't exist.
+                event.getHook().sendMessageEmbeds(EmbedUtils.createError("No command called \"" + option2.getAsString() + "\" found.")).queue();
+            }
         } else {
             // Display default menu
             builder.setTitle("TechnoBot Commands");
