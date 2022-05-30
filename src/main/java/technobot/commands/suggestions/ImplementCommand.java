@@ -12,20 +12,20 @@ import technobot.data.GuildData;
 import technobot.data.cache.Suggestions;
 
 /**
- * Command that responds to suggestions with "Considering".
+ * Command that responds to suggestions with "Implemented".
  *
  * @author TechnoVision
  */
-public class ConsiderCommand extends Command {
+public class ImplementCommand extends Command {
 
-    public ConsiderCommand(TechnoBot bot) {
+    public ImplementCommand(TechnoBot bot) {
         super(bot);
-        this.name = "consider";
-        this.description = "Considers a suggestion on the suggestion board.";
+        this.name = "implement";
+        this.description = "Implements a suggestion on the suggestion board.";
         this.category = Category.SUGGESTIONS;
         this.permission = Permission.MANAGE_SERVER;
-        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to consider", true));
-        this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for considering"));
+        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to implement", true));
+        this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for being implemented"));
     }
 
     @Override
@@ -33,6 +33,6 @@ public class ConsiderCommand extends Command {
         event.deferReply().queue();
         int id = event.getOption("number").getAsInt() - 1;
         OptionMapping reason = event.getOption("reason");
-        GuildData.get(event.getGuild()).suggestions.respond(event, id, reason, Suggestions.SuggestionResponse.CONSIDER);
+        GuildData.get(event.getGuild()).suggestions.respond(event, id, reason, Suggestions.SuggestionResponse.IMPLEMENT);
     }
 }

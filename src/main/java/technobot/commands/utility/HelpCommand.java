@@ -29,9 +29,6 @@ public class HelpCommand extends Command {
         }
         this.args.add(data);
         OptionData data2 = new OptionData(OptionType.STRING, "command", "See details for this command");
-        for (Command cmd : CommandRegistry.commands) {
-            data2.addChoice(cmd.name, cmd.name);
-        }
         this.args.add(data2);
     }
 

@@ -37,6 +37,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new ApproveCommand(bot));
         commands.add(new DenyCommand(bot));
         commands.add(new ConsiderCommand(bot));
+        commands.add(new ImplementCommand(bot));
         commands.add(new SuggestionsCommand(bot));
 
         //Staff commands

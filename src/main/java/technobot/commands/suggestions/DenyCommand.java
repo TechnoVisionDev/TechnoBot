@@ -24,8 +24,8 @@ public class DenyCommand extends Command {
         this.description = "Denies a suggestion on the suggestion board.";
         this.category = Category.SUGGESTIONS;
         this.permission = Permission.MANAGE_SERVER;
-        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to approve", true));
-        this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for approval"));
+        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to deny", true));
+        this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for the deny"));
     }
 
     @Override
