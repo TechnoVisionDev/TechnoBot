@@ -7,15 +7,13 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
-import technobot.commands.staff.BanCommand;
-import technobot.commands.staff.ClearCommand;
-import technobot.commands.staff.KickCommand;
-import technobot.commands.staff.UnbanCommand;
+import technobot.commands.staff.*;
 import technobot.commands.suggestions.*;
 import technobot.commands.utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Registers, listens, and executes commands.
@@ -45,6 +43,9 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new KickCommand(bot));
         commands.add(new BanCommand(bot));
         commands.add(new UnbanCommand(bot));
+        //commands.add(new SlowmodeCommand(bot));
+        commands.add(new LockCommand(bot));
+        commands.add(new UnlockCommand(bot));
 
         //Music commands
         commands.add(new PlayCommand(bot));
