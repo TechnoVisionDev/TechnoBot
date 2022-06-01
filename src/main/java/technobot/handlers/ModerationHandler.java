@@ -1,14 +1,18 @@
 package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
-import org.bson.Document;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.cache.Ban;
 import technobot.data.cache.Moderation;
 import technobot.data.cache.Warning;
 
-import javax.print.Doc;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles moderation and warnings. Interfaces with POJO objects.
@@ -18,8 +22,9 @@ import java.util.List;
 public class ModerationHandler {
 
     private Moderation moderation;
+    private final ScheduledExecutorService unbanScheduler;
 
-    private final long guild;
+    private final Guild guild;
     private final TechnoBot bot;
 
     /**
@@ -28,16 +33,76 @@ public class ModerationHandler {
      * @param bot instance of TechnoBot.
      * @param guild ID of the guild this data is for.
      */
-    public ModerationHandler(TechnoBot bot, long guild) {
+    public ModerationHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
         this.guild = guild;
+        this.unbanScheduler = Executors.newScheduledThreadPool(10);
 
-        Bson filter = Filters.eq("guild", guild);
+        // Get POJO objects from database
+        Bson filter = Filters.eq("guild", guild.getIdLong());
         moderation = bot.database.moderation.find(filter).first();
         if (moderation == null) {
-            moderation = new Moderation(guild);
+            moderation = new Moderation(guild.getIdLong());
             bot.database.moderation.insertOne(moderation);
         }
+
+        // Schedule and manage unbans
+        for (Ban ban : moderation.getBans().values()) {
+            bot.shardManager.retrieveUserById(ban.getUser()).queue(target -> {
+                if (ban.getTimestamp() + TimeUnit.DAYS.toMillis(ban.getDays()) <= System.currentTimeMillis()) {
+                    removeBan(target);
+                } else {
+                    unbanScheduler.schedule(() -> removeBan(target), ban.getDays(), TimeUnit.DAYS);
+                }
+            });
+        }
+    }
+
+    /**
+     * Schedules a user to be unbanned after a set number of days.
+     * Also adds this information to the database.
+     *
+     * @param guild the guild this user was banned from.
+     * @param target the user to unban.
+     * @param days the days to wait before unbanning.
+     */
+    public void scheduleUnban(Guild guild, User target, int days) {
+        // Add banned user and timestamp to database
+        Ban ban = new Ban(target.getIdLong(), System.currentTimeMillis(), days);
+        moderation.addBan(target.getId(), ban);
+        Bson filter = Filters.eq("guild", guild.getIdLong());
+        Bson addBan = Filters.eq("$set", Filters.eq("bans."+target.getId(), ban));
+        bot.database.moderation.updateOne(filter, addBan);
+
+        // Start scheduled task
+        unbanScheduler.schedule(() -> removeBan(target), days, TimeUnit.DAYS);
+    }
+
+    /**
+     * Check if a user currently has a timed ban.
+     *
+     * @param userID the string ID of the user to check.
+     * @return true if user has timed ban, otherwise false.
+     */
+    public boolean hasTimedBan(String userID) {
+        return moderation.getBans().containsKey(userID);
+    }
+
+    /**
+     * Lifts a ban from local cache, server, and database.
+     *
+     * @param target the user to unban.
+     */
+    public void removeBan(User target) {
+        // Unban user
+        String userID = target.getId();
+        guild.unban(target).queue();
+        moderation.removeBan(userID);
+
+        // Remove ban from database
+        Bson filter = Filters.eq("guild", guild.getIdLong());
+        Bson removeBan = Filters.eq("$unset", Filters.eq("bans."+userID, ""));
+        bot.database.moderation.updateOne(filter, removeBan);
     }
 
     /**

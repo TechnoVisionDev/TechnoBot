@@ -14,12 +14,14 @@ public class Moderation {
     private long guild;
     private int total;
     private int count;
+    private HashMap<String, Ban> bans;
     private HashMap<String, List<Warning>> warnings;
 
     public Moderation() { }
 
     public Moderation(long guild) {
         this.guild = guild;
+        this.bans = new HashMap<>();
         this.warnings = new HashMap<>();
         this.total = 0;
         this.count = 0;
@@ -79,6 +81,25 @@ public class Moderation {
         return 0;
     }
 
+    /**
+     * Adds a timed ban to the local cache.
+     *
+     * @param target the string ID of the user to check.
+     * @param ban an instance of the user ban.
+     */
+    public void addBan(String target, Ban ban) {
+        bans.put(target, ban);
+    }
+
+    /**
+     * Removes a timed ban from the local cache.
+     *
+     * @param target the string ID of the user to check.
+     */
+    public void removeBan(String target) {
+        bans.remove(target);
+    }
+
     /** Getters and Setters for POJO **/
 
     public long getGuild() {
@@ -103,6 +124,14 @@ public class Moderation {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public HashMap<String, Ban> getBans() {
+        return bans;
+    }
+
+    public void setBans(HashMap<String, Ban> bans) {
+        this.bans = bans;
     }
 
     public HashMap<String, List<Warning>> getWarnings() {

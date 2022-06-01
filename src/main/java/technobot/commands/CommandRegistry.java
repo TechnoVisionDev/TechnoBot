@@ -11,6 +11,7 @@ import technobot.commands.music.*;
 import technobot.commands.staff.*;
 import technobot.commands.suggestions.*;
 import technobot.commands.utility.*;
+import technobot.data.GuildData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,12 +82,16 @@ public class CommandRegistry extends ListenerAdapter {
 
     /**
      * Registers slash commands as guild commands.
-     * TEMPORARY! CHANGE TO GLOBAL COMMANDS ON RELEASE!
+     * NOTE: May change to global commands on release.
      *
      * @param event executes when a guild is ready.
      */
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+        // Get GuildData from database
+        GuildData.get(event.getGuild());
+
+        // Register slash commands
         List<CommandData> commandData = new ArrayList<>();
         for (Command command : commands) {
             commandData.add(Commands.slash(command.name, command.description).addOptions(command.args));

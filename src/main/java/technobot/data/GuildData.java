@@ -42,7 +42,7 @@ public class GuildData {
         // Setup caches
         Bson filter = Filters.eq("guild", guild.getIdLong());
         music = null;
-        moderationHandler = new ModerationHandler(bot, guild.getIdLong());
+        moderationHandler = new ModerationHandler(bot, guild);
 
         // Setup suggestions cache if it exists in MongoDB
         Document suggestionsData = bot.database.suggestions.find(filter).first();
