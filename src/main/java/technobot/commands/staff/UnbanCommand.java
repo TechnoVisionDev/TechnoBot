@@ -31,6 +31,10 @@ public class UnbanCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         String input = event.getOption("user_id").getAsString();
+        if (input.equals(event.getJDA().getSelfUser().getId())) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("Ah yes let me just unban myself...")).queue();
+            return;
+        }
         try {
             event.getJDA().retrieveUserById(input).queue(user -> {
                 event.getGuild().unban(user).queue();

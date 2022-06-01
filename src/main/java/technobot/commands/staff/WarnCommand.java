@@ -32,7 +32,7 @@ public class WarnCommand extends Command {
         this.category = Category.STAFF;
         this.args.add(new OptionData(OptionType.USER, "user", "The user to warn", true));
         this.args.add(new OptionData(OptionType.STRING, "reason", "Reason for the warning"));
-        this.permission = Permission.KICK_MEMBERS;
+        this.permission = Permission.MODERATE_MEMBERS;
     }
 
     @Override
@@ -43,6 +43,9 @@ public class WarnCommand extends Command {
         Member target = event.getGuild().getMemberById(user.getIdLong());
         if (target == null) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("That user is not in this server!")).queue();
+            return;
+        } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("Why would I warn myself... silly human!")).queue();
             return;
         }
         OptionMapping reasonOption = event.getOption("reason");

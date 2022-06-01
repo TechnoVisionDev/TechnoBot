@@ -12,6 +12,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.EmbedColor;
+import technobot.util.EmbedUtils;
 
 /**
  * Command that bans a user from the guild.
@@ -36,6 +37,10 @@ public class BanCommand extends Command {
         event.deferReply().queue();
         // Get command and member data
         User user = event.getOption("user").getAsUser();
+        if (user.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("Did you seriously expect me to ban myself?")).queue();
+            return;
+        }
         OptionMapping reasonOption = event.getOption("reason");
         String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
 

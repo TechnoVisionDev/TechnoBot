@@ -24,7 +24,7 @@ public class LockCommand extends Command {
         this.description = "Disables @everyone from sending messages in a channel.";
         this.category = Category.STAFF;
         this.args.add(new OptionData(OptionType.CHANNEL, "channel", "The channel to lock"));
-        this.permission = Permission.MANAGE_CHANNEL;
+        this.permission = Permission.MESSAGE_MANAGE;
     }
 
     @Override

@@ -40,6 +40,9 @@ public class KickCommand extends Command {
         if (target == null) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("That user is not in this server!")).queue();
             return;
+        } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("Do you seriously expect me to kick myself?")).queue();
+            return;
         }
         OptionMapping reasonOption = event.getOption("reason");
         String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
