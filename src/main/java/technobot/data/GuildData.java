@@ -6,8 +6,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
-import technobot.data.cache.MusicPlayer;
-import technobot.data.cache.Suggestions;
+import technobot.handlers.ModerationHandler;
+import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.SuggestionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,8 @@ public class GuildData {
 
     /** Local memory caches. */
     public MusicPlayer music;
-    public Suggestions suggestions;
+    public SuggestionHandler suggestionHandler;
+    public ModerationHandler moderationhandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -40,11 +42,12 @@ public class GuildData {
         // Setup caches
         Bson filter = Filters.eq("guild", guild.getIdLong());
         music = null;
+        moderationhandler = new ModerationHandler(bot, guild.getIdLong());
 
         // Setup suggestions cache if it exists in MongoDB
         Document suggestionsData = bot.database.suggestions.find(filter).first();
-        if (suggestionsData != null) this.suggestions = new Suggestions(bot, guild.getIdLong(), suggestionsData);
-        else this.suggestions = new Suggestions(bot, guild.getIdLong(), Long.getLong(null));
+        if (suggestionsData != null) this.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), suggestionsData);
+        else this.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), Long.getLong(null));
     }
 
     /**

@@ -1,4 +1,4 @@
-package technobot.data.cache;
+package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author TechnoVision
  */
-public class Suggestions {
+public class SuggestionHandler {
 
     /** Ordered list of suggestion message IDs. */
     private final List<Long> messages;
@@ -53,7 +53,7 @@ public class Suggestions {
      * @param guildID ID for the guild.
      * @param data MongoDB data file for suggestions.
      */
-    public Suggestions(TechnoBot bot, long guildID, Document data) {
+    public SuggestionHandler(TechnoBot bot, long guildID, Document data) {
         this.filter = Filters.eq("guild", guildID);
         this.bot = bot;
 
@@ -74,7 +74,7 @@ public class Suggestions {
      * @param guildID ID for the guild.
      * @param channel ID of the channel to set as suggestion board
      */
-    public Suggestions(TechnoBot bot, long guildID, Long channel) {
+    public SuggestionHandler(TechnoBot bot, long guildID, Long channel) {
         this.filter = Filters.eq("guild", guildID);
         this.bot = bot;
 
@@ -220,12 +220,12 @@ public class Suggestions {
     public void respond(SlashCommandInteractionEvent event, int id, OptionMapping reasonOption, SuggestionResponse responseType) {
         String reason = (reasonOption != null) ? reasonOption.getAsString() : "No reason given";
         try {
-            Suggestions suggestions = GuildData.get(event.getGuild()).suggestions;
-            TextChannel channel = event.getGuild().getTextChannelById(suggestions.getChannel());
+            SuggestionHandler suggestionHandler = GuildData.get(event.getGuild()).suggestionHandler;
+            TextChannel channel = event.getGuild().getTextChannelById(suggestionHandler.getChannel());
             if (channel == null) { throw new NullPointerException(); }
 
             // Edit suggestion embed
-            Message suggestionMessage = channel.retrieveMessageById(suggestions.getMessages().get(id)).complete();
+            Message suggestionMessage = channel.retrieveMessageById(suggestionHandler.getMessages().get(id)).complete();
             MessageEmbed embed = suggestionMessage.getEmbeds().get(0);
             MessageEmbed editedEmbed = new EmbedBuilder()
                     .setAuthor(embed.getAuthor().getName(), embed.getUrl(), embed.getAuthor().getIconUrl())

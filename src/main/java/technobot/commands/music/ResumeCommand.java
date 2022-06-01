@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.data.cache.MusicPlayer;
+import technobot.handlers.music.MusicPlayer;
 import technobot.util.EmbedUtils;
 
 /**

@@ -9,12 +9,11 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.LayoutComponent;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.Suggestions;
+import technobot.handlers.SuggestionHandler;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -55,8 +54,8 @@ public class SuggestionsCommand extends Command {
             // Set suggestion board to mentioned channel
             long channel = channelOption.getAsGuildChannel().getIdLong();
             String channelMention = "<#" + channel + ">";
-            if (data.suggestions == null)  data.suggestions = new Suggestions(bot, guild.getIdLong(), channel);
-            else data.suggestions.setChannel(channel);
+            if (data.suggestionHandler == null)  data.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), channel);
+            else data.suggestionHandler.setChannel(channel);
             String response = EmbedUtils.BLUE_TICK + " Set the suggestion channel to " + channelMention;
             EmbedBuilder embed = new EmbedBuilder().setColor(EmbedColor.DEFAULT.color).setDescription(response);
             event.getHook().sendMessageEmbeds(embed.build()).queue();
@@ -64,7 +63,7 @@ public class SuggestionsCommand extends Command {
             // Toggle options
             switch (settingsOption.getAsString().toLowerCase()) {
                 case "dm" -> {
-                    boolean isEnabled = data.suggestions.toggleResponseDM();
+                    boolean isEnabled = data.suggestionHandler.toggleResponseDM();
                     String text;
                     if (isEnabled) {
                         text = EmbedUtils.BLUE_TICK + " Response DMs have been **enabled** for suggestions!";
@@ -74,7 +73,7 @@ public class SuggestionsCommand extends Command {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
                 }
                 case "anonymous" -> {
-                    boolean isEnabled = data.suggestions.toggleAnonymous();
+                    boolean isEnabled = data.suggestionHandler.toggleAnonymous();
                     String text;
                     if (isEnabled) {
                         text = EmbedUtils.BLUE_TICK + " Anonymous mode has been **enabled** for suggestions!";
@@ -94,8 +93,8 @@ public class SuggestionsCommand extends Command {
                         allowPerms.add(Permission.MESSAGE_HISTORY);
 
                         channel.upsertPermissionOverride(guild.getPublicRole()).deny(denyPerms).setAllowed(allowPerms).queue();
-                        if (data.suggestions == null)  data.suggestions = new Suggestions(bot, guild.getIdLong(), channel.getIdLong());
-                        else data.suggestions.setChannel(channel.getIdLong());
+                        if (data.suggestionHandler == null)  data.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), channel.getIdLong());
+                        else data.suggestionHandler.setChannel(channel.getIdLong());
                     });
                     String response = EmbedUtils.BLUE_TICK + " Created a new suggestion channel!";
                     EmbedBuilder embed = new EmbedBuilder().setColor(EmbedColor.DEFAULT.color).setDescription(response);
@@ -111,10 +110,10 @@ public class SuggestionsCommand extends Command {
                 }
             }
         } else {
-            String channel = (data.suggestions.getChannel() != null) ? "<#" + data.suggestions.getChannel() + ">" : "`Not set`";
+            String channel = (data.suggestionHandler.getChannel() != null) ? "<#" + data.suggestionHandler.getChannel() + ">" : "`Not set`";
             String config = "Suggestion channel: " + channel + " \n"
-                    + "DM on response: `" + data.suggestions.hasResponseDM() + "`\n"
-                    + "Anonymous suggestions: `" + data.suggestions.isAnonymous() + "`";
+                    + "DM on response: `" + data.suggestionHandler.hasResponseDM() + "`\n"
+                    + "Anonymous suggestions: `" + data.suggestionHandler.isAnonymous() + "`";
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle("Suggestions Config")
                     .setDescription(config)
@@ -131,7 +130,7 @@ public class SuggestionsCommand extends Command {
         event.deferEdit().queue();
         event.getHook().editOriginalComponents(new ArrayList<>()).queue(x -> {
             if (event.getComponentId().equals("yes")) {
-                GuildData.get(event.getGuild()).suggestions.reset(event.getGuild());
+                GuildData.get(event.getGuild()).suggestionHandler.reset(event.getGuild());
                 x.editMessageEmbeds(EmbedUtils.createSuccess("Suggestion system was successfully reset!")).queue();
             } else if (event.getComponentId().equals("no")) {
                 x.editMessageEmbeds(EmbedUtils.createError("Suggestion system was **NOT** reset!")).queue();

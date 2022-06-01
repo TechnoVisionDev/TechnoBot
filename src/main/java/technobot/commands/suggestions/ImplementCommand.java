@@ -9,7 +9,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.Suggestions;
+import technobot.handlers.SuggestionHandler;
 
 /**
  * Command that responds to suggestions with "Implemented".
@@ -33,6 +33,6 @@ public class ImplementCommand extends Command {
         event.deferReply().queue();
         int id = event.getOption("number").getAsInt() - 1;
         OptionMapping reason = event.getOption("reason");
-        GuildData.get(event.getGuild()).suggestions.respond(event, id, reason, Suggestions.SuggestionResponse.IMPLEMENT);
+        GuildData.get(event.getGuild()).suggestionHandler.respond(event, id, reason, SuggestionHandler.SuggestionResponse.IMPLEMENT);
     }
 }

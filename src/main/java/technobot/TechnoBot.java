@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
-import technobot.handlers.MusicHandler;
+import technobot.handlers.music.MusicHandler;
 
 import javax.security.auth.login.LoginException;
 

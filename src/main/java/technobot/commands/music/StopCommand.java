@@ -5,7 +5,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.MusicPlayer;
+import technobot.handlers.music.MusicPlayer;
 import technobot.util.EmbedUtils;
 
 /**

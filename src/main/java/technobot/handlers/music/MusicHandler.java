@@ -1,4 +1,4 @@
-package technobot.handlers;
+package technobot.handlers.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import technobot.data.GuildData;
-import technobot.data.cache.MusicPlayer;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 

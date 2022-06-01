@@ -1,14 +1,13 @@
 package technobot.commands.music;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.data.cache.MusicPlayer;
-import technobot.handlers.MusicHandler;
+import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.music.MusicHandler;
 import technobot.util.EmbedUtils;
 
 /**
