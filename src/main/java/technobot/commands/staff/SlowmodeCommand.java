@@ -6,12 +6,13 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.EmbedUtils;
+
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
 
 /**
  * Command that puts a channel in slowmode with specified time.
@@ -19,13 +20,6 @@ import technobot.util.EmbedUtils;
  * @author TechnoVision
  */
 public class SlowmodeCommand extends Command {
-
-    private static final PeriodFormatter formatter = new PeriodFormatterBuilder()
-            .appendDays().appendSuffix("d ")
-            .appendHours().appendSuffix("h ")
-            .appendMinutes().appendSuffix("m ")
-            .appendSeconds().appendSuffix("s")
-            .toFormatter();
 
     public SlowmodeCommand(TechnoBot bot) {
         super(bot);
@@ -41,13 +35,29 @@ public class SlowmodeCommand extends Command {
         event.deferReply().queue();
         OptionMapping timeOption = event.getOption("time");
         if (timeOption != null) {
-            // Check that timer does not exceed 6 hours
-            int time = formatter.parsePeriod(timeOption.getAsString()).getSeconds();
+            // Retrieve time in seconds from input
+            String timeString = timeOption.getAsString();
+            int time;
+            try {
+                try {
+                    Duration duration = Duration.parse("PT" + timeString.replaceAll(" ", ""));
+                    time = (int) duration.toSeconds();
+                    if (time <= 0) throw new NumberFormatException();
+                } catch (DateTimeParseException e) {
+                    time = Integer.parseInt(timeString);
+                    if (time <= 0) throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e2) {
+                // Disable slowmode
+                event.getTextChannel().getManager().setSlowmode(0).queue();
+                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":stopwatch: Slowmode has been disabled from this channel.")).queue();
+                return;
+            }
+            // Set slowmode timer
             if (time > TextChannel.MAX_SLOWMODE) {
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).queue();
                 return;
             }
-            // Set slowmode timer
             event.getTextChannel().getManager().setSlowmode(time).queue();
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode has been set to **"+formatTime(time)+"**.")).queue();
         } else {
@@ -58,6 +68,12 @@ public class SlowmodeCommand extends Command {
         }
     }
 
+    /**
+     * Formats seconds into a string 'x hours, x minutes, x seconds'.
+     *
+     * @param totalSeconds the number of seconds to convert to string.
+     * @return a formatted string.
+     */
     private String formatTime(int totalSeconds) {
         int hours = totalSeconds / 3600;
         int minutes = (totalSeconds % 3600) / 60;

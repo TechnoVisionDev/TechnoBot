@@ -43,7 +43,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new KickCommand(bot));
         commands.add(new BanCommand(bot));
         commands.add(new UnbanCommand(bot));
-        //commands.add(new SlowmodeCommand(bot));
+        commands.add(new SlowmodeCommand(bot));
         commands.add(new LockCommand(bot));
         commands.add(new UnlockCommand(bot));
 
