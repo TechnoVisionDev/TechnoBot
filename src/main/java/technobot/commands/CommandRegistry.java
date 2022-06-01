@@ -50,6 +50,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new SlowmodeCommand(bot));
         commands.add(new LockCommand(bot));
         commands.add(new UnlockCommand(bot));
+        commands.add(new SetNickCommand(bot));
 
         //Music commands
         commands.add(new PlayCommand(bot));
