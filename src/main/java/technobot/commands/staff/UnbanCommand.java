@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
+import technobot.data.GuildData;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -37,8 +38,8 @@ public class UnbanCommand extends Command {
         }
         try {
             event.getJDA().retrieveUserById(input).queue(user -> {
-                event.getGuild().unban(user).queue();
-                // TODO: Remove banned user from database and any timer task
+                // Remove banned user from database and any timer task
+                GuildData.get(event.getGuild()).moderationHandler.removeBan(user);
 
                 // Send confirmation message
                 event.getHook().sendMessageEmbeds(new EmbedBuilder()
