@@ -56,7 +56,7 @@ public class WarnCommand extends Command {
 
         // Add warning for user
         GuildData data = GuildData.get(event.getGuild());
-        data.moderationhandler.addWarning(reason, target.getIdLong(), event.getUser().getIdLong());
+        data.moderationHandler.addWarning(reason, target.getIdLong(), event.getUser().getIdLong());
 
         // Private message user with reason for warn
         user.openPrivateChannel().queue(privateChannel -> {

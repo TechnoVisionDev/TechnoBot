@@ -31,7 +31,7 @@ public class GuildData {
     /** Local memory caches. */
     public MusicPlayer music;
     public SuggestionHandler suggestionHandler;
-    public ModerationHandler moderationhandler;
+    public ModerationHandler moderationHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -42,7 +42,7 @@ public class GuildData {
         // Setup caches
         Bson filter = Filters.eq("guild", guild.getIdLong());
         music = null;
-        moderationhandler = new ModerationHandler(bot, guild.getIdLong());
+        moderationHandler = new ModerationHandler(bot, guild.getIdLong());
 
         // Setup suggestions cache if it exists in MongoDB
         Document suggestionsData = bot.database.suggestions.find(filter).first();

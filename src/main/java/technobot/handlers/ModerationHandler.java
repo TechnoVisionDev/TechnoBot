@@ -6,6 +6,8 @@ import technobot.TechnoBot;
 import technobot.data.cache.Moderation;
 import technobot.data.cache.Warning;
 
+import java.util.List;
+
 /**
  * Handles moderation and warnings. Interfaces with POJO objects.
  *
@@ -58,5 +60,15 @@ public class ModerationHandler {
         Bson update2 = Filters.eq("$inc", Filters.eq("count", 1));
         Bson update3 = Filters.eq("$inc", Filters.eq("total", 1));
         bot.database.moderation.updateOne(filter, Filters.and(update, update2, update3));
+    }
+
+    /**
+     * Retrieves the list of warnings for a specified user.
+     *
+     * @param target the user to get warning for.
+     * @return a list of warning objects for this user.
+     */
+    public List<Warning> getWarnings(String target) {
+        return moderation.getWarnings().get(target);
     }
 }
