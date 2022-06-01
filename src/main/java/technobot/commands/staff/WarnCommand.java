@@ -48,6 +48,12 @@ public class WarnCommand extends Command {
         OptionMapping reasonOption = event.getOption("reason");
         String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
 
+        // Check that target is not the same as author
+        if (target.getIdLong() == event.getUser().getIdLong()) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("You cannot warn yourself!")).queue();
+            return;
+        }
+
         // Add warning for user
         GuildData data = GuildData.get(event.getGuild());
         data.moderationhandler.addWarning(reason, target.getIdLong(), event.getUser().getIdLong());
