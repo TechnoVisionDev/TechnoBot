@@ -14,6 +14,9 @@ import technobot.commands.Command;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
+import java.awt.*;
+import java.util.Date;
+
 /**
  * Command that kicks a user from the guild.
  *
@@ -50,10 +53,13 @@ public class KickCommand extends Command {
         // Kick user from guild
         user.openPrivateChannel().queue(privateChannel -> {
             // Private message user with reason for kick
-            String guild = event.getGuild().getName();
-            String staff = event.getUser().getAsTag();
-            String text = "You got kicked from **%s** by **%s**\n\n `Reason: %s`".formatted(guild, staff, reason);
-            privateChannel.sendMessage(text).queue(
+            EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(EmbedColor.ERROR.color)
+                        .setTitle(EmbedUtils.RED_X + " You were kicked!")
+                        .addField("Server", event.getGuild().getName(), false)
+                        .addField("Reason", reason, false)
+                        .setTimestamp(new Date().toInstant());
+            privateChannel.sendMessageEmbeds(embed.build()).queue(
                     message -> target.kick(reason).queue(),
                     failure -> target.kick(reason).queue());
             }

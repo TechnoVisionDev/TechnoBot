@@ -66,8 +66,8 @@ public class WarnCommand extends Command {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(Color.yellow)
                     .setTitle(":warning: You were warned!")
-                    .setDescription(reason)
-                    .setFooter(event.getGuild().getName())
+                    .addField("Server", event.getGuild().getName(), false)
+                    .addField("Reason", reason, false)
                     .setTimestamp(new Date().toInstant());
             privateChannel.sendMessageEmbeds(embed.build()).queue();
         });
