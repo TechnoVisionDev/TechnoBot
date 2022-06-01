@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
@@ -45,6 +46,7 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new UnbanCommand(bot));
         commands.add(new WarnCommand(bot));
         commands.add(new WarningsCommand(bot));
+        commands.add(new RemoveWarnCommand(bot));
         commands.add(new SlowmodeCommand(bot));
         commands.add(new LockCommand(bot));
         commands.add(new UnlockCommand(bot));

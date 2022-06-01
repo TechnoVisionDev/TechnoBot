@@ -1,5 +1,6 @@
 package technobot.data.cache;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,8 +36,47 @@ public class Moderation {
         if (warnings.containsKey(targetString)) {
             warnings.get(targetString).add(warning);
         } else {
-            warnings.put(targetString, List.of(warning));
+            List<Warning> list = new ArrayList<>();
+            list.add(warning);
+            warnings.put(targetString, list);
         }
+    }
+
+    /**
+     * Clear all warnings from the local cache and database.
+     *
+     * @param target the ID of the user to target.
+     * @return the number of warnings cleared.
+     */
+    public int clearWarnings(long target) {
+        try {
+            String targetString = String.valueOf(target);
+            int count = warnings.get(targetString).size();
+            warnings.remove(targetString);
+            this.count -= count;
+            return count;
+        } catch (NullPointerException e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Removes a warning with a specific ID from the local cache and database.
+     *
+     * @param id the ID of the warning to target.
+     * @return the number of warnings cleared.
+     */
+    public int removeWarning(int id) {
+        for (List<Warning> warnings : warnings.values()) {
+            for (Warning w : warnings) {
+                if (w.getId() == id) {
+                    warnings.remove(w);
+                    this.count--;
+                    return 1;
+                }
+            }
+        }
+        return 0;
     }
 
     /** Getters and Setters for POJO **/

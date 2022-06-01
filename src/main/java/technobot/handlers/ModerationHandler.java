@@ -1,11 +1,13 @@
 package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Moderation;
 import technobot.data.cache.Warning;
 
+import javax.print.Doc;
 import java.util.List;
 
 /**
@@ -70,5 +72,32 @@ public class ModerationHandler {
      */
     public List<Warning> getWarnings(String target) {
         return moderation.getWarnings().get(target);
+    }
+
+    /**
+     * Clear all warnings for a specified user.
+     *
+     * @param target the ID of the user to target.
+     * @return the number of warnings cleared.
+     */
+    public int clearWarnings(long target) {
+        int count = moderation.clearWarnings(target);
+        if (count > 0) {
+            Bson filter = Filters.eq("guild", guild);
+            Bson update = Filters.eq("$unset", Filters.eq("warnings."+target, ""));
+            Bson update2 = Filters.eq("$set", Filters.eq("count", moderation.getCount()));
+            bot.database.moderation.updateOne(filter, Filters.and(update, update2));
+        }
+        return count;
+    }
+
+    /**
+     * Removes a warning with a specific ID.
+     *
+     * @param id the ID of the warning to target.
+     * @return the number of warnings cleared.
+     */
+    public int removeWarning(int id) {
+        return moderation.removeWarning(id);
     }
 }
