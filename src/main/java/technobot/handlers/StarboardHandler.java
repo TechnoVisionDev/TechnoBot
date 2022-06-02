@@ -3,11 +3,13 @@ package technobot.handlers;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Starboard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -42,6 +44,16 @@ public class StarboardHandler extends ListenerAdapter {
     }
 
     /**
+     * Sets the minimum required stars to get on the starboard in local cache and database.
+     *
+     * @param limit the new star limit.
+     */
+    public void setStarLimit(int limit) {
+        starboard.setStarLimit(limit);
+        bot.database.starboard.updateOne(filter, Updates.set("star_limit", limit));
+    }
+
+    /**
      * Sets the starboard channel and clears all previous posts from cache and database.
      *
      * @param channelID the ID of the channel to set as starboard.
@@ -54,17 +66,46 @@ public class StarboardHandler extends ListenerAdapter {
     }
 
     /**
+     * Adds a channel ID to the blacklist, disabling it for starring.
+     *
+     * @param channelID the ID of the channel to blacklist
+     */
+    public void blacklistChannel(long channelID) {
+        starboard.getBlacklist().add(channelID);
+        bot.database.starboard.updateOne(filter, Updates.push("blacklist", channelID));
+    }
+
+    /**
+     * Removes a channel ID from the blacklist, enabling it for starring.
+     *
+     * @param channelID the ID of the channel to blacklist
+     */
+    public void unBlacklistChannel(long channelID) {
+        starboard.getBlacklist().remove(channelID);
+        bot.database.starboard.updateOne(filter, Updates.pull("blacklist", channelID));
+    }
+
+    /**
+     * Clears the entire blacklist in cache and database back to default.
+     */
+    public void clearBlacklist() {
+        starboard.getBlacklist().clear();
+        bot.database.starboard.updateOne(filter, Updates.set("blacklist", new ArrayList<>()));
+    }
+
+    /**
      * Checks if starboard is ready to receive a post from a specified channel.
      *
-     * @param channel the channel the post was starred.
+     * @param channel the channel the post was starred in.
      * @return true if valid, otherwise false.
      */
-    public boolean isValid(long channel) {
+    public boolean isValid(TextChannel channel) {
         if (starboard == null) return false;
         else if (starboard.getChannel() == null) return false;
         else if (starboard.isLocked()) return false;
-        else if (starboard.getChannel() == channel) return false;
-        else return !starboard.blacklist.contains(channel);
+        else if (starboard.getChannel() == channel.getIdLong()) return false;
+        else if (channel.isNSFW() && !starboard.isNSFW()) return false;
+        else return !starboard.blacklist.contains(channel.getIdLong());
     }
 
     /**
@@ -105,7 +146,7 @@ public class StarboardHandler extends ListenerAdapter {
      */
     public String removePost(String messageID) {
         String id = starboard.getPosts().remove(messageID);
-        bot.database.starboard.updateOne(filter, Updates.unset("posts."+messageID));
+        if (id != null) bot.database.starboard.updateOne(filter, Updates.unset("posts."+messageID));
         return id;
     }
 

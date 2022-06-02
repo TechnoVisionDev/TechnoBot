@@ -90,12 +90,11 @@ public class StarboardListener extends ListenerAdapter {
 
         // Check that starboard is valid
         StarboardHandler starboardHandler = GuildData.get(event.getGuild()).starboardHandler;
-        if (!starboardHandler.isValid(event.getChannel().getIdLong())) return;
+        if (!starboardHandler.isValid(event.getTextChannel())) return;
 
         // Check that starboard channel is valid
         TextChannel channel = event.getGuild().getTextChannelById(starboardHandler.getChannel());
         if (channel == null) return;
-        if (channel.isNSFW() && !starboardHandler.isNSFW()) return;
 
         // Check star count
         event.retrieveMessage().queue(msg -> {
@@ -136,12 +135,11 @@ public class StarboardListener extends ListenerAdapter {
 
         // Check that starboard is valid
         StarboardHandler starboardHandler = GuildData.get(event.getGuild()).starboardHandler;
-        if (!starboardHandler.isValid(event.getChannel().getIdLong())) return;
+        if (!starboardHandler.isValid(event.getTextChannel())) return;
 
         // Check that starboard channel is valid
         TextChannel channel = event.getGuild().getTextChannelById(starboardHandler.getChannel());
         if (channel == null) return;
-        if (channel.isNSFW() && !starboardHandler.isNSFW()) return;
 
         // Check star count
         event.retrieveMessage().queue(msg -> {
@@ -155,7 +153,7 @@ public class StarboardListener extends ListenerAdapter {
                 if (stars <= 0) {
                     // Remove post from starboard
                     String post = starboardHandler.removePost(messageID);
-                    channel.deleteMessageById(post).queue();
+                    if (post != null) channel.deleteMessageById(post).queue();
                 } else {
                     // Edit existing post on starboard
                     String postID = starboardHandler.getPost(messageID);

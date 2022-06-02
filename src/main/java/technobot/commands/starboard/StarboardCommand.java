@@ -1,17 +1,16 @@
 package technobot.commands.starboard;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.StarboardHandler;
-import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
 /**
@@ -27,68 +26,86 @@ public class StarboardCommand extends Command {
         this.description = "Setup and modify the starboard config.";
         this.category = Category.STARBOARD;
         this.permission = Permission.MANAGE_SERVER;
-        this.args.add(new OptionData(OptionType.CHANNEL, "channel", "Set this channel to become the starboard."));
-        this.args.add(new OptionData(OptionType.STRING, "option", "Toggle a setting on/off.")
-                .addChoice("lock", "lock")
-                .addChoice("jump", "jump")
-                .addChoice("nsfw", "nsfw")
-                .addChoice("self", "self"));
+        this.subCommands.add(new SubcommandData("create", "Sets a channel to become the starboard.")
+                .addOption(OptionType.CHANNEL, "channel", "The channel to set as the starboard", true));
+        this.subCommands.add(new SubcommandData("limit", "Sets the star requirement for messages to post to the starboard.")
+                .addOptions(new OptionData(OptionType.INTEGER, "stars", "The star limit").setMinValue(1).setMaxValue(25)));
+        this.subCommands.add(new SubcommandData("blacklist", "Blocks a channel from having their messages starred.")
+                .addOption(OptionType.CHANNEL, "channel", "The channel to blacklist"));
+        this.subCommands.add(new SubcommandData("unblacklist", "Removes a channel from the starboard blacklist.")
+                .addOption(OptionType.CHANNEL, "channel", "The channel to unblacklist"));
+        this.subCommands.add(new SubcommandData("lock", "Toggles a temporary lock on the entire starboard."));
+        this.subCommands.add(new SubcommandData("jump", "Toggles a link to the source message for each starboard entry."));
+        this.subCommands.add(new SubcommandData("nsfw", "Toggles the ability to star messages in NSFW channels."));
+        this.subCommands.add(new SubcommandData("self", "Toggles the ability to star your own messages."));
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         OptionMapping channelOption = event.getOption("channel");
-        OptionMapping settingsOption = event.getOption("option");
         StarboardHandler starboardHandler = GuildData.get(event.getGuild()).starboardHandler;
 
-        if (channelOption != null) {
-            // Set starboard channel
-            long channel = channelOption.getAsGuildChannel().getIdLong();
-            starboardHandler.setChannel(channel);
-            String text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
-
-        } else if (settingsOption != null) {
-            // Toggle options
-            String text = null;
-            switch (settingsOption.getAsString().toLowerCase()) {
-                case "lock" -> {
-                    boolean isLocked = starboardHandler.toggleLock();
-                    if (isLocked) text = EmbedUtils.BLUE_TICK + " Locked the starboard!";
-                    else text = EmbedUtils.BLUE_X + " Unlocked the starboard!";
-                }
-                case "jump" -> {
-                    boolean hasJumpLink = starboardHandler.toggleJump();
-                    if (hasJumpLink) text = EmbedUtils.BLUE_TICK + " Enabled jump links on Starboard posts!";
-                    else text = EmbedUtils.BLUE_X + " Disabled jump links on Starboard posts!";
-                }
-                case "nsfw" -> {
-                    boolean isNSFW = starboardHandler.toggleNSFW();
-                    if (isNSFW) text = EmbedUtils.BLUE_TICK + " Users can now star messages in NSFW channels!";
-                    else text = EmbedUtils.BLUE_X + " Users can no longer star messages in NSFW channels!";
-                }
-                case "self" -> {
-                    boolean canSelfStar = starboardHandler.toggleSelfStar();
-                    if (canSelfStar) text = EmbedUtils.BLUE_TICK + " Users can now star their own messages!";
-                    else text = EmbedUtils.BLUE_X + " Users can no longer star their own messages!";
+        String text = null;
+        switch(event.getSubcommandName()) {
+            case "create" -> {
+                // Set starboard channel
+                long channel = channelOption.getAsGuildChannel().getIdLong();
+                starboardHandler.setChannel(channel);
+                text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
+            }
+            case "limit" -> {
+                OptionMapping limitOption = event.getOption("stars");
+                if (limitOption != null) {
+                    int limit = limitOption.getAsInt();
+                    starboardHandler.setStarLimit(limit);
+                    text = EmbedUtils.BLUE_TICK + " Messages now require " + limit + " stars to show up on the starboard!";
+                } else {
+                    starboardHandler.setStarLimit(3);
+                    text = EmbedUtils.BLUE_TICK + " Reset the star limit to default!";
                 }
             }
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
-        } else {
-            String cmd = "`/" + this.name + " ";
-            EmbedBuilder embed = new EmbedBuilder()
-                    .setColor(EmbedColor.DEFAULT.color)
-                    .setTitle(":dizzy: Starboard Settings")
-                    .addField(cmd + "<#channel>`", "Sets a channel to become the starboard.", false)
-                    .addField(cmd + "limit <stars>`", "Sets the star requirement for messages to post to the starboard.", false)
-                    .addField(cmd + "blacklist <#channel>`", "Blocks a channel from having their messages starred.", false)
-                    .addField(cmd + "unblacklist <#channel>`", "Removes a channel from the starboard blacklist.", false)
-                    .addField(cmd + "lock`", "Toggles a temporary lock on the entire starboard.", false)
-                    .addField(cmd + "jump`", "Toggles a link to the source message for each starboard entry.", false)
-                    .addField(cmd + "nsfw`", "Toggles the ability to star messages in NSFW channels.", false)
-                    .addField(cmd + "self`", "Toggles the ability to star your own messages.", false);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            case "blacklist" -> {
+                if (channelOption != null) {
+                    long channel = channelOption.getAsTextChannel().getIdLong();
+                    starboardHandler.blacklistChannel(channel);
+                    text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
+                } else {
+                    starboardHandler.clearBlacklist();
+                    text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
+                }
+            }
+            case "unblacklist" -> {
+                if (channelOption != null) {
+                    long channel = channelOption.getAsTextChannel().getIdLong();
+                    starboardHandler.unBlacklistChannel(channel);
+                    text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
+                } else {
+                    starboardHandler.clearBlacklist();
+                    text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
+                }
+            }
+            case "lock" -> {
+                boolean isLocked = starboardHandler.toggleLock();
+                if (isLocked) text = EmbedUtils.BLUE_TICK + " Locked the starboard!";
+                else text = EmbedUtils.BLUE_X + " Unlocked the starboard!";
+            }
+            case "jump" -> {
+                boolean hasJumpLink = starboardHandler.toggleJump();
+                if (hasJumpLink) text = EmbedUtils.BLUE_TICK + " Enabled jump links on Starboard posts!";
+                else text = EmbedUtils.BLUE_X + " Disabled jump links on Starboard posts!";
+            }
+            case "nsfw" -> {
+                boolean isNSFW = starboardHandler.toggleNSFW();
+                if (isNSFW) text = EmbedUtils.BLUE_TICK + " Users can now star messages in NSFW channels!";
+                else text = EmbedUtils.BLUE_X + " Users can no longer star messages in NSFW channels!";
+            }
+            case "self" -> {
+                boolean canSelfStar = starboardHandler.toggleSelfStar();
+                if (canSelfStar) text = EmbedUtils.BLUE_TICK + " Users can now star their own messages!";
+                else text = EmbedUtils.BLUE_X + " Users can no longer star their own messages!";
+            }
         }
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }
