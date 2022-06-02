@@ -7,6 +7,7 @@ import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.handlers.ModerationHandler;
+import technobot.handlers.StarboardHandler;
 import technobot.handlers.music.MusicPlayer;
 import technobot.handlers.SuggestionHandler;
 
@@ -32,6 +33,7 @@ public class GuildData {
     public MusicPlayer music;
     public SuggestionHandler suggestionHandler;
     public ModerationHandler moderationHandler;
+    public StarboardHandler starboardHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -43,6 +45,7 @@ public class GuildData {
         Bson filter = Filters.eq("guild", guild.getIdLong());
         music = null;
         moderationHandler = new ModerationHandler(bot, guild);
+        starboardHandler = new StarboardHandler(bot, guild);
 
         // Setup suggestions cache if it exists in MongoDB
         Document suggestionsData = bot.database.suggestions.find(filter).first();

@@ -27,7 +27,7 @@ public class ClearCommand extends Command {
         this.args.add(new OptionData(OptionType.INTEGER, "amount", "Number of messages to clear", true)
                 .setMinValue(1)
                 .setMaxValue(100));
-        this.permission = Permission.MANAGE_SERVER;
+        this.permission = Permission.MESSAGE_MANAGE;
     }
 
     @Override

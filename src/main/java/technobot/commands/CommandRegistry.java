@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
+import technobot.commands.starboard.StarboardCommand;
 import technobot.commands.suggestions.*;
 import technobot.commands.utility.*;
 import technobot.data.GuildData;
@@ -65,6 +66,9 @@ public class CommandRegistry extends ListenerAdapter {
         commands.add(new StopCommand(bot));
         commands.add(new VolumeCommand(bot));
 
+        //Starboard commands
+        commands.add(new StarboardCommand(bot));
+
         //Utility commands
         commands.add(new PingCommand(bot));
         commands.add(new AvatarCommand(bot));
@@ -98,7 +102,6 @@ public class CommandRegistry extends ListenerAdapter {
             if (command.permission != null) {
                 slashCommand.setDefaultPermissions(CommandPermissions.enabledFor(command.permission));
             }
-            commandData.add(slashCommand);
         }
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }

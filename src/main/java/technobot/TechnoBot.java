@@ -13,7 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
+import technobot.handlers.StarboardHandler;
 import technobot.handlers.music.MusicHandler;
+import technobot.listeners.StarboardListener;
 
 import javax.security.auth.login.LoginException;
 
@@ -51,7 +53,7 @@ public class TechnoBot {
         musicHandler = new MusicHandler();
 
         //Register Listeners
-        shardManager.addEventListener(commandRegistry, musicHandler);
+        shardManager.addEventListener(commandRegistry, musicHandler, new StarboardListener());
     }
 
     /**
