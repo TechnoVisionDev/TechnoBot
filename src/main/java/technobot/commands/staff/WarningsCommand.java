@@ -11,7 +11,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.Warning;
+import technobot.data.cache.moderation.Warning;
 import technobot.util.EmbedColor;
 
 import java.util.List;

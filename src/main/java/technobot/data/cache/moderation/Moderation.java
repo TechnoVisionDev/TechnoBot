@@ -1,4 +1,4 @@
-package technobot.data.cache;
+package technobot.data.cache.moderation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

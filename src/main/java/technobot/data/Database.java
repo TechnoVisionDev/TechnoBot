@@ -11,7 +11,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.NotNull;
-import technobot.data.cache.Moderation;
+import technobot.data.cache.moderation.Moderation;
 import technobot.data.cache.Starboard;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;

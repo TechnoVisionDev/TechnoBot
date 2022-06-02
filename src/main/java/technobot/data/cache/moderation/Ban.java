@@ -1,4 +1,4 @@
-package technobot.data.cache;
+package technobot.data.cache.moderation;
 
 /**
  * POJO object that stores information about a user ban.

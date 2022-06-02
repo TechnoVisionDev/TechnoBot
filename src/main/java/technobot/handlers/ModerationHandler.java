@@ -5,9 +5,9 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
-import technobot.data.cache.Ban;
-import technobot.data.cache.Moderation;
-import technobot.data.cache.Warning;
+import technobot.data.cache.moderation.Ban;
+import technobot.data.cache.moderation.Moderation;
+import technobot.data.cache.moderation.Warning;
 
 import java.util.List;
 import java.util.concurrent.Executors;
