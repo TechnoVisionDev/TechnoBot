@@ -5,7 +5,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.MusicHandler;
 import technobot.util.EmbedUtils;
 
 /**
@@ -25,7 +25,7 @@ public class StopCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        MusicPlayer musicHandler = GuildData.get(event.getGuild()).music;
+        MusicHandler musicHandler = GuildData.get(event.getGuild()).musicHandler;
         if (musicHandler == null || musicHandler.getQueue().isEmpty()) {
             String text = "The music player is already stopped!";
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();

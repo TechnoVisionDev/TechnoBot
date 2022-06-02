@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.MusicHandler;
 import technobot.util.EmbedUtils;
 
 /**
@@ -24,7 +24,7 @@ public class PauseCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        MusicPlayer music = bot.musicHandler.getMusic(event, false);
+        MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         if (music.isPaused()) {

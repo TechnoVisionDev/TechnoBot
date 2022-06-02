@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.MusicHandler;
 import technobot.util.EmbedUtils;
 
 /**
@@ -32,7 +32,7 @@ public class VolumeCommand extends Command {
         event.deferReply().queue();
         int volume = event.getOption("amount").getAsInt();
 
-        MusicPlayer music = bot.musicHandler.getMusic(event, false);
+        MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
         try {
             if (volume < 0 || volume > 100) {

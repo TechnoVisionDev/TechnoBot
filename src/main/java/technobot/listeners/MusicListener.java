@@ -1,4 +1,4 @@
-package technobot.handlers.music;
+package technobot.listeners;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import technobot.data.GuildData;
+import technobot.handlers.MusicHandler;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -27,14 +28,14 @@ import java.util.Objects;
  *
  * @author TechnoVision, Sparky
  */
-public class MusicHandler extends ListenerAdapter {
+public class MusicListener extends ListenerAdapter {
 
     private final @NotNull AudioPlayerManager playerManager;
 
     /**
      * Setup audio player manager.
      */
-    public MusicHandler() {
+    public MusicListener() {
         this.playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
@@ -61,7 +62,7 @@ public class MusicHandler extends ListenerAdapter {
      * @return Null if invalid status, otherwise music player instance.
      */
     @Nullable
-    public MusicPlayer getMusic(@NotNull SlashCommandInteractionEvent event, boolean skipQueueCheck) {
+    public MusicHandler getMusic(@NotNull SlashCommandInteractionEvent event, boolean skipQueueCheck) {
         GuildData settings = GuildData.get(event.getGuild());
         // Check if user is in voice channel
         if (!inChannel(Objects.requireNonNull(event.getMember()))) {
@@ -71,25 +72,25 @@ public class MusicHandler extends ListenerAdapter {
         }
         // Bot should join voice channel if not already in one.
         AudioChannel channel = Objects.requireNonNull(event.getMember().getVoiceState()).getChannel();
-        if (settings.music == null || settings.music.getPlayChannel() == null) {
+        if (settings.musicHandler == null || settings.musicHandler.getPlayChannel() == null) {
             assert channel != null;
             joinChannel(settings, channel, event.getTextChannel());
         }
         // Check if music is playing in this guild
         if (!skipQueueCheck) {
-            if (settings.music  == null || settings.music.getQueue().isEmpty()) {
+            if (settings.musicHandler == null || settings.musicHandler.getQueue().isEmpty()) {
                 String text = ":sound: There are no songs in the queue!";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
                 return null;
             }
             // Check if member is in the right voice channel
-            if (settings.music.getPlayChannel() != channel) {
+            if (settings.musicHandler.getPlayChannel() != channel) {
                 String text = "You are not in the same voice channel as TechnoBot!";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                 return null;
             }
         }
-        return settings.music;
+        return settings.musicHandler;
     }
 
     /**
@@ -101,11 +102,11 @@ public class MusicHandler extends ListenerAdapter {
     public void joinChannel(@NotNull GuildData settings, @NotNull AudioChannel channel, TextChannel logChannel) {
         AudioManager manager = channel.getGuild().getAudioManager();
         if (!manager.isConnected()) {
-            settings.music = new MusicPlayer(playerManager.createPlayer());
-            manager.setSendingHandler(settings.music);
+            settings.musicHandler = new MusicHandler(playerManager.createPlayer());
+            manager.setSendingHandler(settings.musicHandler);
         }
-        Objects.requireNonNull(settings.music).setLogChannel(logChannel);
-        settings.music.setPlayChannel(channel);
+        Objects.requireNonNull(settings.musicHandler).setLogChannel(logChannel);
+        settings.musicHandler.setPlayChannel(channel);
         manager.openAudioConnection(channel);
     }
 
@@ -127,7 +128,7 @@ public class MusicHandler extends ListenerAdapter {
      * @param url    The track URL.
      */
     public void addTrack(SlashCommandInteractionEvent event, String url) {
-        MusicPlayer music = GuildData.get(event.getGuild()).music;
+        MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) return;
 
         playerManager.loadItem(url, new AudioLoadResultHandler() {
@@ -200,7 +201,7 @@ public class MusicHandler extends ListenerAdapter {
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (event.getChannelLeft().getMembers().size() == 1) {
-            MusicPlayer music = GuildData.get(event.getGuild()).music;
+            MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
             if (music != null && event.getChannelLeft() == music.getPlayChannel()) {
                 music.pause();
             }
@@ -215,7 +216,7 @@ public class MusicHandler extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         if (event.getChannelJoined().getMembers().size() == 2) {
-            MusicPlayer music = GuildData.get(event.getGuild()).music;
+            MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
             if (music != null && event.getChannelJoined() == music.getPlayChannel()) {
                 music.unpause();
             }

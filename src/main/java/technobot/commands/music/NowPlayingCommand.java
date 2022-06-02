@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.handlers.music.MusicPlayer;
-import technobot.handlers.music.MusicHandler;
+import technobot.handlers.MusicHandler;
+import technobot.listeners.MusicListener;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -28,7 +28,7 @@ public class NowPlayingCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        MusicPlayer music = bot.musicHandler.getMusic(event, false);
+        MusicHandler music = bot.musicListener.getMusic(event, false);
 
         // Verify the Music Manager isn't null.
         if (music == null) {
@@ -55,8 +55,8 @@ public class NowPlayingCommand extends Command {
         String progressBar = String.join("", progressBarArray);
 
         long pos = nowPlaying.getPosition();
-        String trackStart = MusicHandler.formatTrackLength(pos);
-        String trackEnd = MusicHandler.formatTrackLength(nowPlaying.getInfo().length);
+        String trackStart = MusicListener.formatTrackLength(pos);
+        String trackEnd = MusicListener.formatTrackLength(nowPlaying.getInfo().length);
 
         // Create and send embed message
         event.getHook().sendMessageEmbeds(

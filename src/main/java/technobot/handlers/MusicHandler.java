@@ -1,4 +1,4 @@
-package technobot.handlers.music;
+package technobot.handlers;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.AudioChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import technobot.listeners.MusicListener;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -24,7 +25,7 @@ import java.util.LinkedList;
  *
  * @author TechnoVision, Sparky
  */
-public class MusicPlayer implements AudioSendHandler {
+public class MusicHandler implements AudioSendHandler {
 
     /** LavaPlayer essentials. */
     public final @NotNull AudioPlayer audioPlayer;
@@ -43,7 +44,7 @@ public class MusicPlayer implements AudioSendHandler {
     private boolean isLoop;
     private boolean isSkip;
 
-    public MusicPlayer(@NotNull AudioPlayer audioPlayer) {
+    public MusicHandler(@NotNull AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         this.queue = new LinkedList<>();
         this.isLoop = false;
@@ -222,9 +223,9 @@ public class MusicPlayer implements AudioSendHandler {
      */
     public static class TrackScheduler extends AudioEventAdapter {
 
-        private final MusicPlayer handler;
+        private final MusicHandler handler;
 
-        public TrackScheduler(MusicPlayer handler) {
+        public TrackScheduler(MusicHandler handler) {
             this.handler = handler;
         }
 
@@ -237,7 +238,7 @@ public class MusicPlayer implements AudioSendHandler {
         @Override
         public void onTrackStart(AudioPlayer player, @NotNull AudioTrack track) {
             //Grab Track Info
-            String duration = MusicHandler.formatTrackLength(track.getInfo().length);
+            String duration = MusicListener.formatTrackLength(track.getInfo().length);
             String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
             String nextTrack = "Nothing";
             if (handler.queue.size() > 1) {

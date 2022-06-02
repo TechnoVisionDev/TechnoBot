@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.handlers.music.MusicPlayer;
-import technobot.handlers.music.MusicHandler;
+import technobot.handlers.MusicHandler;
+import technobot.listeners.MusicListener;
 import technobot.util.EmbedUtils;
 
 /**
@@ -28,7 +28,7 @@ public class SeekCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        MusicPlayer music = bot.musicHandler.getMusic(event, false);
+        MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         String position = event.getOption("position").getAsString();
@@ -58,7 +58,7 @@ public class SeekCommand extends Command {
 
             // Set position and send message
             music.seek(pos);
-            String text = ":fast_forward: Set position to `" + MusicHandler.formatTrackLength(pos) + "`";
+            String text = ":fast_forward: Set position to `" + MusicListener.formatTrackLength(pos) + "`";
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
 
         } catch ( NumberFormatException | ArrayIndexOutOfBoundsException e) {

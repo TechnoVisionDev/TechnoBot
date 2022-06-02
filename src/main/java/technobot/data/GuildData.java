@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.handlers.ModerationHandler;
 import technobot.handlers.StarboardHandler;
-import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.MusicHandler;
 import technobot.handlers.SuggestionHandler;
 
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class GuildData {
     private static boolean initialized;
 
     /** Local memory caches. */
-    public MusicPlayer music;
+    public MusicHandler musicHandler;
     public SuggestionHandler suggestionHandler;
     public ModerationHandler moderationHandler;
     public StarboardHandler starboardHandler;
@@ -43,7 +43,7 @@ public class GuildData {
     private GuildData(Guild guild) {
         // Setup caches
         Bson filter = Filters.eq("guild", guild.getIdLong());
-        music = null;
+        musicHandler = null;
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
 

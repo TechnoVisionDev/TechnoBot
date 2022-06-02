@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
-import technobot.handlers.StarboardHandler;
-import technobot.handlers.music.MusicHandler;
+import technobot.listeners.MusicListener;
 import technobot.listeners.StarboardListener;
 
 import javax.security.auth.login.LoginException;
@@ -24,7 +23,7 @@ public class TechnoBot {
     public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
     public final @NotNull Database database;
-    public final @NotNull MusicHandler musicHandler;
+    public final @NotNull MusicListener musicListener;
 
     /**
      * Builds bot shards and registers commands and modules.
@@ -50,10 +49,10 @@ public class TechnoBot {
         //Create Commands and Handlers
         CommandRegistry commandRegistry = new CommandRegistry(this);
         database = new Database(config.get("DATABASE"));
-        musicHandler = new MusicHandler();
+        musicListener = new MusicListener();
 
         //Register Listeners
-        shardManager.addEventListener(commandRegistry, musicHandler, new StarboardListener());
+        shardManager.addEventListener(commandRegistry, musicListener, new StarboardListener());
     }
 
     /**

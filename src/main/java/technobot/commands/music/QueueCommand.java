@@ -10,8 +10,8 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.handlers.music.MusicPlayer;
-import technobot.handlers.music.MusicHandler;
+import technobot.handlers.MusicHandler;
+import technobot.listeners.MusicListener;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -34,7 +34,7 @@ public class QueueCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        MusicPlayer music = GuildData.get(event.getGuild()).music;
+        MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
 
         // Check if queue is null or empty
         if (music == null || music.getQueue().isEmpty()) {
@@ -67,7 +67,7 @@ public class QueueCommand extends Command {
             if (count == 0) { //Current playing track
                 description.append("__Now Playing:__\n");
                 description.append(String.format("[%s](%s) | ", trackInfo.title, trackInfo.uri));
-                description.append(String.format("`%s`\n\n", MusicHandler.formatTrackLength(trackInfo.length)));
+                description.append(String.format("`%s`\n\n", MusicListener.formatTrackLength(trackInfo.length)));
                 count++;
                 continue;
             } else if (count == 1) { //Header for queue
@@ -75,11 +75,11 @@ public class QueueCommand extends Command {
             }
             //Rest of the queue
             description.append(String.format("`%s.` [%s](%s) | ", count, trackInfo.title, trackInfo.uri));
-            description.append(String.format("`%s`\n\n", MusicHandler.formatTrackLength(trackInfo.length)));
+            description.append(String.format("`%s`\n\n", MusicListener.formatTrackLength(trackInfo.length)));
 
             //Footer information
             if (count == 10 || count + 1 == queueSize) {
-                String total = MusicHandler.formatTrackLength(queueTime);
+                String total = MusicListener.formatTrackLength(queueTime);
                 String song = "Song";
                 if (queueSize >= 3) { // Make "Song" plural if necessary
                     song += "s";

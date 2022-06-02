@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.handlers.music.MusicPlayer;
+import technobot.handlers.MusicHandler;
 import technobot.util.EmbedUtils;
 
 import java.net.MalformedURLException;
@@ -32,7 +32,7 @@ public class PlayCommand extends Command {
         event.deferReply().queue();
         String song = event.getOption("song").getAsString();
 
-        MusicPlayer music = bot.musicHandler.getMusic(event, true);
+        MusicHandler music = bot.musicListener.getMusic(event, true);
         if (music == null) return;
 
         // Check if member is in the right voice channel
@@ -59,7 +59,7 @@ public class PlayCommand extends Command {
             } catch (MalformedURLException e) {
                 // Else search youtube using args
                 url = "ytsearch:" + song;
-                bot.musicHandler.addTrack(event, url);
+                bot.musicListener.addTrack(event, url);
                 return;
             }
             // Search youtube if using a soundcloud link
@@ -68,7 +68,7 @@ public class PlayCommand extends Command {
                 url = "ytsearch:" + contents[3] + "/" + contents[4];
             }
             // Otherwise add real URL to queue
-            bot.musicHandler.addTrack(event, url);
+            bot.musicListener.addTrack(event, url);
         } catch (IndexOutOfBoundsException e) {
             String text = "Please specify a song a to play.";
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
