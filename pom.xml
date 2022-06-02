@@ -19,14 +19,18 @@
             <name>m2-dv8tion</name>
             <url>https://m2.dv8tion.net/releases</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <!-- https://github.com/DV8FromTheWorld/JDA -->
         <dependency>
-            <groupId>net.dv8tion</groupId>
+            <groupId>com.github.Xirado</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-alpha.12</version>
+            <version>feature~permsv2-v3.7.1-gd4ffc64-949</version>
         </dependency>
         <!-- https://mongodb.github.io/mongo-java-driver -->
         <dependency>

@@ -2,8 +2,10 @@ package technobot.commands;
 
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.CommandPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.music.*;
@@ -92,7 +94,11 @@ public class CommandRegistry extends ListenerAdapter {
         // Register slash commands
         List<CommandData> commandData = new ArrayList<>();
         for (Command command : commands) {
-            commandData.add(Commands.slash(command.name, command.description).addOptions(command.args));
+            SlashCommandData slashCommand = Commands.slash(command.name, command.description).addOptions(command.args);
+            if (command.permission != null) {
+                slashCommand.setDefaultPermissions(CommandPermissions.enabledFor(command.permission));
+            }
+            commandData.add(slashCommand);
         }
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
