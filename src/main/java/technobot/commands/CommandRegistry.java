@@ -102,6 +102,9 @@ public class CommandRegistry extends ListenerAdapter {
             if (command.permission != null) {
                 slashCommand.setDefaultPermissions(CommandPermissions.enabledFor(command.permission));
             }
+            if (!command.subCommands.isEmpty()) {
+                slashCommand.addSubcommands(command.subCommands);
+            }
             commandData.add(slashCommand);
         }
         event.getGuild().updateCommands().addCommands(commandData).queue();
