@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -128,13 +129,13 @@ public class SuggestionsCommand extends Command {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         event.deferEdit().queue();
-        event.getHook().editOriginalComponents(new ArrayList<>()).queue(x -> {
-            if (event.getComponentId().equals("yes")) {
-                GuildData.get(event.getGuild()).suggestionHandler.reset(event.getGuild());
-                x.editMessageEmbeds(EmbedUtils.createSuccess("Suggestion system was successfully reset!")).queue();
-            } else if (event.getComponentId().equals("no")) {
-                x.editMessageEmbeds(EmbedUtils.createError("Suggestion system was **NOT** reset!")).queue();
-            }
-        });
+        MessageEmbed embed;
+        if (event.getComponentId().equals("yes")) {
+            GuildData.get(event.getGuild()).suggestionHandler.reset(event.getGuild());
+            embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
+        } else {
+            embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
+        }
+        event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
     }
 }
