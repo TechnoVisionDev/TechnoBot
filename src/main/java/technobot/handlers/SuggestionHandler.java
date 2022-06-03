@@ -137,6 +137,13 @@ public class SuggestionHandler {
         data.put("messages", messages);
         data.put("authors", authors);
         bot.database.suggestions.insertOne(data);
+
+        channel = null;
+        number = 0;
+        responseDM = false;
+        isAnonymous = false;
+        messages.clear();
+        authors.clear();
     }
 
     /**
