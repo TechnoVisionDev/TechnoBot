@@ -1,9 +1,6 @@
 package technobot.data;
 
-import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.entities.Guild;
-import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.handlers.ModerationHandler;
@@ -42,15 +39,10 @@ public class GuildData {
      */
     private GuildData(Guild guild) {
         // Setup caches
-        Bson filter = Filters.eq("guild", guild.getIdLong());
         musicHandler = null;
+        suggestionHandler = new SuggestionHandler(bot, guild);
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
-
-        // Setup suggestions cache if it exists in MongoDB
-        Document suggestionsData = bot.database.suggestions.find(filter).first();
-        if (suggestionsData != null) this.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), suggestionsData);
-        else this.suggestionHandler = new SuggestionHandler(bot, guild.getIdLong(), Long.getLong(null));
     }
 
     /**

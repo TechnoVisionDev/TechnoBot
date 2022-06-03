@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.NotNull;
+import technobot.data.cache.Suggestion;
 import technobot.data.cache.moderation.Moderation;
 import technobot.data.cache.Starboard;
 
@@ -28,7 +29,7 @@ public class Database {
     public static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
 
     /** Collections */
-    public @NotNull MongoCollection<Document> suggestions;
+    public @NotNull MongoCollection<Suggestion> suggestions;
     public @NotNull MongoCollection<Moderation> moderation;
     public @NotNull MongoCollection<Starboard> starboard;
 
@@ -50,7 +51,7 @@ public class Database {
         MongoDatabase database = mongoClient.getDatabase("TechnoBot");
 
         // Initialize collections if they don't exist.
-        suggestions = database.getCollection("suggestions");
+        suggestions = database.getCollection("suggestions", Suggestion.class);
         moderation = database.getCollection("moderation", Moderation.class);
         starboard = database.getCollection("starboard", Starboard.class);
     }

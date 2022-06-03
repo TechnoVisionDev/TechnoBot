@@ -21,9 +21,9 @@ import java.util.Set;
 public class StarboardHandler extends ListenerAdapter {
 
     private final TechnoBot bot;
-    private final Guild guild;
-    private Starboard starboard;
     private final Bson filter;
+
+    private Starboard starboard;
 
     /**
      * Sets up POJO objects in database.
@@ -33,7 +33,6 @@ public class StarboardHandler extends ListenerAdapter {
      */
     public StarboardHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
-        this.guild = guild;
 
         // Get POJO objects from database
         filter = Filters.eq("guild", guild.getIdLong());

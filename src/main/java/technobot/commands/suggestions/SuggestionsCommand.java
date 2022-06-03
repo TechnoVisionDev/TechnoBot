@@ -123,7 +123,7 @@ public class SuggestionsCommand extends Command {
         event.deferEdit().queue();
         MessageEmbed embed;
         if (event.getComponentId().equals("yes")) {
-            GuildData.get(event.getGuild()).suggestionHandler.reset(event.getGuild());
+            GuildData.get(event.getGuild()).suggestionHandler.reset();
             embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
         } else {
             embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
