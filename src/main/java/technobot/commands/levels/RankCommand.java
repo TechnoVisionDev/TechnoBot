@@ -107,7 +107,7 @@ public class RankCommand extends Command {
             g.drawImage(rectBuffer, 0, 0, base.getWidth(), base.getHeight(), null);
 
             // Add Outline
-            double opacity = profile.getOpacity();
+            double opacity = profile.getOpacity() * 0.01;
             AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity);
             g.setComposite(ac);
             g.drawImage(outline, 0, 0, null);

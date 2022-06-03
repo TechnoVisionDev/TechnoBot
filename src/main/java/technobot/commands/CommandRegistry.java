@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.levels.RankCommand;
+import technobot.commands.levels.RankcardCommand;
 import technobot.commands.levels.TopCommand;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
@@ -45,6 +46,7 @@ public class CommandRegistry extends ListenerAdapter {
                 //Leveling commands
                 new RankCommand(bot),
                 new TopCommand(bot),
+                new RankcardCommand(bot),
 
                 //Suggestions commands
                 new SuggestCommand(bot),

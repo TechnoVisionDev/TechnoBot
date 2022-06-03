@@ -21,7 +21,7 @@ public class Leveling {
     @BsonProperty("total_xp")
     private long totalXP;
 
-    private double opacity;
+    private int opacity;
 
     private String accent;
 
@@ -36,7 +36,7 @@ public class Leveling {
         this.background = "";
         this.xp = 0L;
         this.totalXP = 0L;
-        this.opacity = 0.5;
+        this.opacity = 50;
         this.accent = "#FFFFFF";
     }
 
@@ -104,11 +104,11 @@ public class Leveling {
         this.totalXP = totalXP;
     }
 
-    public double getOpacity() {
+    public int getOpacity() {
         return opacity;
     }
 
-    public void setOpacity(double opacity) {
+    public void setOpacity(int opacity) {
         this.opacity = opacity;
     }
 
