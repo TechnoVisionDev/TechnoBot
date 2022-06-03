@@ -106,8 +106,8 @@ public class SuggestionsCommand extends Command {
                 text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text))
                         .addActionRow(
-                                Button.success("yes", Emoji.fromMarkdown("\u2714")),
-                                Button.danger("no", Emoji.fromUnicode("\u2716")))
+                                Button.success("suggestion_yes", Emoji.fromMarkdown("\u2714")),
+                                Button.danger("suggestion_no", Emoji.fromUnicode("\u2716")))
                         .queue();
                 return;
             }
@@ -120,14 +120,16 @@ public class SuggestionsCommand extends Command {
      */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        event.deferEdit().queue();
         MessageEmbed embed;
-        if (event.getComponentId().equals("yes")) {
+        if (event.getComponentId().equals("suggestion_yes")) {
+            event.deferEdit().queue();
             GuildData.get(event.getGuild()).suggestionHandler.reset();
             embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
-        } else {
+            event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
+        } else if (event.getComponentId().equals("suggestion_no")) {
+            event.deferEdit().queue();
             embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
+            event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
         }
-        event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
     }
 }

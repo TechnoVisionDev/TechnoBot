@@ -1,15 +1,21 @@
 package technobot.commands.utility;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.commands.CommandRegistry;
+import technobot.data.GuildData;
 import technobot.util.EmbedColor;
 import technobot.util.EmbedUtils;
 
@@ -18,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HelpCommand extends Command {
+
+    private List<Button> buttons;
 
     public HelpCommand(TechnoBot bot) {
         super(bot);
@@ -31,6 +39,11 @@ public class HelpCommand extends Command {
         }
         this.args.add(data);
         this.args.add(new OptionData(OptionType.STRING, "command", "See details for this command"));
+
+        buttons = new ArrayList<>();
+        buttons.add(Button.primary("help::prev", "PREVIOUS").asDisabled());
+        buttons.add(Button.of(ButtonStyle.SECONDARY, "pages", "1/1").asDisabled());
+        buttons.add(Button.primary("help::next", "NEXT").asDisabled());
     }
 
     public void execute(SlashCommandInteractionEvent event) {
@@ -62,7 +75,7 @@ public class HelpCommand extends Command {
                     }
                 }
             }
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.getHook().sendMessageEmbeds(embed.build()).addActionRow(buttons).queue();
         } else if (option2 != null) {
             // Display command details menu
             Command cmd = CommandRegistry.commandsMap.get(option2.getAsString());
@@ -153,5 +166,17 @@ public class HelpCommand extends Command {
             return "None";
         }
         return cmd.permission.getName();
+    }
+
+    /**
+     * Button events for help menu
+     */
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (event.getComponentId().equals("help::prev")) {
+            event.deferEdit().queue();
+        } else if (event.getComponentId().equals("help::next")) {
+            event.deferEdit().queue();
+        }
     }
 }
