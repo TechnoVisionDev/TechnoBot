@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -49,26 +50,34 @@ public class HelpCommand extends Command {
         if (option != null) {
             // Display category commands menu
             Category category = Category.valueOf(option.getAsString().toUpperCase());
-            List<Command> commands = categories.get(category);
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle(category.emoji + "  **%s Commands**".formatted(category.name));
             embed.setColor(EmbedColor.DEFAULT.color);
-            for (Command cmd : commands) {
-                embed.appendDescription("`" + getUsage(cmd) + "`\n" + cmd.description + "\n\n");
+            for (Command cmd : categories.get(category)) {
+                if (cmd.subCommands.isEmpty()) {
+                    embed.appendDescription("`" + getUsage(cmd) + "`\n" + cmd.description + "\n\n");
+                } else {
+                    for (SubcommandData sub : cmd.subCommands) {
+                        embed.appendDescription("`" + getUsage(sub, cmd.name) + "`\n" + sub.getDescription() + "\n\n");
+                    }
+                }
             }
             event.getHook().sendMessageEmbeds(embed.build()).queue();
         } else if (option2 != null) {
             // Display command details menu
-            Command cmd = null;
-            for (Command c : CommandRegistry.commands) {
-                if (c.name.equals(option2.getAsString())) {
-                    cmd = c;
-                }
-            }
+            Command cmd = CommandRegistry.commandsMap.get(option2.getAsString());
             if (cmd != null) {
                 builder.setTitle("Command: " + cmd.name);
                 builder.setDescription(cmd.description);
-                builder.addField("Usage:", "`" + getUsage(cmd) + "`", false);
+                StringBuilder usages = new StringBuilder();
+                if (cmd.subCommands.isEmpty()) {
+                    usages.append("`").append(getUsage(cmd)).append("`");
+                } else {
+                    for (SubcommandData sub : cmd.subCommands) {
+                        usages.append("`").append(getUsage(sub, cmd.name)).append("`\n");
+                    }
+                }
+                builder.addField("Usage:", usages.toString(), false);
                 builder.addField("Permission:", getPermissions(cmd), false);
                 event.getHook().sendMessageEmbeds(builder.build()).queue();
             } else {
@@ -103,6 +112,32 @@ public class HelpCommand extends Command {
             usage.append(cmd.args.get(i).getName());
             if (isRequired) { usage.append(">"); }
             else { usage.append("]"); }
+        }
+        return usage.toString();
+    }
+
+    /**
+     * Creates a string of subcommand usage.
+     *
+     * @param cmd sub command data from a command.
+     * @return String with name and args stitched together.
+     */
+    public String getUsage(SubcommandData cmd, String commandName) {
+        StringBuilder usage = new StringBuilder("/" + commandName + " " + cmd.getName());
+        if (cmd.getOptions().isEmpty()) return usage.toString();
+        for (OptionData arg : cmd.getOptions()) {
+            boolean isRequired = arg.isRequired();
+            if (isRequired) {
+                usage.append(" <");
+            } else {
+                usage.append(" [");
+            }
+            usage.append(arg.getName());
+            if (isRequired) {
+                usage.append(">");
+            } else {
+                usage.append("]");
+            }
         }
         return usage.toString();
     }

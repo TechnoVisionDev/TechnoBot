@@ -16,7 +16,9 @@ import technobot.commands.utility.*;
 import technobot.data.GuildData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Registers, listens, and executes commands.
@@ -25,62 +27,80 @@ import java.util.List;
  */
 public class CommandRegistry extends ListenerAdapter {
 
-    public static final ArrayList<Command> commands = new ArrayList<>();
+    /** List of commands in the exact order registered */
+    public static final List<Command> commands = new ArrayList<>();
+
+    /** Map of command names to command objects */
+    public static final Map<String, Command> commandsMap = new HashMap<>();
 
     /**
      * Adds commands to a global list and registers them as event listener.
      *
-     * @param bot An instance of CivBot.
+     * @param bot An instance of TechnoBot.
      */
     public CommandRegistry(TechnoBot bot) {
-        //Suggestions commands
-        commands.add(new SuggestCommand(bot));
-        commands.add(new ApproveCommand(bot));
-        commands.add(new DenyCommand(bot));
-        commands.add(new ConsiderCommand(bot));
-        commands.add(new ImplementCommand(bot));
-        commands.add(new SuggestionsCommand(bot));
+        registerCommand(
+                //Suggestions commands
+                new SuggestCommand(bot),
+                new ApproveCommand(bot),
+                new DenyCommand(bot),
+                new ConsiderCommand(bot),
+                new ImplementCommand(bot),
+                new SuggestionsCommand(bot),
 
-        //Staff commands
-        commands.add(new ClearCommand(bot));
-        commands.add(new KickCommand(bot));
-        commands.add(new BanCommand(bot));
-        commands.add(new UnbanCommand(bot));
-        commands.add(new WarnCommand(bot));
-        commands.add(new WarningsCommand(bot));
-        commands.add(new RemoveWarnCommand(bot));
-        commands.add(new SlowmodeCommand(bot));
-        commands.add(new LockCommand(bot));
-        commands.add(new UnlockCommand(bot));
-        commands.add(new SetNickCommand(bot));
+                //Staff commands
+                new ClearCommand(bot),
+                new KickCommand(bot),
+                new BanCommand(bot),
+                new UnbanCommand(bot),
+                new WarnCommand(bot),
+                new WarningsCommand(bot),
+                new RemoveWarnCommand(bot),
+                new SlowmodeCommand(bot),
+                new LockCommand(bot),
+                new UnlockCommand(bot),
+                new SetNickCommand(bot),
 
-        //Music commands
-        commands.add(new PlayCommand(bot));
-        commands.add(new SkipCommand(bot));
-        commands.add(new QueueCommand(bot));
-        commands.add(new SeekCommand(bot));
-        commands.add(new PauseCommand(bot));
-        commands.add(new ResumeCommand(bot));
-        commands.add(new NowPlayingCommand(bot));
-        commands.add(new RepeatCommand(bot));
-        commands.add(new StopCommand(bot));
-        commands.add(new VolumeCommand(bot));
+                //Music commands
+                new PlayCommand(bot),
+                new SkipCommand(bot),
+                new QueueCommand(bot),
+                new SeekCommand(bot),
+                new PauseCommand(bot),
+                new ResumeCommand(bot),
+                new NowPlayingCommand(bot),
+                new RepeatCommand(bot),
+                new StopCommand(bot),
+                new VolumeCommand(bot),
 
-        //Starboard commands
-        commands.add(new StarboardCommand(bot));
+                //Starboard commands
+                new StarboardCommand(bot),
 
-        //Utility commands
-        commands.add(new PingCommand(bot));
-        commands.add(new AvatarCommand(bot));
-        commands.add(new ServerCommand(bot));
-        commands.add(new UserCommand(bot));
-        commands.add(new RollCommand(bot));
-        commands.add(new RolesCommand(bot));
-        commands.add(new HelpCommand(bot)); // The 'help' command MUST come last!!!
+                //Utility commands
+                new PingCommand(bot),
+                new AvatarCommand(bot),
+                new ServerCommand(bot),
+                new UserCommand(bot),
+                new RollCommand(bot),
+                new RolesCommand(bot),
+                new HelpCommand(bot) // The 'help' command MUST come last!!!
+        );
 
         //Register commands as listeners
-        for (Command command : commands) {
+        for (Command command : commandsMap.values()) {
             bot.shardManager.addEventListener(command);
+        }
+    }
+
+    /**
+     * Adds a command to the static list and map.
+     *
+     * @param cmds a spread list of command objects.
+     */
+    private void registerCommand(Command ...cmds) {
+        for (Command cmd : cmds) {
+            commandsMap.put(cmd.name, cmd);
+            commands.add(cmd);
         }
     }
 
