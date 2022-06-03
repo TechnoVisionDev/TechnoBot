@@ -34,8 +34,9 @@ public class SuggestionsCommand extends Command {
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("create", "Sets a channel to become the starboard.")
                 .addOption(OptionType.CHANNEL, "channel", "The channel to set as the starboard"));
-        this.subCommands.add(new SubcommandData("dm", "Toggle DMs on suggestion response."));
+        this.subCommands.add(new SubcommandData("dm", "Toggle private messages on suggestion response."));
         this.subCommands.add(new SubcommandData("anonymous", "Toggle anonymous mode for suggestions."));
+        this.subCommands.add(new SubcommandData("config", "Display the current suggestions config."));
         this.subCommands.add(new SubcommandData("reset", "Reset all suggestion board data and settings."));
     }
 
@@ -88,6 +89,18 @@ public class SuggestionsCommand extends Command {
                 } else {
                     text = EmbedUtils.BLUE_X + " Anonymous mode has been **disabled** for suggestions!";
                 }
+            }
+            case "config" -> {
+                text = "";
+                if (suggestionHandler.getChannel() != null) {
+                    text += "\n**Channel:** <#" + suggestionHandler.getChannel() + ">";
+                } else {
+                    text += "\n**Channel:** none";
+                }
+                text += "\n**DM on Response:** " + suggestionHandler.hasResponseDM();
+                text += "\n**Anonymous Mode:** " + suggestionHandler.isAnonymous();
+                event.getHook().sendMessage(text).queue();
+                return;
             }
             case "reset" -> {
                 text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";

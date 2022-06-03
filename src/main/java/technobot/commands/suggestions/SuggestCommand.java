@@ -70,7 +70,7 @@ public class SuggestCommand extends Command {
         });
 
         // Send a response message
-        String text = "Your suggestion has been added to <#" + suggestionHandler.getChannel() + ">!";
+        String text = EmbedUtils.BLUE_TICK + "Your suggestion has been added to <#" + suggestionHandler.getChannel() + ">!";
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }
