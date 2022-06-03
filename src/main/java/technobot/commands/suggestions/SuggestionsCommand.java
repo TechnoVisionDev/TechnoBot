@@ -15,7 +15,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.SuggestionHandler;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 

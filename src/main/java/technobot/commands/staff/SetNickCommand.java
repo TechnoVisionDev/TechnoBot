@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Command that changes or resets a user's nickname.

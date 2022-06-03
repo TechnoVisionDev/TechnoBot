@@ -1,4 +1,4 @@
-package technobot.util;
+package technobot.util.embeds;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;

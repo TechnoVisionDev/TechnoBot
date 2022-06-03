@@ -11,10 +11,9 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
-import java.awt.*;
 import java.util.Date;
 
 /**

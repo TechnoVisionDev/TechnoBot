@@ -11,9 +11,7 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.EmbedColor;
-
-import java.time.ZoneOffset;
+import technobot.util.embeds.EmbedColor;
 
 /**
  * Command that displays information about a user.

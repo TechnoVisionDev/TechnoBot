@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.EmbedColor;
+import technobot.util.embeds.EmbedColor;
 
 /**
  * Command that displays all server roles.

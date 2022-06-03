@@ -1,6 +1,5 @@
 package technobot.commands.staff;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -10,8 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Command that gives or removes a role from user.

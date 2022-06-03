@@ -11,9 +11,9 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.EmbedUtils.GREEN_TICK;
+import static technobot.util.embeds.EmbedUtils.GREEN_TICK;
 
 /**
  * Command that removes a warning by user or id.

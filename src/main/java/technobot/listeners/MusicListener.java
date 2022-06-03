@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.Objects;
 

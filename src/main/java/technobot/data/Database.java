@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.NotNull;
+import technobot.data.cache.Leveling;
 import technobot.data.cache.Suggestion;
 import technobot.data.cache.moderation.Moderation;
 import technobot.data.cache.Starboard;
@@ -32,6 +33,7 @@ public class Database {
     public @NotNull MongoCollection<Suggestion> suggestions;
     public @NotNull MongoCollection<Moderation> moderation;
     public @NotNull MongoCollection<Starboard> starboard;
+    public @NotNull MongoCollection<Leveling> leveling;
 
     /**
      * Connect to database using MongoDB URI and
@@ -54,5 +56,6 @@ public class Database {
         suggestions = database.getCollection("suggestions", Suggestion.class);
         moderation = database.getCollection("moderation", Moderation.class);
         starboard = database.getCollection("starboard", Starboard.class);
+        leveling = database.getCollection("leveling", Leveling.class);
     }
 }

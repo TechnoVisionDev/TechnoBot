@@ -12,7 +12,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.data.cache.moderation.Warning;
-import technobot.util.EmbedColor;
+import technobot.util.embeds.EmbedColor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

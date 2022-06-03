@@ -1,4 +1,4 @@
-package technobot.util;
+package technobot.util.embeds;
 
 /**
  * Utility enum storing color codes and helpful methods.

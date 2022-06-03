@@ -8,7 +8,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

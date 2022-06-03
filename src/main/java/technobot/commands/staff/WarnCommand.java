@@ -12,8 +12,8 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
 import java.awt.*;
 import java.util.Date;

@@ -10,8 +10,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.SuggestionHandler;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Command that allows a user to make a suggestion on the suggestion board.

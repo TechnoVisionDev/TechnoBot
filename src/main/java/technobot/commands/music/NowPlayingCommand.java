@@ -8,8 +8,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.listeners.MusicListener;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Command that displays the currently playing song.

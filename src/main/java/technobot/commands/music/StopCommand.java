@@ -6,7 +6,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Command that clears the music queue and stops music

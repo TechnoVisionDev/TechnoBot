@@ -11,7 +11,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Suggestion;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.List;
 

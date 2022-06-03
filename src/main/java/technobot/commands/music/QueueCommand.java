@@ -12,8 +12,8 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
 import technobot.listeners.MusicListener;
-import technobot.util.EmbedColor;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedColor;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.ListIterator;
 

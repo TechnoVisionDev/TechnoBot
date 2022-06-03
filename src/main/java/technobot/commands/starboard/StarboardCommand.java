@@ -11,7 +11,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.StarboardHandler;
-import technobot.util.EmbedUtils;
+import technobot.util.embeds.EmbedUtils;
 
 /**
  * Admin command that sets up and modifies the starboard.

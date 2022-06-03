@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
+import technobot.listeners.LevelingListener;
 import technobot.listeners.MusicListener;
 import technobot.listeners.StarboardListener;
 
@@ -52,7 +53,11 @@ public class TechnoBot {
         musicListener = new MusicListener();
 
         //Register Listeners
-        shardManager.addEventListener(commandRegistry, musicListener, new StarboardListener());
+        shardManager.addEventListener(
+                commandRegistry,
+                musicListener,
+                new StarboardListener(),
+                new LevelingListener(this));
     }
 
     /**
