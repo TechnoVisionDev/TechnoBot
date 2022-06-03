@@ -4,8 +4,9 @@ import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
-import technobot.data.GuildData;
 import technobot.data.cache.Leveling;
+
+import java.util.LinkedList;
 
 /**
  * Handles leveling and leaderboard.
@@ -16,10 +17,19 @@ public class LevelingHandler {
 
     private final Guild guild;
     private final TechnoBot bot;
+    private final LinkedList<Leveling> leaderboard;
 
     public LevelingHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
         this.guild = guild;
+        this.leaderboard = new LinkedList<>();
+
+        // Populate leaderboard from database
+        Bson filter = Filters.eq("guild", guild.getIdLong());
+        Bson sort = Filters.eq("total_xp", -1);
+        for (Leveling profile : bot.database.leveling.find(filter).sort(sort)) {
+            leaderboard.add(profile);
+        }
     }
 
     /**
@@ -29,7 +39,7 @@ public class LevelingHandler {
      * @param level The member's current level
      * @return The total xp needed to reap the next level.
      */
-    public static int calculateLevelGoal(int level) {
+    public int calculateLevelGoal(int level) {
         return (int) (5 * Math.pow(level, 2) + 50 * level + 100);
     }
 
@@ -51,14 +61,65 @@ public class LevelingHandler {
      * @return integer rank for user in this guild.
      */
     public int getRank(long userID) {
-        return 1;
-        /**
         for (int i = 0; i < leaderboard.size(); i++) {
-            if (leaderboard.get(i).getLong("id") == userID) {
+            if (leaderboard.get(i).getUser() == userID) {
                 return i + 1;
             }
         }
         return leaderboard.size();
-         */
+    }
+
+    /**
+     * Calculates the exact index of this user in the leaderboard.
+     *
+     * @param userID ID of the user.
+     * @return index of user in leaderboard, or -1 if not present.
+     */
+    private int getIndex(long userID) {
+        for (int i = 0; i < leaderboard.size(); i++) {
+            if (leaderboard.get(i).getUser() == userID) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Updates the leaderboard based on the XP increase of a single profile.
+     *
+     * @param profile MongoDB data document for a particular user.
+     */
+    public void updateLeaderboard(Leveling profile) {
+        int originalIndex = getIndex(profile.getUser());
+        int index = originalIndex;
+        if (index <= 0) {
+            leaderboard.remove(originalIndex);
+            leaderboard.add(index, profile);
+            return;
+        }
+
+        Leveling ahead = leaderboard.get(index - 1);
+        long aheadTotalXP = ahead.getTotalXP();
+        long totalXP = profile.getTotalXP();
+
+        while (totalXP > aheadTotalXP) {
+            index--;
+            if (index <= 0) {
+                break;
+            }
+            ahead = leaderboard.get(index - 1);
+            aheadTotalXP = ahead.getTotalXP();
+        }
+        leaderboard.remove(originalIndex);
+        leaderboard.add(index, profile);
+    }
+
+    /**
+     * Adds a leveling profile to the leaderboard.
+     *
+     * @param profile the profile to add.
+     */
+    public void addProfile(Leveling profile) {
+        leaderboard.add(profile);
     }
 }

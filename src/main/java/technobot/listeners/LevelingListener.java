@@ -8,7 +8,6 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Leveling;
-import technobot.handlers.LevelingHandler;
 import technobot.util.placeholders.Placeholder;
 import technobot.util.placeholders.PlaceholderFactory;
 
@@ -57,7 +56,7 @@ public class LevelingListener extends ListenerAdapter {
         if (profile == null) {
             profile = new Leveling(guildID, userID);
             bot.database.leveling.insertOne(profile);
-            //TODO: data.leaderboard.add(profile);
+            data.levelingHandler.addProfile(profile);
         }
 
         // Calculate and add XP
@@ -72,8 +71,9 @@ public class LevelingListener extends ListenerAdapter {
             // Check for Level Up
             boolean levelUp = false;
             List<Bson> updates = new ArrayList<>();
-            if (xp >= LevelingHandler.calculateLevelGoal(level)) {
-                xp -= LevelingHandler.calculateLevelGoal(level);
+            int result = data.levelingHandler.calculateLevelGoal(level);
+            if (xp >= result) {
+                xp -= result;
                 level++;
                 levelUp = true;
                 updates.add(Updates.set("level", level));
@@ -89,7 +89,7 @@ public class LevelingListener extends ListenerAdapter {
             profile.setXp(xp);
             profile.setTotalXP(totalXP);
             profile.setLevel(level);
-            //TODO: updateLeaderboard(settings, profile);
+            data.levelingHandler.updateLeaderboard(profile);
 
             if (levelUp) {
                 // Parse level-up message for placeholders
