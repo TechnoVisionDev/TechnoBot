@@ -38,6 +38,7 @@ public class StarboardCommand extends Command {
         this.subCommands.add(new SubcommandData("jump", "Toggles a link to the source message for each starboard entry."));
         this.subCommands.add(new SubcommandData("nsfw", "Toggles the ability to star messages in NSFW channels."));
         this.subCommands.add(new SubcommandData("self", "Toggles the ability to star your own messages."));
+        this.subCommands.add(new SubcommandData("config", "Display the current starboard config."));
     }
 
     @Override
@@ -104,6 +105,25 @@ public class StarboardCommand extends Command {
                 boolean canSelfStar = starboardHandler.toggleSelfStar();
                 if (canSelfStar) text = EmbedUtils.BLUE_TICK + " Users can now star their own messages!";
                 else text = EmbedUtils.BLUE_X + " Users can no longer star their own messages!";
+            }
+            case "config" -> {
+                text = "";
+                text += "**Threshold:** " + starboardHandler.getStarLimit();
+                if (starboardHandler.getChannel() != null) {
+                    text += "\n**Channel:** <#" + starboardHandler.getChannel() + ">";
+                } else {
+                    text += "\n**Channel:** none";
+                }
+                text += "\n**Allow NSFW:** " + starboardHandler.isNSFW();
+                text += "\n**Count Self Stars:** " + starboardHandler.canSelfStar();
+                text += "\n**Show Jump URL:** " + starboardHandler.hasJumpLink();
+                text += "\n**Locked:** " + starboardHandler.isLocked();
+                text += "\n**Blacklisted Channels:** ";
+                for (Long channel : starboardHandler.getBlacklist()) {
+                    text += "<#" + channel + "> ";
+                }
+                event.getHook().sendMessage(text).queue();
+                return;
             }
         }
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();

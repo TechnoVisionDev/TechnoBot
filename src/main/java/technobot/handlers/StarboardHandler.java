@@ -11,6 +11,7 @@ import technobot.data.cache.Starboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Handles starboard command backend.
@@ -191,6 +192,8 @@ public class StarboardHandler extends ListenerAdapter {
     }
 
     /** Getter and setter methods */
+
+    public Set<Long> getBlacklist() { return starboard.getBlacklist(); }
 
     public Long getChannel() { return starboard.getChannel(); }
 
