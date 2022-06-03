@@ -56,6 +56,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new SlowmodeCommand(bot),
                 new LockCommand(bot),
                 new UnlockCommand(bot),
+                new RoleCommand(bot),
                 new SetNickCommand(bot),
 
                 //Music commands
