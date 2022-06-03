@@ -3,10 +3,7 @@ package technobot.data;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
-import technobot.handlers.ModerationHandler;
-import technobot.handlers.StarboardHandler;
-import technobot.handlers.MusicHandler;
-import technobot.handlers.SuggestionHandler;
+import technobot.handlers.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +28,7 @@ public class GuildData {
     public SuggestionHandler suggestionHandler;
     public ModerationHandler moderationHandler;
     public StarboardHandler starboardHandler;
+    public LevelingHandler levelingHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -43,6 +41,7 @@ public class GuildData {
         suggestionHandler = new SuggestionHandler(bot, guild);
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
+        levelingHandler = new LevelingHandler(bot, guild);
     }
 
     /**

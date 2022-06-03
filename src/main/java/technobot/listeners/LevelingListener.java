@@ -8,6 +8,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Leveling;
+import technobot.handlers.LevelingHandler;
 import technobot.util.placeholders.Placeholder;
 import technobot.util.placeholders.PlaceholderFactory;
 
@@ -71,8 +72,8 @@ public class LevelingListener extends ListenerAdapter {
             // Check for Level Up
             boolean levelUp = false;
             List<Bson> updates = new ArrayList<>();
-            if (xp >= calculateLevelGoal(level)) {
-                xp -= calculateLevelGoal(level);
+            if (xp >= LevelingHandler.calculateLevelGoal(level)) {
+                xp -= LevelingHandler.calculateLevelGoal(level);
                 level++;
                 levelUp = true;
                 updates.add(Updates.set("level", level));
@@ -116,16 +117,5 @@ public class LevelingListener extends ListenerAdapter {
                  */
             }
         }
-    }
-
-    /**
-     * Calculates the XP needed to reach next level goal.
-     * Uses an algorithm that dynamically scales in difficulty.
-     *
-     * @param level The member's current level
-     * @return The total xp needed to reap the next level.
-     */
-    public int calculateLevelGoal(int level) {
-        return (int) (5 * Math.pow(level, 2) + 50 * level + 100);
     }
 }
