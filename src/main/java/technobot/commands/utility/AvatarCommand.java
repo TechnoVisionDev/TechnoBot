@@ -28,7 +28,6 @@ public class AvatarCommand extends Command {
 
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
-        event.deferReply().queue();
         OptionMapping option = event.getOption("user");
         User user;
         if (option != null) {
@@ -44,6 +43,6 @@ public class AvatarCommand extends Command {
                 .setAuthor(user.getAsTag(), null, avatarUrl)
                 .setTitle("Avatar Link", avatarUrl)
                 .setImage(avatarUrl);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

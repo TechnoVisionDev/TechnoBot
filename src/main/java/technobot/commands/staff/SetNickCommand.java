@@ -31,10 +31,9 @@ public class SetNickCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("That user is not in your server!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).queue();
             return;
         }
 
@@ -51,9 +50,9 @@ public class SetNickCommand extends Command {
                 target.modifyNickname(name).queue();
                 content = EmbedUtils.GREEN_TICK + " **" + name + "**'s nick has been reset.";
             }
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(content)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(content)).queue();
         } catch (HierarchyException e) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(" I couldn't update that user. Please check my permissions and role position.")).queue();
+            event.replyEmbeds(EmbedUtils.createError(" I couldn't update that user. Please check my permissions and role position.")).queue();
         }
     }
 }

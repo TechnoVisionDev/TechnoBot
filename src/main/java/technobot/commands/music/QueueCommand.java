@@ -33,18 +33,17 @@ public class QueueCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
 
         // Check if queue is null or empty
         if (music == null || music.getQueue().isEmpty()) {
             String text = ":sound: There are no songs in the queue!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
         // Create embed and send to channel
         MessageEmbed embed = buildQueueEmbed(music.getQueue().listIterator(), music.getQueue().size());
-        event.getHook().sendMessageEmbeds(embed).queue();
+        event.replyEmbeds(embed).queue();
     }
 
     /**

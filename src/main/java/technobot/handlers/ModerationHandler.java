@@ -122,7 +122,7 @@ public class ModerationHandler {
         moderation.addWarning(target, warning);
 
         // Update MongoDB database
-        Bson filter = Filters.eq("guild", guild);
+        Bson filter = Filters.eq("guild", guild.getIdLong());
         Bson update = Filters.eq("$push", Filters.eq("warnings."+target, warning));
         Bson update2 = Filters.eq("$inc", Filters.eq("count", 1));
         Bson update3 = Filters.eq("$inc", Filters.eq("total", 1));

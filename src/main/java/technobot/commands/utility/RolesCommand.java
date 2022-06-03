@@ -25,7 +25,6 @@ public class RolesCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         Guild guild = event.getGuild();
         StringBuilder content = new StringBuilder();
         for (Role role : event.getGuild().getRoles()) {
@@ -38,6 +37,6 @@ public class RolesCommand extends Command {
                 .setColor(EmbedColor.DEFAULT.color)
                 .setTitle("All Roles")
                 .setDescription(content);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

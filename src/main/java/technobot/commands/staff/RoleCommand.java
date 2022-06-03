@@ -43,20 +43,17 @@ public class RoleCommand extends Command {
             return;
         }
 
-        EmbedBuilder embed = new EmbedBuilder()
-                .setColor(EmbedColor.SUCCESS.color)
-                .setDescription(EmbedUtils.GREEN_TICK + " Changed roles for " + member.getEffectiveName() + ", ");
-
+        String text = EmbedUtils.GREEN_TICK + " Changed roles for " + member.getEffectiveName() + ", ";
         switch(event.getSubcommandName()) {
             case "give" -> {
-                embed.appendDescription("**+" + role.getName() + "**");
+                text += "**+" + role.getName() + "**";
                 event.getGuild().addRoleToMember(member, role).queue();
             }
             case "remove" -> {
-                embed.appendDescription("**-" + role.getName() + "**");
+                text += "**-" + role.getName() + "**";
                 event.getGuild().removeRoleFromMember(member, role).queue();
             }
         }
-        event.replyEmbeds(embed.build()).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

@@ -29,7 +29,6 @@ public class UnlockCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         OptionMapping channelOption = event.getOption("channel");
         TextChannel channel;
 
@@ -37,12 +36,12 @@ public class UnlockCommand extends Command {
         else { channel = event.getTextChannel(); }
 
         if (channel == null) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("That is not a valid channel!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("That is not a valid channel!")).queue();
             return;
         }
 
         channel.upsertPermissionOverride(event.getGuild().getPublicRole()).clear(Permission.MESSAGE_SEND).queue();
         String channelString = "<#"+channel.getId()+">";
-        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":unlock: "+channelString+" has been unlocked.")).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(":unlock: "+channelString+" has been unlocked.")).queue();
     }
 }

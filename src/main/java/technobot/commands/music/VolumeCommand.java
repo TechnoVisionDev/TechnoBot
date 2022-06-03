@@ -29,7 +29,6 @@ public class VolumeCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         int volume = event.getOption("amount").getAsInt();
 
         MusicHandler music = bot.musicListener.getMusic(event, false);
@@ -40,11 +39,11 @@ public class VolumeCommand extends Command {
             }
             music.setVolume(volume);
             String text = String.format(":loud_sound: Set volume to %s%%", volume);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         } catch (@NotNull NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}
 
         String text = "You must specify a volume between 0-100";
-        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+        event.replyEmbeds(EmbedUtils.createError(text)).queue();
     }
 }

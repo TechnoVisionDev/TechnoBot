@@ -29,7 +29,6 @@ public class ServerCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         Guild guild = event.getGuild();
         String guildTime = TimeFormat.RELATIVE.format(guild.getTimeCreated().toInstant().toEpochMilli());
 
@@ -61,6 +60,6 @@ public class ServerCommand extends Command {
         String roles = "To see a list with all roles use **/roles**";
         embed.addField(":closed_lock_with_key:  Roles (" + guild.getRoles().size() + ")", roles, true);
 
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

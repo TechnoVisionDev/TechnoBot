@@ -32,7 +32,6 @@ public class UserCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         // Get user
         OptionMapping userOption = event.getOption("user");
         User user = userOption != null ? userOption.getAsUser() : event.getUser();
@@ -48,6 +47,6 @@ public class UserCommand extends Command {
                 .addField("Discord ID", user.getId(), false)
                 .setThumbnail(user.getEffectiveAvatarUrl())
                 .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

@@ -29,11 +29,10 @@ public class RollCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         OptionMapping option = event.getOption("dice");
         int bound = option != null ? option.getAsInt() : 6;
         if (bound == 0) bound = 1;
         int result = random.nextInt(bound) + 1;
-        event.getHook().sendMessage(String.valueOf(result)).queue();
+        event.reply(String.valueOf(result)).queue();
     }
 }

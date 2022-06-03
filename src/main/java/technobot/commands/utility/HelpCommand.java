@@ -37,7 +37,7 @@ public class HelpCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
+        //event.deferReply().queue();
         // Create a hashmap that groups commands by categories.
         HashMap<Category, List<Command>> categories = new HashMap<>();
         EmbedBuilder builder = new EmbedBuilder().setColor(EmbedColor.DEFAULT.color);
@@ -65,7 +65,7 @@ public class HelpCommand extends Command {
                     }
                 }
             }
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).queue();
         } else if (option2 != null) {
             // Display command details menu
             Command cmd = CommandRegistry.commandsMap.get(option2.getAsString());
@@ -82,10 +82,10 @@ public class HelpCommand extends Command {
                 }
                 builder.addField("Usage:", usages.toString(), false);
                 builder.addField("Permission:", getPermissions(cmd), false);
-                event.getHook().sendMessageEmbeds(builder.build()).queue();
+                event.replyEmbeds(builder.build()).queue();
             } else {
                 // Command specified doesn't exist.
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError("No command called \"" + option2.getAsString() + "\" found.")).queue();
+                event.replyEmbeds(EmbedUtils.createError("No command called \"" + option2.getAsString() + "\" found.")).queue();
             }
         } else {
             // Display default menu
@@ -95,7 +95,7 @@ public class HelpCommand extends Command {
                 String value = "`/help " + categoryName + "`";
                 builder.addField(category.emoji + " " + category.name, value, true);
             });
-            event.getHook().sendMessageEmbeds(builder.build()).queue();
+            event.replyEmbeds(builder.build()).queue();
         }
     }
 

@@ -27,13 +27,12 @@ public class NowPlayingCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
 
         // Verify the Music Manager isn't null.
         if (music == null) {
             String text = ":sound: There are no songs in the queue!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
@@ -41,7 +40,7 @@ public class NowPlayingCommand extends Command {
         AudioTrack nowPlaying = music.getQueue().size() > 0 ? music.getQueue().getFirst() : null;
         if (nowPlaying == null) {
             String text = ":sound: There are no songs in the queue!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
@@ -59,7 +58,7 @@ public class NowPlayingCommand extends Command {
         String trackEnd = MusicListener.formatTrackLength(nowPlaying.getInfo().length);
 
         // Create and send embed message
-        event.getHook().sendMessageEmbeds(
+        event.replyEmbeds(
                 new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
                         .setTitle("Now Playing :musical_note: ")

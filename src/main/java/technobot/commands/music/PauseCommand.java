@@ -23,17 +23,16 @@ public class PauseCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         if (music.isPaused()) {
             String text = "The player is already paused!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).queue();
         } else {
             String text = ":pause_button: Paused the music player!";
             music.pause();
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }
     }
 }

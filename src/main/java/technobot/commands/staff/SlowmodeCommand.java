@@ -32,7 +32,7 @@ public class SlowmodeCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
+        //event.deferReply().queue();
         OptionMapping timeOption = event.getOption("time");
         if (timeOption != null) {
             // Retrieve time in seconds from input
@@ -50,7 +50,7 @@ public class SlowmodeCommand extends Command {
             } catch (NumberFormatException e2) {
                 // Disable slowmode
                 event.getTextChannel().getManager().setSlowmode(0).queue();
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":stopwatch: Slowmode has been disabled from this channel.")).queue();
+                event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: Slowmode has been disabled from this channel.")).queue();
                 return;
             }
             // Set slowmode timer

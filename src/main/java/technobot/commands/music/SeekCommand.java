@@ -27,7 +27,6 @@ public class SeekCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
@@ -52,19 +51,19 @@ public class SeekCommand extends Command {
             // Make sure pos is not longer than track
             if (pos >= music.getQueue().getFirst().getDuration()) {
                 String text = "Time cannot be longer than the song!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                event.replyEmbeds(EmbedUtils.createError(text)).queue();
                 return;
             }
 
             // Set position and send message
             music.seek(pos);
             String text = ":fast_forward: Set position to `" + MusicListener.formatTrackLength(pos) + "`";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
 
         } catch ( NumberFormatException | ArrayIndexOutOfBoundsException e) {
             // Invalid timestamps
             String text = "That is not a valid timestamp!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).queue();
         }
     }
 }
