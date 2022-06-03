@@ -22,8 +22,6 @@ import java.util.List;
 
 public class HelpCommand extends Command {
 
-    private List<Button> buttons;
-
     public HelpCommand(TechnoBot bot) {
         super(bot);
         this.name = "help";
@@ -36,11 +34,6 @@ public class HelpCommand extends Command {
         }
         this.args.add(data);
         this.args.add(new OptionData(OptionType.STRING, "command", "See details for this command"));
-
-        buttons = new ArrayList<>();
-        buttons.add(Button.primary("help::prev", "PREVIOUS").asDisabled());
-        buttons.add(Button.of(ButtonStyle.SECONDARY, "pages", "1/1").asDisabled());
-        buttons.add(Button.primary("help::next", "NEXT").asDisabled());
     }
 
     public void execute(SlashCommandInteractionEvent event) {
@@ -72,7 +65,7 @@ public class HelpCommand extends Command {
                     }
                 }
             }
-            event.getHook().sendMessageEmbeds(embed.build()).addActionRow(buttons).queue();
+            event.getHook().sendMessageEmbeds(embed.build()).queue();
         } else if (option2 != null) {
             // Display command details menu
             Command cmd = CommandRegistry.commandsMap.get(option2.getAsString());
@@ -163,17 +156,5 @@ public class HelpCommand extends Command {
             return "None";
         }
         return cmd.permission.getName();
-    }
-
-    /**
-     * Button events for help menu
-     */
-    @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getComponentId().equals("help::prev")) {
-            event.deferEdit().queue();
-        } else if (event.getComponentId().equals("help::next")) {
-            event.deferEdit().queue();
-        }
     }
 }
