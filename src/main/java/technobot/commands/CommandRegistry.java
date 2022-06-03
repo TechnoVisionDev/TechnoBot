@@ -42,10 +42,7 @@ public class CommandRegistry extends ListenerAdapter {
         registerCommand(
                 //Suggestions commands
                 new SuggestCommand(bot),
-                new ApproveCommand(bot),
-                new DenyCommand(bot),
-                new ConsiderCommand(bot),
-                new ImplementCommand(bot),
+                new RespondCommand(bot),
                 new SuggestionsCommand(bot),
 
                 //Staff commands

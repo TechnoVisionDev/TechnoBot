@@ -12,27 +12,37 @@ import technobot.data.GuildData;
 import technobot.handlers.SuggestionHandler;
 
 /**
- * Command that responds to suggestions with "Approved".
+ * Command that responds to suggestions on the suggestion board.
  *
  * @author TechnoVision
  */
-public class ApproveCommand extends Command {
+public class RespondCommand extends Command {
 
-    public ApproveCommand(TechnoBot bot) {
+    public RespondCommand(TechnoBot bot) {
         super(bot);
-        this.name = "approve";
-        this.description = "Approves a suggestion on the suggestion board.";
+        this.name = "respond";
+        this.description = "Respond to a suggestion on the suggestion board.";
         this.category = Category.SUGGESTIONS;
         this.permission = Permission.MANAGE_SERVER;
-        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to approve", true));
+        this.args.add(new OptionData(OptionType.STRING, "response", "The response to the suggestion", true)
+                .addChoice("Approve", "APPROVE")
+                .addChoice("Consider", "CONSIDER")
+                .addChoice("Deny", "DENY")
+                .addChoice("Implement", "IMPLEMENT"));
+        this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to approve", true)
+                .setMinValue(1));
         this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for approval"));
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
+        String responseString = event.getOption("response").getAsString();
+        SuggestionHandler.SuggestionResponse response = SuggestionHandler.SuggestionResponse.valueOf(responseString);
+
         int id = event.getOption("number").getAsInt() - 1;
         OptionMapping reason = event.getOption("reason");
-        GuildData.get(event.getGuild()).suggestionHandler.respond(event, id, reason, SuggestionHandler.SuggestionResponse.APPROVE);
+
+        GuildData.get(event.getGuild()).suggestionHandler.respond(event, id, reason, response);
     }
 }
