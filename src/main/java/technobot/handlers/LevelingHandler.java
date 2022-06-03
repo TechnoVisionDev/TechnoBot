@@ -122,4 +122,11 @@ public class LevelingHandler {
     public void addProfile(Leveling profile) {
         leaderboard.add(profile);
     }
+
+    /**
+     * Simple getter for leaderboard.
+     *
+     * @return the leaderboard.
+     */
+    public LinkedList<Leveling> getLeaderboard() { return leaderboard; }
 }
