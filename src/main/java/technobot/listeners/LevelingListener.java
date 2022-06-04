@@ -102,7 +102,7 @@ public class LevelingListener extends ListenerAdapter {
                 // Parse level-up message for placeholders
                 Placeholder placeholder = PlaceholderFactory.fromLevelingEvent(event, profile).get();
                 String levelingMessage = (data.config.getLevelingMessage() != null) ? data.config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
-                placeholder.parse(DEFAULT_LEVEL_MESSAGE);
+                placeholder.parse(levelingMessage);
 
                 // Send level-up message in DMs
                 if (data.config.isLevelingDM()) {
