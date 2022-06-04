@@ -15,8 +15,6 @@ public class Leveling {
 
     private String color;
 
-    private long timestamp;
-
     private int level;
 
     private String background;
@@ -36,7 +34,6 @@ public class Leveling {
         this.guild = guild;
         this.user = user;
         this.color = "#8394eb";
-        this.timestamp = 0L;
         this.level = 0;
         this.background = "";
         this.xp = 0L;
@@ -67,14 +64,6 @@ public class Leveling {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     public int getLevel() {
