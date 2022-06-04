@@ -102,11 +102,11 @@ public class LevelingListener extends ListenerAdapter {
                 // Parse level-up message for placeholders
                 Placeholder placeholder = PlaceholderFactory.fromLevelingEvent(event, profile).get();
                 String levelingMessage = (data.config.getLevelingMessage() != null) ? data.config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
-                levelingMessage = placeholder.parse(levelingMessage);
+                String parsedMessage = placeholder.parse(levelingMessage);
 
                 // Send level-up message in DMs
                 if (data.config.isLevelingDM()) {
-                    event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(levelingMessage).queue());
+                    event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(parsedMessage).queue());
                     return;
                 }
 
@@ -114,9 +114,9 @@ public class LevelingListener extends ListenerAdapter {
                 if (data.config.getLevelingChannel() != null) {
                     TextChannel channel = event.getGuild().getTextChannelById(data.config.getLevelingChannel());
                     if (channel == null) { channel = event.getTextChannel(); }
-                    channel.sendMessage(levelingMessage).queue();
+                    channel.sendMessage(parsedMessage).queue();
                 } else {
-                    event.getChannel().sendMessage(levelingMessage).queue();
+                    event.getChannel().sendMessage(parsedMessage).queue();
                 }
             }
         }
