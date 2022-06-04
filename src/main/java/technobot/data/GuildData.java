@@ -1,8 +1,11 @@
 package technobot.data;
 
+import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.data.cache.Config;
+import technobot.data.cache.Suggestion;
 import technobot.handlers.*;
 
 import java.util.HashMap;
@@ -24,6 +27,7 @@ public class GuildData {
     private static boolean initialized;
 
     /** Local memory caches. */
+    public Config config;
     public MusicHandler musicHandler;
     public SuggestionHandler suggestionHandler;
     public ModerationHandler moderationHandler;
@@ -42,6 +46,13 @@ public class GuildData {
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
         levelingHandler = new LevelingHandler(bot, guild);
+
+        // Setup guild config
+        config = bot.database.config.find(Filters.eq("guild", guild.getIdLong())).first();
+        if (config == null) {
+            config = new Config(guild.getIdLong());
+            bot.database.config.insertOne(config);
+        }
     }
 
     /**

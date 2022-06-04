@@ -6,11 +6,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.jetbrains.annotations.NotNull;
+import technobot.data.cache.Config;
 import technobot.data.cache.Leveling;
 import technobot.data.cache.Suggestion;
 import technobot.data.cache.moderation.Moderation;
@@ -26,14 +25,12 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
  */
 public class Database {
 
-    /** Update option that updates a doc if existing, and inserts if not. */
-    public static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
-
     /** Collections */
     public @NotNull MongoCollection<Suggestion> suggestions;
     public @NotNull MongoCollection<Moderation> moderation;
     public @NotNull MongoCollection<Starboard> starboard;
     public @NotNull MongoCollection<Leveling> leveling;
+    public @NotNull MongoCollection<Config> config;
 
     /**
      * Connect to database using MongoDB URI and
@@ -57,5 +54,6 @@ public class Database {
         moderation = database.getCollection("moderation", Moderation.class);
         starboard = database.getCollection("starboard", Starboard.class);
         leveling = database.getCollection("leveling", Leveling.class);
+        config = database.getCollection("config", Config.class);
     }
 }

@@ -61,7 +61,8 @@ public class RankCommand extends Command {
         User user = userOption != null ? userOption.getAsUser() : event.getUser();
 
         // Check if profile exists
-        LevelingHandler levelingHandler = GuildData.get(event.getGuild()).levelingHandler;
+        GuildData data = GuildData.get(event.getGuild());
+        LevelingHandler levelingHandler = data.levelingHandler;
         Leveling profile = levelingHandler.getProfile(user.getIdLong());
         if (profile == null) {
             String text = "You do not have a rank yet! Send some messages first.";
@@ -88,10 +89,12 @@ public class RankCommand extends Command {
 
             // Add Background
             BufferedImage background;
-            if (profile.getBackground().isEmpty()) {
-                background = ImageIO.read(cl.getResource(PATH + "background.png"));
-            } else {
+            if (!profile.getBackground().isEmpty()) {
                 background = ImageIO.read(new URL(profile.getBackground()));
+            } else if (data.config.getLevelingBackground() != null) {
+                background = ImageIO.read(new URL(data.config.getLevelingBackground()));
+            } else {
+                background = ImageIO.read(cl.getResource(PATH + "background.png"));
             }
             BufferedImage rectBuffer = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = rectBuffer.createGraphics();

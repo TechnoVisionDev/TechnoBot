@@ -2,6 +2,7 @@ package technobot.listeners;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.conversions.Bson;
@@ -92,29 +93,31 @@ public class LevelingListener extends ListenerAdapter {
             data.levelingHandler.updateLeaderboard(profile);
 
             if (levelUp) {
+                // Check for mute
+                if (data.config.isLevelingMute()) return;
+
+                // Check for leveling modulus
+                if (profile.getLevel() % data.config.getLevelingMod() != 0) return;
+
                 // Parse level-up message for placeholders
                 Placeholder placeholder = PlaceholderFactory.fromLevelingEvent(event, profile).get();
-                String levelingMessage = placeholder.parse(DEFAULT_LEVEL_MESSAGE);
+                String levelingMessage = (data.config.getLevelingMessage() != null) ? data.config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
+                placeholder.parse(DEFAULT_LEVEL_MESSAGE);
 
-                // Send level-up message in channel
-                event.getChannel().sendMessage(levelingMessage).queue();
-
-                /**
                 // Send level-up message in DMs
-                if (settings.config.levelingDM) {
+                if (data.config.isLevelingDM()) {
                     event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(levelingMessage).queue());
                     return;
                 }
 
                 // Send level-up message in channel
-                if (settings.config.levelingChannel != null) {
-                    TextChannel channel = event.getGuild().getTextChannelById(settings.config.levelingChannel);
-                    if (channel == null) { channel = event.getChannel(); }
+                if (data.config.getLevelingChannel() != null) {
+                    TextChannel channel = event.getGuild().getTextChannelById(data.config.getLevelingChannel());
+                    if (channel == null) { channel = event.getTextChannel(); }
                     channel.sendMessage(levelingMessage).queue();
                 } else {
                     event.getChannel().sendMessage(levelingMessage).queue();
                 }
-                 */
             }
         }
     }

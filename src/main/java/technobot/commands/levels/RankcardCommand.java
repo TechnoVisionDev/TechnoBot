@@ -88,7 +88,7 @@ public class RankcardCommand extends Command {
                     }
                     Color.decode(color);
                     update = Updates.set("color", color);
-                    text = "Successfully updated your color to **" + color + "**!";
+                    text = "Successfully updated your color to **" + color + "**";
                 } catch (NumberFormatException e) {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError("That is not a valid hex code, please use a valid color.")).queue();
                     return;
@@ -102,7 +102,7 @@ public class RankcardCommand extends Command {
                     }
                     Color.decode(accent);
                     update = Updates.set("accent", accent);
-                    text = "Successfully updated your accent color to **" + accent + "**!";
+                    text = "Successfully updated your accent color to **" + accent + "**";
                 } catch (NumberFormatException e) {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError("That is not a valid hex code, please use a valid color.")).queue();
                     return;
@@ -111,7 +111,7 @@ public class RankcardCommand extends Command {
             case "opacity" -> {
                 int opacity = event.getOption("percent").getAsInt();
                 update = Updates.set("opacity", opacity);
-                text = "Successfully updated your opacity to **" + opacity + "%**!";
+                text = "Successfully updated your opacity to **" + opacity + "%**";
             }
             case "reset" -> {
                 List<Bson> updates = new ArrayList<>();

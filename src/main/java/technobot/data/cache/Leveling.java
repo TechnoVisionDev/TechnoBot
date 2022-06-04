@@ -2,6 +2,11 @@ package technobot.data.cache;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+/**
+ * POJO object that stores a user's leveling data.
+ *
+ * @author TechnoVision
+ */
 public class Leveling {
 
     private long guild;

@@ -4,6 +4,8 @@ import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.GuildData;
+import technobot.data.cache.Config;
 import technobot.data.cache.Leveling;
 
 import java.util.LinkedList;
@@ -52,6 +54,32 @@ public class LevelingHandler {
     public Leveling getProfile(long userID) {
         Bson filter = Filters.and(Filters.eq("guild", guild.getIdLong()), Filters.eq("user", userID));
         return bot.database.leveling.find(filter).first();
+    }
+
+    /**
+     * Deletes a profile and removes it from leaderboard.
+     *
+     * @param userID ID of the user to reset.
+     */
+    public void resetProfile(long userID) {
+        Bson query = Filters.and(Filters.eq("guild", guild.getIdLong()), Filters.eq("user", userID));
+        int index = getIndex(userID);
+        if (index >= 0) {
+            leaderboard.remove(index);
+            bot.database.leveling.deleteOne(query);
+        }
+    }
+
+    /**
+     * Deletes all leveling data and config settings.
+     */
+    public void resetAll() {
+        leaderboard.clear();
+        Bson query = Filters.and(Filters.eq("guild", guild.getIdLong()));
+        bot.database.leveling.deleteMany(query);
+        Config config = new Config(guild.getIdLong());
+        bot.database.config.replaceOne(query, config);
+        GuildData.get(guild).config = config;
     }
 
     /**
