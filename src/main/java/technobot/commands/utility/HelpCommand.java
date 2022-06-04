@@ -23,11 +23,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
 
     private static final int COMMANDS_PER_PAGE = 6;
 
+    /** Pagination cache for help menu */
+    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
     private static final Map<Long, List<MessageEmbed>> menus = new HashMap<>();
     private static final Map<Long, List<Button>> buttons = new HashMap<>();
 
@@ -76,12 +81,25 @@ public class HelpCommand extends Command {
             if (embeds.size() > 1) {
                 long userID = event.getUser().getIdLong();
                 menus.put(userID, embeds);
+                // Create buttons
                 List<Button> components = new ArrayList<>();
                 components.add(Button.primary("help:prev:"+userID, "PREVIOUS").asDisabled());
                 components.add(Button.of(ButtonStyle.SECONDARY, "help:page:0", "1/"+embeds.size()).asDisabled());
                 components.add(Button.primary("help:next:"+userID, "NEXT"));
                 buttons.put(userID, components);
-                action = action.addActionRow(components);
+                action.addActionRow(components).queue(interactionHook -> {
+                    // Timer task to disable buttons and clear cache after 3 minutes
+                    Runnable task = () -> {
+                        List<Button> actionRow = buttons.get(userID);
+                        actionRow.set(0, actionRow.get(0).asDisabled());
+                        actionRow.set(2, actionRow.get(2).asDisabled());
+                        interactionHook.editOriginalComponents(ActionRow.of(actionRow)).queue();
+                        buttons.remove(userID);
+                        menus.remove(userID);
+                    };
+                    executor.schedule(task, 3, TimeUnit.MINUTES);
+                });
+                return;
             }
             action.queue();
         } else if (option2 != null) {
