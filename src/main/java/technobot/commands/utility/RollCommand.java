@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.Random;
 
@@ -33,6 +34,6 @@ public class RollCommand extends Command {
         int bound = option != null ? option.getAsInt() : 6;
         if (bound == 0) bound = 1;
         int result = random.nextInt(bound) + 1;
-        event.reply(String.valueOf(result)).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(":game_die: You rolled a "+bound+"-sided dice and got: **"+result+"**")).queue();
     }
 }
