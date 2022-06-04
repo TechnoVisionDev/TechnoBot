@@ -3,6 +3,7 @@ package technobot.commands.levels;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -40,6 +41,9 @@ public class LevelingCommand extends Command {
         this.subCommands.add(new SubcommandData("server-background", "Sets the default rankcard background for this server.")
                 .addOption(OptionType.STRING, "url", "URL to image to set as rankcard background"));
         this.subCommands.add(new SubcommandData("mute", "Removes the level-up message entirely."));
+        this.subCommands.add(new SubcommandData("reward", "Adds a role reward for reaching a certain level.")
+                .addOptions(new OptionData(OptionType.INTEGER, "level", "The level required to gain this reward", true).setMinValue(1).setMaxValue(1000))
+                .addOption(OptionType.ROLE, "role", "The role to add as a reward", true));
         this.subCommands.add(new SubcommandData("config", "Displays all current leveling settings for this server."));
         this.subCommands.add(new SubcommandData("reset", "Resets leveling data for a user.")
                 .addOption(OptionType.USER, "user", "The user to reset progress for", true));
@@ -133,6 +137,21 @@ public class LevelingCommand extends Command {
                     text = EmbedUtils.BLUE_X + " Leveling messages have been muted and will not be displayed!";
                 } else {
                     text = EmbedUtils.BLUE_TICK + " Leveling messages will now be displayed!";
+                }
+            }
+            case "reward" -> {
+                int level = event.getOption("level").getAsInt();
+                String reward = event.getOption("role").getAsRole().getId();
+
+                Integer x = config.getRewards().get(reward);
+                if (x != null && x == level) {
+                    config.removeReward(reward);
+                    update = Updates.unset("rewards."+reward);
+                    text = EmbedUtils.BLUE_TICK + " Successfully removed the <@&"+reward+"> reward role.";
+                } else {
+                    config.addReward(level, reward);
+                    update = Updates.set("rewards."+reward, level);
+                    text = EmbedUtils.BLUE_TICK + " Users will now receive the <@&"+reward+"> role at level **"+level+"**.";
                 }
             }
             case "config" -> {

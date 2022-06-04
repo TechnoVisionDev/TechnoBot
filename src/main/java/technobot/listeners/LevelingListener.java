@@ -2,6 +2,8 @@ package technobot.listeners;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -16,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -97,10 +100,23 @@ public class LevelingListener extends ListenerAdapter {
         data.levelingHandler.updateLeaderboard(profile);
 
         if (levelUp) {
-            // Check for mute
-            if (data.config.isLevelingMute()) return;
+            // Give reward roles
+            Member member = event.getMember();
+            List<Role> memberRoles = member.getRoles();
+            for (Map.Entry<String,Integer> reward : data.config.getRewards().entrySet()) {
+                // Check for required level
+                int rewardLevel = reward.getValue();
+                if (level >= rewardLevel) {
+                    // Only give role if user doesn't already have it
+                    Role role = event.getGuild().getRoleById(reward.getKey());
+                    if (role != null && !memberRoles.contains(role)) {
+                        event.getGuild().addRoleToMember(event.getAuthor(), role).queue();
+                    }
+                }
+            }
 
-            // Check for leveling modulus
+            // Check for mute and modulus
+            if (data.config.isLevelingMute()) return;
             if (profile.getLevel() % data.config.getLevelingMod() != 0) return;
 
             // Parse level-up message for placeholders

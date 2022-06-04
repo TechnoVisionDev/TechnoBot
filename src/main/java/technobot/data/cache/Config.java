@@ -2,6 +2,9 @@ package technobot.data.cache;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * POJO object that stores config data for a guild.
  *
@@ -29,6 +32,8 @@ public class Config {
     @BsonProperty("leveling_background")
     private String levelingBackground;
 
+    private Map<String,Integer> rewards;
+
     public Config() { }
 
     public Config(long guild) {
@@ -39,6 +44,7 @@ public class Config {
         levelingMod = 1;
         levelingMute = false;
         levelingBackground = null;
+        rewards = new HashMap<>();
     }
 
     public long getGuild() {
@@ -96,4 +102,18 @@ public class Config {
     public void setLevelingBackground(String levelingBackground) {
         this.levelingBackground = levelingBackground;
     }
+
+    public Map<String,Integer> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(Map<String, Integer> rewards) {
+        this.rewards = rewards;
+    }
+
+    public void addReward(int level, String roleID) {
+        this.rewards.put(roleID, level);
+    }
+
+    public void removeReward(String roleID) { this.rewards.remove(roleID); }
 }
