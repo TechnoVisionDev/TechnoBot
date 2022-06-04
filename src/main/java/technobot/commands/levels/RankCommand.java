@@ -65,7 +65,12 @@ public class RankCommand extends Command {
         LevelingHandler levelingHandler = data.levelingHandler;
         Leveling profile = levelingHandler.getProfile(user.getIdLong());
         if (profile == null) {
-            String text = "You do not have a rank yet! Send some messages first.";
+            String text;
+            if (user.getIdLong() == event.getUser().getIdLong()) {
+                text = "You do not have a rank yet! Send some messages first.";
+            } else {
+                text = "That user does not have a rank yet!";
+            }
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             return;
         }
