@@ -62,7 +62,16 @@ public class HelpCommand extends Command {
             // Display category commands menu
             Category category = Category.valueOf(option.getAsString().toUpperCase());
             List<MessageEmbed> embeds = buildCategoryMenu(category, categories.get(category));
-
+            if (embeds.isEmpty()) {
+                // No commands for this category
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setTitle(category.emoji + "  **%s Commands**".formatted(category.name))
+                        .setDescription("Coming soon...")
+                        .setColor(EmbedColor.DEFAULT.color);
+                event.replyEmbeds(embed.build()).queue();
+                return;
+            }
+            // Send paginated help menu
             ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
             if (embeds.size() > 1) {
                 long userID = event.getUser().getIdLong();
@@ -129,6 +138,7 @@ public class HelpCommand extends Command {
                 if (counter % COMMANDS_PER_PAGE == 0) {
                     embeds.add(embed.build());
                     embed.setDescription("");
+                    counter = 0;
                 }
             } else {
                 for (SubcommandData sub : cmd.subCommands) {
@@ -137,10 +147,12 @@ public class HelpCommand extends Command {
                     if (counter % COMMANDS_PER_PAGE == 0) {
                         embeds.add(embed.build());
                         embed.setDescription("");
+                        counter = 0;
                     }
                 }
             }
         }
+        if (counter != 0) embeds.add(embed.build());
         return embeds;
     }
 
@@ -224,10 +236,9 @@ public class HelpCommand extends Command {
             if (page < embeds.size()) {
                 // Update buttons
                 components.set(1, components.get(1).withId("help:page:"+page).withLabel((page+1)+"/"+embeds.size()));
+                components.set(0, components.get(0).asEnabled());
                 if (page == embeds.size()-1) {
                     components.set(2, components.get(2).asDisabled());
-                } else {
-                    components.set(0, components.get(0).asEnabled());
                 }
                 buttons.put(userID, components);
                 event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
@@ -239,10 +250,9 @@ public class HelpCommand extends Command {
             if (page >= 0) {
                 // Update buttons
                 components.set(1, components.get(1).withId("help:page:"+page).withLabel((page+1)+"/"+embeds.size()));
+                components.set(2, components.get(2).asEnabled());
                 if (page == 0) {
                     components.set(0, components.get(0).asDisabled());
-                } else {
-                    components.set(2, components.get(2).asEnabled());
                 }
                 buttons.put(userID, components);
                 event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();

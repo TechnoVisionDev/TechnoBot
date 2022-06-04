@@ -10,8 +10,11 @@ public enum Category {
     STAFF(":computer:", "Staff"),
     LEVELS(":chart_with_upwards_trend:", "Levels"),
     MUSIC(":musical_note:", "Music"),
+    ECONOMY(":moneybag:", "Economy"),
     STARBOARD(":star:", "Starboard"),
+    FUN(":smile:", "Fun"),
     UTILITY(":tools:", "Utility"),
+    GREETINGS(":wave:", "Greetings"),
     SUGGESTIONS(":thought_balloon:", "Suggestions");
 
     public final String emoji;
