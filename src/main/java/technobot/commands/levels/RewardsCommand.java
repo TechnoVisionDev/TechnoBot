@@ -9,6 +9,7 @@ import technobot.data.GuildData;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +28,11 @@ public class RewardsCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        Map<String,Integer> rewards = GuildData.get(event.getGuild()).config.getRewards();
+        LinkedHashMap<String, Integer> rewards = new LinkedHashMap<>();
+        GuildData.get(event.getGuild()).config.getRewards().entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEachOrdered(x -> rewards.put(x.getKey(), x.getValue()));
 
         StringBuilder content = new StringBuilder();
         for (Map.Entry<String,Integer> reward : rewards.entrySet()) {
