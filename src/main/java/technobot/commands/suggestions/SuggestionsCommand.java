@@ -103,11 +103,12 @@ public class SuggestionsCommand extends Command {
                 return;
             }
             case "reset" -> {
+                String userID = event.getUser().getId();
                 text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text))
                         .addActionRow(
-                                Button.success("suggestion_yes", Emoji.fromMarkdown("\u2714")),
-                                Button.danger("suggestion_no", Emoji.fromUnicode("\u2716")))
+                                Button.success("suggestions:yes:"+userID, Emoji.fromMarkdown("\u2714")),
+                                Button.danger("suggestions:no:"+userID, Emoji.fromUnicode("\u2716")))
                         .queue();
                 return;
             }
@@ -120,15 +121,20 @@ public class SuggestionsCommand extends Command {
      */
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        MessageEmbed embed;
-        if (event.getComponentId().equals("suggestion_yes")) {
+        String[] args = event.getComponentId().split(":");
+        if (!args[0].equals("suggestions")) return;
+
+        long userID = Long.parseLong(args[2]);
+        if (userID != event.getUser().getIdLong()) return;
+
+        if (args[1].equals("yes")) {
             event.deferEdit().queue();
             GuildData.get(event.getGuild()).suggestionHandler.reset();
-            embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
+            MessageEmbed embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
             event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-        } else if (event.getComponentId().equals("suggestion_no")) {
+        } else if (args[1].equals("no")) {
             event.deferEdit().queue();
-            embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
+            MessageEmbed embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
             event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
         }
     }
