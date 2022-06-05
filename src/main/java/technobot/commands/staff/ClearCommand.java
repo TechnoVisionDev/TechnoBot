@@ -1,6 +1,7 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -33,6 +34,14 @@ public class ClearCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
+
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't delete those messages. Please check my role and channel permissions.")).queue();
+            return;
+        }
+
         int amount = event.getOption("amount").getAsInt();
         event.getChannel().getHistory().retrievePast(Math.min(amount + 1, 100)).queue(messages -> {
             try {

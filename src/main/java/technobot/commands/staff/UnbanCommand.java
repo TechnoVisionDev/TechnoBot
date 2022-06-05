@@ -2,6 +2,7 @@ package technobot.commands.staff;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -31,6 +32,14 @@ public class UnbanCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
+
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't unban that user. Please check my permissions and role position.")).queue();
+            return;
+        }
+
         String input = event.getOption("user_id").getAsString();
         if (input.equals(event.getJDA().getSelfUser().getId())) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("Ah yes let me just unban myself...")).queue();

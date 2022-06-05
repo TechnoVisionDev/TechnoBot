@@ -3,6 +3,8 @@ package technobot.commands.staff;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -40,6 +42,7 @@ public class BanCommand extends Command {
         event.deferReply().queue();
         // Get command and member data
         User user = event.getOption("user").getAsUser();
+        Member member = event.getOption("user").getAsMember();
         if (user.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("Did you seriously expect me to ban myself?")).queue();
             return;
@@ -50,18 +53,34 @@ public class BanCommand extends Command {
         OptionMapping daysOption = event.getOption("days");
         String duration = daysOption != null ? daysOption.getAsInt()+" Days" : "Forever";
 
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't ban that user. Please check my permissions and role position.")).queue();
+            return;
+        }
+
+        // Check if bot has a higher role than user
+        if (member != null) {
+            int botPos = botRole.getPosition();
+            for (Role role : member.getRoles()) {
+                if (role.getPosition() > botPos) {
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't ban that user. Please check my permissions and role position.")).queue();
+                    return;
+                }
+            }
+        }
+
         // Start unban timer if temp ban specified
         Guild guild = event.getGuild();
         GuildData data = GuildData.get(guild);
-        OptionMapping timeOption = event.getOption("days");
         String content = user.getAsTag() + " has been banned";
-        if (timeOption != null) {
-            int days = timeOption.getAsInt();
+        if (daysOption != null) {
+            int days = daysOption.getAsInt();
             content += " for " + days + " day";
             if (days > 1) content += "s";
             data.moderationHandler.scheduleUnban(guild, user,  days);
-        }
-        else if (data.moderationHandler.hasTimedBan(user.getId())) {
+        } else if (data.moderationHandler.hasTimedBan(user.getId())) {
             // Remove timed ban in favor of permanent ban
             data.moderationHandler.removeBan(user);
         }
@@ -72,15 +91,15 @@ public class BanCommand extends Command {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.ERROR.color)
                     .setTitle(EmbedUtils.RED_X + " You were banned!")
-                    .addField("Server", guild.getName(), false)
+                    .addField("Server", event.getGuild().getName(), false)
                     .addField("Duration", duration, false)
                     .addField("Reason", reason, false)
                     .setTimestamp(new Date().toInstant());
             privateChannel.sendMessageEmbeds(embed.build()).queue(
                     message -> guild.ban(user, 7, reason).queue(),
-                    failure -> guild.ban(user, 7, reason).queue());
-            }
-        );
+                    failure -> guild.ban(user, 7, reason).queue()
+            );
+        });
 
         // Send confirmation message
         event.getHook().sendMessageEmbeds(new EmbedBuilder()

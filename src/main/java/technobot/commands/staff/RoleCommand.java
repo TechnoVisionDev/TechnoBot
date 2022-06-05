@@ -41,8 +41,24 @@ public class RoleCommand extends Command {
             return;
         }
 
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
+            return;
+        }
+
+        // Check if bot has a higher role than user
+        int botPos = event.getGuild().getBotRole().getPosition();
+        for (Role r : member.getRoles()) {
+            if (r.getPosition() > botPos) {
+                event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
+                return;
+            }
+        }
+
         String text = EmbedUtils.GREEN_TICK + " Changed roles for " + member.getEffectiveName() + ", ";
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "give" -> {
                 text += "**+" + role.getName() + "**";
                 event.getGuild().addRoleToMember(member, role).queue();

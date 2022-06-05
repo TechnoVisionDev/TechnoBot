@@ -1,6 +1,7 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -29,6 +30,13 @@ public class UnlockCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't unlock that channel. Please check my role and channel permissions.")).queue();
+            return;
+        }
+
         OptionMapping channelOption = event.getOption("channel");
         TextChannel channel;
 

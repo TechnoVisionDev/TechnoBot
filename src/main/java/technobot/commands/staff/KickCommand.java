@@ -3,6 +3,7 @@ package technobot.commands.staff;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -38,7 +39,7 @@ public class KickCommand extends Command {
         event.deferReply().queue();
         // Get command and member data
         User user = event.getOption("user").getAsUser();
-        Member target = event.getGuild().getMemberById(user.getIdLong());
+        Member target = event.getOption("user").getAsMember();
         if (target == null) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("That user is not in this server!")).queue();
             return;
@@ -48,6 +49,22 @@ public class KickCommand extends Command {
         }
         OptionMapping reasonOption = event.getOption("reason");
         String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
+
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't kick that user. Please check my permissions and role position.")).queue();
+            return;
+        }
+
+        // Check if bot has a higher role than user
+        int botPos = botRole.getPosition();
+        for (Role role : target.getRoles()) {
+            if (role.getPosition() > botPos) {
+                event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't kick that user. Please check my permissions and role position.")).queue();
+                return;
+            }
+        }
 
         // Kick user from guild
         user.openPrivateChannel().queue(privateChannel -> {
@@ -60,9 +77,9 @@ public class KickCommand extends Command {
                         .setTimestamp(new Date().toInstant());
             privateChannel.sendMessageEmbeds(embed.build()).queue(
                     message -> target.kick(reason).queue(),
-                    failure -> target.kick(reason).queue());
-            }
-        );
+                    failure -> target.kick(reason).queue()
+            );
+        });
 
         // Send confirmation message
         event.getHook().sendMessageEmbeds(new EmbedBuilder()

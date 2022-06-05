@@ -2,6 +2,7 @@ package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -34,6 +35,13 @@ public class SetNickCommand extends Command {
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
             event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).queue();
+            return;
+        }
+
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't change that user's nickname. Please check my permissions and role position.")).queue();
             return;
         }
 

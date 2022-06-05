@@ -1,6 +1,7 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -32,7 +33,13 @@ public class SlowmodeCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        //event.deferReply().queue();
+        // Check that bot has necessary permissions
+        Role botRole = event.getGuild().getBotRole();
+        if (!botRole.hasPermission(this.permission)) {
+            event.replyEmbeds(EmbedUtils.createError("I couldn't set slowmode here. Please check my role and channel permissions.")).queue();
+            return;
+        }
+
         OptionMapping timeOption = event.getOption("time");
         if (timeOption != null) {
             // Retrieve time in seconds from input
@@ -55,16 +62,16 @@ public class SlowmodeCommand extends Command {
             }
             // Set slowmode timer
             if (time > TextChannel.MAX_SLOWMODE) {
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).queue();
+                event.replyEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).queue();
                 return;
             }
             event.getTextChannel().getManager().setSlowmode(time).queue();
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode has been set to **"+formatTime(time)+"**.")).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode has been set to **"+formatTime(time)+"**.")).queue();
         } else {
             // Display current slowmode timer
             int totalSecs = event.getTextChannel().getSlowmode();
             String timeString = formatTime(totalSecs);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode is **"+timeString+"**.")).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode is **"+timeString+"**.")).queue();
         }
     }
 
