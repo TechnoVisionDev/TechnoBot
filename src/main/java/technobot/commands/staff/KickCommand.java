@@ -52,7 +52,7 @@ public class KickCommand extends Command {
 
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!botRole.hasPermission(this.permission)) {
+        if (!botRole.hasPermission(this.permission) || target.isOwner()) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't kick that user. Please check my permissions and role position.")).queue();
             return;
         }

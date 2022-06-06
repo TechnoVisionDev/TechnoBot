@@ -96,7 +96,7 @@ public class ModerationHandler {
     public void removeBan(User target) {
         // Unban user
         String userID = target.getId();
-        guild.unban(target).queue();
+        guild.unban(target).queue(success -> {}, fail -> {});
         moderation.removeBan(userID);
 
         // Remove ban from database

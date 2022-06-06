@@ -55,7 +55,7 @@ public class BanCommand extends Command {
 
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!botRole.hasPermission(this.permission)) {
+        if (!botRole.hasPermission(this.permission) || member.isOwner()) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't ban that user. Please check my permissions and role position.")).queue();
             return;
         }
