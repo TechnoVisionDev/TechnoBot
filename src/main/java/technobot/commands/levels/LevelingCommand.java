@@ -124,7 +124,7 @@ public class LevelingCommand extends Command {
                         update = Updates.unset("leveling_background");
                         text = EmbedUtils.BLUE_TICK + " Reset the server rankcard background to default image!";
                     }
-                } catch (IOException | NullPointerException e2) {
+                } catch (IOException | NullPointerException | OutOfMemoryError e2) {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError("Unable to set that URL as the server rankcard background.")).queue();
                     return;
                 }
