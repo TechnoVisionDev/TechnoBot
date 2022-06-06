@@ -51,7 +51,7 @@ public class RoleCommand extends Command {
         // Check if bot has a higher role than user
         int botPos = event.getGuild().getBotRole().getPosition();
         for (Role r : member.getRoles()) {
-            if (r.getPosition() > botPos) {
+            if (r.getPosition() >= botPos) {
                 event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
                 return;
             }

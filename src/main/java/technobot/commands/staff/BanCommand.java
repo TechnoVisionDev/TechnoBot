@@ -64,7 +64,7 @@ public class BanCommand extends Command {
         if (member != null) {
             int botPos = botRole.getPosition();
             for (Role role : member.getRoles()) {
-                if (role.getPosition() > botPos) {
+                if (role.getPosition() >= botPos) {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't ban that user. Please check my permissions and role position.")).queue();
                     return;
                 }

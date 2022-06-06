@@ -60,7 +60,7 @@ public class KickCommand extends Command {
         // Check if bot has a higher role than user
         int botPos = botRole.getPosition();
         for (Role role : target.getRoles()) {
-            if (role.getPosition() > botPos) {
+            if (role.getPosition() >= botPos) {
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't kick that user. Please check my permissions and role position.")).queue();
                 return;
             }
