@@ -51,9 +51,15 @@ public class StarboardCommand extends Command {
         switch(event.getSubcommandName()) {
             case "create" -> {
                 // Set starboard channel
-                long channel = channelOption.getAsGuildChannel().getIdLong();
-                starboardHandler.setChannel(channel);
-                text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
+                try {
+                    long channel = channelOption.getAsTextChannel().getIdLong();
+                    starboardHandler.setChannel(channel);
+                    text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
+                } catch (NullPointerException e) {
+                    text = "You can only set a text channel as the starboard!";
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                    return;
+                }
             }
             case "limit" -> {
                 OptionMapping limitOption = event.getOption("stars");
