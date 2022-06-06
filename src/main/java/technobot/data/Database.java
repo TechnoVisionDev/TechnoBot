@@ -6,8 +6,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import technobot.data.cache.Config;
 import technobot.data.cache.Leveling;
@@ -55,5 +57,12 @@ public class Database {
         starboard = database.getCollection("starboard", Starboard.class);
         leveling = database.getCollection("leveling", Leveling.class);
         config = database.getCollection("config", Config.class);
+
+        Bson guildIndex = Indexes.descending("guild");
+        suggestions.createIndex(guildIndex);
+        moderation.createIndex(guildIndex);
+        starboard.createIndex(guildIndex);
+        config.createIndex(guildIndex);
+        leveling.createIndex(Indexes.compoundIndex(guildIndex, Indexes.descending("user")));
     }
 }
