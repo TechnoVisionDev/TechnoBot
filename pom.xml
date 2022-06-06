@@ -45,11 +45,11 @@
             <artifactId>dotenv-java</artifactId>
             <version>2.2.3</version>
         </dependency>
-        <!-- https://github.com/sedmelluq/lavaplayer -->
+        <!-- https://github.com/Walkyst/lavaplayer-fork -->
         <dependency>
-            <groupId>com.sedmelluq</groupId>
-            <artifactId>lavaplayer</artifactId>
-            <version>1.3.77</version>
+            <groupId>com.github.walkyst</groupId>
+            <artifactId>lavaplayer-fork</artifactId>
+            <version>1.3.97.1</version>
         </dependency>
     </dependencies>
 
