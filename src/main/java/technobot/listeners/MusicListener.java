@@ -9,7 +9,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -189,6 +191,16 @@ public class MusicListener extends ListenerAdapter {
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
             }
         });
+    }
+
+    @Override
+    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
+        if (event.getJDA().getSelfUser().getIdLong() == event.getMember().getIdLong()) {
+            GuildData data = GuildData.get(event.getGuild());
+            if (data.musicHandler != null) {
+                data.musicHandler.setPlayChannel(event.getChannelJoined());
+            }
+        }
     }
 
     @Override
