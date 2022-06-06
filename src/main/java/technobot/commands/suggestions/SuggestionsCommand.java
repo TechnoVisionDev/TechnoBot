@@ -66,10 +66,16 @@ public class SuggestionsCommand extends Command {
                     text = EmbedUtils.BLUE_TICK + " Created a new suggestion channel!";
                 } else {
                     // Set suggestion board to mentioned channel
-                    long channel = channelOption.getAsGuildChannel().getIdLong();
-                    String channelMention = "<#" + channel + ">";
-                    suggestionHandler.setChannel(channel);
-                    text = EmbedUtils.BLUE_TICK + " Set the suggestion channel to " + channelMention;
+                    try {
+                        long channel = channelOption.getAsTextChannel().getIdLong();
+                        String channelMention = "<#" + channel + ">";
+                        suggestionHandler.setChannel(channel);
+                        text = EmbedUtils.BLUE_TICK + " Set the suggestion channel to " + channelMention;
+                    } catch (NullPointerException e) {
+                        text = "You can only set a text channel as the suggestion board!";
+                        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                        return;
+                    }
                 }
             }
             case "dm" -> {
