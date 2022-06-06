@@ -157,7 +157,9 @@ public class StarboardListener extends ListenerAdapter {
                 } else {
                     // Edit existing post on starboard
                     String postID = starboardHandler.getPost(messageID);
-                    channel.retrieveMessageById(postID).flatMap(post -> post.editMessage(text)).queue();
+                    if (postID != null) {
+                        channel.retrieveMessageById(postID).flatMap(post -> post.editMessage(text)).queue();
+                    }
                 }
             });
         });
