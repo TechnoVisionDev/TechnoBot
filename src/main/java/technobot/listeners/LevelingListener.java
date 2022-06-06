@@ -2,6 +2,7 @@ package technobot.listeners;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -52,6 +53,7 @@ public class LevelingListener extends ListenerAdapter {
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         // Check if user and message is valid
         if (event.getAuthor().isBot()) { return; }
+        if (event.getChannelType() == ChannelType.PRIVATE) { return; }
         GuildData data = GuildData.get(event.getGuild());
         long userID = event.getAuthor().getIdLong();
         long guildID = event.getGuild().getIdLong();
