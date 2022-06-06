@@ -30,6 +30,7 @@ public class ButtonListener extends ListenerAdapter {
         long userID = Long.parseLong(args[2]);
         if (userID != event.getUser().getIdLong()) return;
         List<Button> components = buttons.get(userID);
+        if (components == null) return;
 
         if (args[0].equals("suggestions")) {
             if (args[1].equals("yes")) {
