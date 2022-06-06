@@ -1,5 +1,6 @@
 package technobot.commands;
 
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -41,7 +42,7 @@ public class CommandRegistry extends ListenerAdapter {
      * @param bot An instance of TechnoBot.
      */
     public CommandRegistry(TechnoBot bot) {
-        registerCommand(
+        mapCommand(
                 //Leveling commands
                 new RankCommand(bot),
                 new TopCommand(bot),
@@ -99,11 +100,27 @@ public class CommandRegistry extends ListenerAdapter {
      *
      * @param cmds a spread list of command objects.
      */
-    private void registerCommand(Command ...cmds) {
+    private void mapCommand(Command ...cmds) {
         for (Command cmd : cmds) {
             commandsMap.put(cmd.name, cmd);
             commands.add(cmd);
         }
+    }
+
+    private List<CommandData> unpackCommandData() {
+        // Register slash commands
+        List<CommandData> commandData = new ArrayList<>();
+        for (Command command : commands) {
+            SlashCommandData slashCommand = Commands.slash(command.name, command.description).addOptions(command.args);
+            if (command.permission != null) {
+                slashCommand.setDefaultPermissions(CommandPermissions.enabledFor(command.permission));
+            }
+            if (!command.subCommands.isEmpty()) {
+                slashCommand.addSubcommands(command.subCommands);
+            }
+            commandData.add(slashCommand);
+        }
+        return commandData;
     }
 
     @Override
@@ -123,19 +140,21 @@ public class CommandRegistry extends ListenerAdapter {
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         // Get GuildData from database
         GuildData.get(event.getGuild());
-
         // Register slash commands
-        List<CommandData> commandData = new ArrayList<>();
-        for (Command command : commands) {
-            SlashCommandData slashCommand = Commands.slash(command.name, command.description).addOptions(command.args);
-            if (command.permission != null) {
-                slashCommand.setDefaultPermissions(CommandPermissions.enabledFor(command.permission));
-            }
-            if (!command.subCommands.isEmpty()) {
-                slashCommand.addSubcommands(command.subCommands);
-            }
-            commandData.add(slashCommand);
-        }
-        event.getGuild().updateCommands().addCommands(commandData).queue();
+        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue();
+    }
+
+    /**
+     * Registers slash commands as guild commands to guilds that join after startup.
+     * NOTE: May change to global commands on release.
+     *
+     * @param event executes when a guild is ready.
+     */
+    @Override
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
+        // Get GuildData from database
+        GuildData.get(event.getGuild());
+        // Register slash commands
+        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue();
     }
 }
