@@ -25,7 +25,9 @@ public class RollCommand extends Command {
         this.name = "roll";
         this.description = "Roll a dice.";
         this.category = Category.UTILITY;
-        this.args.add(new OptionData(OptionType.INTEGER, "dice", "The number of sides on the dice"));
+        this.args.add(new OptionData(OptionType.INTEGER, "dice", "The number of sides on the dice")
+                .setMinValue(1)
+                .setMaxValue(1000000));
         this.random = new Random();
     }
 
