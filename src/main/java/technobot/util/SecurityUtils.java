@@ -37,7 +37,7 @@ public class SecurityUtils {
      */
     private static String getDomain(String host) {
 
-        String[] parts = host.split("\\.");
+        String[] parts = host.split("(\\.|%2E)"); // Match dot or URL-Encoded dot
         int size = parts.length;
 
         if(size == 1) {
