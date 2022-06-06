@@ -200,7 +200,10 @@ public class MusicListener extends ListenerAdapter {
      */
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
-        if (event.getChannelLeft().getMembers().size() == 1) {
+        if (event.getMember().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+            GuildData guildData = GuildData.get(event.getGuild());
+            guildData.musicHandler = null;
+        } else if (event.getChannelLeft().getMembers().size() == 1) {
             MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
             if (music != null && event.getChannelLeft() == music.getPlayChannel()) {
                 music.pause();

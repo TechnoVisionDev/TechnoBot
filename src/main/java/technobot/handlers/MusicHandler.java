@@ -100,6 +100,7 @@ public class MusicHandler implements AudioSendHandler {
     public void stop() {
         queue.clear();
         audioPlayer.stopTrack();
+        playChannel = null;
     }
 
     /**
