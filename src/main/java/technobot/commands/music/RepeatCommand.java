@@ -23,6 +23,7 @@ public class RepeatCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
@@ -33,6 +34,6 @@ public class RepeatCommand extends Command {
         } else {
             text = ":repeat_one: Loop Disabled!";
         }
-        event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }
