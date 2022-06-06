@@ -30,7 +30,8 @@ public class RespondCommand extends Command {
                 .addChoice("Deny", "DENY")
                 .addChoice("Implement", "IMPLEMENT"));
         this.args.add(new OptionData(OptionType.INTEGER, "number", "The suggestion number to approve", true)
-                .setMinValue(1));
+                .setMinValue(1)
+                .setMaxValue(Integer.MAX_VALUE));
         this.args.add(new OptionData(OptionType.STRING, "reason", "The reason for approval"));
     }
 
