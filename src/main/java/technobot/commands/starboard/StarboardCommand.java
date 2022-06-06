@@ -1,6 +1,7 @@
 package technobot.commands.starboard;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -27,13 +28,16 @@ public class StarboardCommand extends Command {
         this.category = Category.STARBOARD;
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("create", "Sets a channel to become the starboard.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to set as the starboard", true));
+                .addOptions(new OptionData(OptionType.CHANNEL, "channel", "The channel to set as the starboard", true)
+                        .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS)));
         this.subCommands.add(new SubcommandData("limit", "Sets the star requirement for messages to post to the starboard.")
                 .addOptions(new OptionData(OptionType.INTEGER, "stars", "The star limit").setMinValue(1).setMaxValue(25)));
         this.subCommands.add(new SubcommandData("blacklist", "Blocks a channel from having their messages starred.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to blacklist"));
+                .addOptions(new OptionData(OptionType.CHANNEL, "channel", "The channel to blacklist")
+                        .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS)));
         this.subCommands.add(new SubcommandData("unblacklist", "Removes a channel from the starboard blacklist.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to unblacklist"));
+                .addOptions(new OptionData(OptionType.CHANNEL, "channel", "The channel to unblacklist")
+                        .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS)));
         this.subCommands.add(new SubcommandData("lock", "Toggles a temporary lock on the entire starboard."));
         this.subCommands.add(new SubcommandData("jump", "Toggles a link to the source message for each starboard entry."));
         this.subCommands.add(new SubcommandData("nsfw", "Toggles the ability to star messages in NSFW channels."));
@@ -51,15 +55,9 @@ public class StarboardCommand extends Command {
         switch(event.getSubcommandName()) {
             case "create" -> {
                 // Set starboard channel
-                try {
-                    long channel = channelOption.getAsTextChannel().getIdLong();
-                    starboardHandler.setChannel(channel);
-                    text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
-                } catch (NullPointerException e) {
-                    text = "You can only set a text channel as the starboard!";
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
-                    return;
-                }
+                long channel = channelOption.getAsGuildChannel().getIdLong();
+                starboardHandler.setChannel(channel);
+                text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
             }
             case "limit" -> {
                 OptionMapping limitOption = event.getOption("stars");
@@ -74,15 +72,9 @@ public class StarboardCommand extends Command {
             }
             case "blacklist" -> {
                 if (channelOption != null) {
-                    try {
-                        long channel = channelOption.getAsTextChannel().getIdLong();
-                        starboardHandler.blacklistChannel(channel);
-                        text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
-                    } catch (NullPointerException e) {
-                        text = "You can only blacklist a text channel!";
-                        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
-                        return;
-                    }
+                    long channel = channelOption.getAsGuildChannel().getIdLong();
+                    starboardHandler.blacklistChannel(channel);
+                    text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
                 } else {
                     starboardHandler.clearBlacklist();
                     text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
@@ -90,15 +82,9 @@ public class StarboardCommand extends Command {
             }
             case "unblacklist" -> {
                 if (channelOption != null) {
-                    try {
-                        long channel = channelOption.getAsTextChannel().getIdLong();
-                        starboardHandler.unBlacklistChannel(channel);
-                        text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
-                    } catch (NullPointerException e) {
-                        text = "You can only unblacklist a text channel!";
-                        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
-                        return;
-                    }
+                    long channel = channelOption.getAsGuildChannel().getIdLong();
+                    starboardHandler.unBlacklistChannel(channel);
+                    text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
                 } else {
                     starboardHandler.clearBlacklist();
                     text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";

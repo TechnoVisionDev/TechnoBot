@@ -1,11 +1,13 @@
 package technobot.commands.suggestions;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import technobot.TechnoBot;
@@ -31,7 +33,8 @@ public class SuggestionsCommand extends Command {
         this.category = Category.SUGGESTIONS;
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("create", "Sets a channel to become the suggestion board.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to set as the suggestion board"));
+                .addOptions(new OptionData(OptionType.CHANNEL, "channel", "The channel to set as the suggestion board")
+                        .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS)));
         this.subCommands.add(new SubcommandData("dm", "Toggle private messages on suggestion response."));
         this.subCommands.add(new SubcommandData("anonymous", "Toggle anonymous mode for suggestions."));
         this.subCommands.add(new SubcommandData("config", "Display the current suggestions config."));
@@ -67,7 +70,7 @@ public class SuggestionsCommand extends Command {
                 } else {
                     // Set suggestion board to mentioned channel
                     try {
-                        long channel = channelOption.getAsTextChannel().getIdLong();
+                        long channel = channelOption.getAsGuildChannel().getIdLong();
                         String channelMention = "<#" + channel + ">";
                         suggestionHandler.setChannel(channel);
                         text = EmbedUtils.BLUE_TICK + " Set the suggestion channel to " + channelMention;

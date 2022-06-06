@@ -3,6 +3,7 @@ package technobot.commands.levels;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -32,7 +33,8 @@ public class LevelingCommand extends Command {
         this.category = Category.LEVELS;
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("channel", "Sets a channel to send level-up messages to.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to send level-up messages to"));
+                .addOptions(new OptionData(OptionType.CHANNEL, "channel", "The channel to send level-up messages to")
+                        .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS)));
         this.subCommands.add(new SubcommandData("message", "Sets a custom level-up message.")
                 .addOption(OptionType.STRING, "text", "Custom level-up message. Use {user} for their name and {lvl} for the level"));
         this.subCommands.add(new SubcommandData("dm", "Makes the bot dm the member their level-up message."));
@@ -63,7 +65,7 @@ public class LevelingCommand extends Command {
             case "channel" -> {
                 OptionMapping channelOption = event.getOption("channel");
                 if (channelOption != null) {
-                    long channel = channelOption.getAsTextChannel().getIdLong();
+                    long channel = channelOption.getAsGuildChannel().getIdLong();
                     config.setLevelingChannel(channel);
                     update = Updates.set("leveling_channel", channel);
                     text = EmbedUtils.BLUE_TICK + " Leveling messages will now only display in <#" + channel + ">.";
