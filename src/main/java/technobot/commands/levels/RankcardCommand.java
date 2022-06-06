@@ -75,7 +75,7 @@ public class RankcardCommand extends Command {
                     test.getWidth();
                     update = Updates.set("background", urlOption);
                     text = "Successfully updated your background!";
-                } catch (IOException | NullPointerException e2) {
+                } catch (IOException | NullPointerException | OutOfMemoryError e2) {
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError("Unable to set that URL as your background.")).queue();
                     return;
                 }
