@@ -74,9 +74,15 @@ public class StarboardCommand extends Command {
             }
             case "blacklist" -> {
                 if (channelOption != null) {
-                    long channel = channelOption.getAsTextChannel().getIdLong();
-                    starboardHandler.blacklistChannel(channel);
-                    text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
+                    try {
+                        long channel = channelOption.getAsTextChannel().getIdLong();
+                        starboardHandler.blacklistChannel(channel);
+                        text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
+                    } catch (NullPointerException e) {
+                        text = "You can only blacklist a text channel!";
+                        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                        return;
+                    }
                 } else {
                     starboardHandler.clearBlacklist();
                     text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
@@ -84,9 +90,15 @@ public class StarboardCommand extends Command {
             }
             case "unblacklist" -> {
                 if (channelOption != null) {
-                    long channel = channelOption.getAsTextChannel().getIdLong();
-                    starboardHandler.unBlacklistChannel(channel);
-                    text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
+                    try {
+                        long channel = channelOption.getAsTextChannel().getIdLong();
+                        starboardHandler.unBlacklistChannel(channel);
+                        text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
+                    } catch (NullPointerException e) {
+                        text = "You can only unblacklist a text channel!";
+                        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                        return;
+                    }
                 } else {
                     starboardHandler.clearBlacklist();
                     text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
