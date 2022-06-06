@@ -230,7 +230,8 @@ public class RankCommand extends Command {
             return scaleOp.filter(addon, after);
 
         } catch (MalformedURLException e) {
-            URL url = new URL(user.getEffectiveAvatarUrl());
+            String avatar = user.getEffectiveAvatarUrl().replace(".gif", ".png");
+            URL url = new URL(avatar);
             BufferedImage addon = ImageIO.read(url);
 
             int w = addon.getWidth() - 45;
