@@ -186,7 +186,7 @@ public class StarboardHandler extends ListenerAdapter {
     public boolean toggleNSFW() {
         boolean isNSFW = !starboard.isNSFW();
         starboard.setNSFW(isNSFW);
-        bot.database.starboard.updateOne(filter, Updates.set("nsfw", isNSFW));
+        bot.database.starboard.updateOne(filter, Updates.set("nSFW", isNSFW));
         return isNSFW;
     }
 
