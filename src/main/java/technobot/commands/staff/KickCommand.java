@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
+import technobot.util.UtilityMethods;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
@@ -52,7 +53,7 @@ public class KickCommand extends Command {
 
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!botRole.hasPermission(this.permission) || target.isOwner()) {
+        if (!UtilityMethods.hasPermission(botRole, this.permission) || target.isOwner()) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't kick that user. Please check my permissions and role position.")).queue();
             return;
         }

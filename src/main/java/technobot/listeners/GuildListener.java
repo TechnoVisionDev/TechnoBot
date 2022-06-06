@@ -6,6 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.GuildData;
 
+/**
+ * Listens for guild event
+ * Only really used for guild command registration at the moment.
+ *
+ * @author TechnoVision
+ */
 public class GuildListener extends ListenerAdapter {
 
     /**
