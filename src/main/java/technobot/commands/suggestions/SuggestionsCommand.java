@@ -30,8 +30,8 @@ public class SuggestionsCommand extends Command {
         this.description = "Setup and modify the suggestions config.";
         this.category = Category.SUGGESTIONS;
         this.permission = Permission.MANAGE_SERVER;
-        this.subCommands.add(new SubcommandData("create", "Sets a channel to become the starboard.")
-                .addOption(OptionType.CHANNEL, "channel", "The channel to set as the starboard"));
+        this.subCommands.add(new SubcommandData("create", "Sets a channel to become the suggestion board.")
+                .addOption(OptionType.CHANNEL, "channel", "The channel to set as the suggestion board"));
         this.subCommands.add(new SubcommandData("dm", "Toggle private messages on suggestion response."));
         this.subCommands.add(new SubcommandData("anonymous", "Toggle anonymous mode for suggestions."));
         this.subCommands.add(new SubcommandData("config", "Display the current suggestions config."));
