@@ -3,9 +3,7 @@ package technobot.commands.suggestions;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -114,28 +112,5 @@ public class SuggestionsCommand extends Command {
             }
         }
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
-    }
-
-    /**
-     * Button events for 'reset' option
-     */
-    @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
-        String[] args = event.getComponentId().split(":");
-        if (!args[0].equals("suggestions")) return;
-
-        long userID = Long.parseLong(args[2]);
-        if (userID != event.getUser().getIdLong()) return;
-
-        if (args[1].equals("yes")) {
-            event.deferEdit().queue();
-            GuildData.get(event.getGuild()).suggestionHandler.reset();
-            MessageEmbed embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
-            event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-        } else if (args[1].equals("no")) {
-            event.deferEdit().queue();
-            MessageEmbed embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
-            event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-        }
     }
 }

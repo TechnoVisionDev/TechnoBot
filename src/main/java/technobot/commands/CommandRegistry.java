@@ -1,6 +1,7 @@
 package technobot.commands;
 
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.CommandPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -91,11 +92,6 @@ public class CommandRegistry extends ListenerAdapter {
                 new RolesCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
-
-        //Register commands as listeners
-        for (Command command : commandsMap.values()) {
-            bot.shardManager.addEventListener(command);
-        }
     }
 
     /**
@@ -108,6 +104,13 @@ public class CommandRegistry extends ListenerAdapter {
             commandsMap.put(cmd.name, cmd);
             commands.add(cmd);
         }
+    }
+
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        String name = event.getName();
+        Command cmd = commandsMap.get(name);
+        cmd.execute(event);
     }
 
     /**

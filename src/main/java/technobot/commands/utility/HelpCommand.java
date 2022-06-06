@@ -3,7 +3,6 @@ package technobot.commands.utility;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -16,25 +15,18 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.commands.CommandRegistry;
+import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
 
     private static final int COMMANDS_PER_PAGE = 6;
-
-    /** Pagination cache for help menu */
-    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
-    private static final Map<Long, List<MessageEmbed>> menus = new HashMap<>();
-    private static final Map<Long, List<Button>> buttons = new HashMap<>();
 
     public HelpCommand(TechnoBot bot) {
         super(bot);
@@ -80,24 +72,24 @@ public class HelpCommand extends Command {
             ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
             if (embeds.size() > 1) {
                 long userID = event.getUser().getIdLong();
-                menus.put(userID, embeds);
+                ButtonListener.menus.put(userID, embeds);
                 // Create buttons
                 List<Button> components = new ArrayList<>();
                 components.add(Button.primary("help:prev:"+userID, "PREVIOUS").asDisabled());
                 components.add(Button.of(ButtonStyle.SECONDARY, "help:page:0", "1/"+embeds.size()).asDisabled());
                 components.add(Button.primary("help:next:"+userID, "NEXT"));
-                buttons.put(userID, components);
+                ButtonListener.buttons.put(userID, components);
                 action.addActionRow(components).queue(interactionHook -> {
                     // Timer task to disable buttons and clear cache after 3 minutes
                     Runnable task = () -> {
-                        List<Button> actionRow = buttons.get(userID);
+                        List<Button> actionRow = ButtonListener.buttons.get(userID);
                         actionRow.set(0, actionRow.get(0).asDisabled());
                         actionRow.set(2, actionRow.get(2).asDisabled());
                         interactionHook.editOriginalComponents(ActionRow.of(actionRow)).queue();
-                        buttons.remove(userID);
-                        menus.remove(userID);
+                        ButtonListener.buttons.remove(userID);
+                        ButtonListener.menus.remove(userID);
                     };
-                    executor.schedule(task, 3, TimeUnit.MINUTES);
+                    ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
                 });
                 return;
             }
@@ -231,50 +223,5 @@ public class HelpCommand extends Command {
             return "None";
         }
         return cmd.permission.getName();
-    }
-
-    /**
-     * Button events for help menu pagination.
-     */
-    @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
-        // Check that these are 'help' buttons
-        String[] args = event.getComponentId().split(":");
-        if (!args[0].equals("help")) return;
-
-        // Check if user owns this menu
-        long userID = Long.parseLong(args[2]);
-        if (userID != event.getUser().getIdLong()) return;
-        List<Button> components = buttons.get(userID);
-
-        if (args[1].equals("next")) {
-            // Move to next embed
-            int page = Integer.parseInt(components.get(1).getId().split(":")[2]) + 1;
-            List<MessageEmbed> embeds = menus.get(userID);
-            if (page < embeds.size()) {
-                // Update buttons
-                components.set(1, components.get(1).withId("help:page:"+page).withLabel((page+1)+"/"+embeds.size()));
-                components.set(0, components.get(0).asEnabled());
-                if (page == embeds.size()-1) {
-                    components.set(2, components.get(2).asDisabled());
-                }
-                buttons.put(userID, components);
-                event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
-            }
-        } else if (args[1].equals("prev")) {
-            // Move to previous embed
-            int page = Integer.parseInt(components.get(1).getId().split(":")[2]) - 1;
-            List<MessageEmbed> embeds = menus.get(userID);
-            if (page >= 0) {
-                // Update buttons
-                components.set(1, components.get(1).withId("help:page:"+page).withLabel((page+1)+"/"+embeds.size()));
-                components.set(2, components.get(2).asEnabled());
-                if (page == 0) {
-                    components.set(0, components.get(0).asDisabled());
-                }
-                buttons.put(userID, components);
-                event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
-            }
-        }
     }
 }

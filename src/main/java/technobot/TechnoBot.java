@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
+import technobot.listeners.ButtonListener;
 import technobot.listeners.LevelingListener;
 import technobot.listeners.MusicListener;
 import technobot.listeners.StarboardListener;
@@ -24,6 +25,7 @@ public class TechnoBot {
     public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
     public final @NotNull Database database;
+    public final @NotNull ButtonListener buttonListener;
     public final @NotNull MusicListener musicListener;
 
     /**
@@ -32,8 +34,11 @@ public class TechnoBot {
      * @throws LoginException throws if bot token is invalid.
      */
     public TechnoBot() throws LoginException {
-        //Build JDA shards
+        //Setup Database
         config = Dotenv.load();
+        database = new Database(config.get("DATABASE"));
+
+        //Build JDA shards
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("/help"));
@@ -44,17 +49,15 @@ public class TechnoBot {
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
                 GatewayIntent.GUILD_PRESENCES);
+        builder.addEventListeners(new CommandRegistry(this));
         shardManager = builder.build();
         GuildData.init(this);
 
-        //Create Commands and Handlers
-        CommandRegistry commandRegistry = new CommandRegistry(this);
-        database = new Database(config.get("DATABASE"));
-        musicListener = new MusicListener();
-
         //Register Listeners
+        buttonListener = new ButtonListener();
+        musicListener = new MusicListener();
         shardManager.addEventListener(
-                commandRegistry,
+                buttonListener,
                 musicListener,
                 new StarboardListener(),
                 new LevelingListener(this));
