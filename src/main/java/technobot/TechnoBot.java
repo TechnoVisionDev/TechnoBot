@@ -13,10 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
 import technobot.data.GuildData;
-import technobot.listeners.ButtonListener;
-import technobot.listeners.LevelingListener;
-import technobot.listeners.MusicListener;
-import technobot.listeners.StarboardListener;
+import technobot.listeners.*;
 
 import javax.security.auth.login.LoginException;
 
@@ -57,6 +54,7 @@ public class TechnoBot {
         buttonListener = new ButtonListener();
         musicListener = new MusicListener();
         shardManager.addEventListener(
+                new GuildListener(),
                 buttonListener,
                 musicListener,
                 new StarboardListener(),

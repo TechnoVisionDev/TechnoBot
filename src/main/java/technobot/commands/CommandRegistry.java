@@ -107,7 +107,7 @@ public class CommandRegistry extends ListenerAdapter {
         }
     }
 
-    private List<CommandData> unpackCommandData() {
+    public static List<CommandData> unpackCommandData() {
         // Register slash commands
         List<CommandData> commandData = new ArrayList<>();
         for (Command command : commands) {
@@ -138,20 +138,6 @@ public class CommandRegistry extends ListenerAdapter {
      */
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        // Get GuildData from database
-        GuildData.get(event.getGuild());
-        // Register slash commands
-        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue();
-    }
-
-    /**
-     * Registers slash commands as guild commands to guilds that join after startup.
-     * NOTE: May change to global commands on release.
-     *
-     * @param event executes when a guild is ready.
-     */
-    @Override
-    public void onGuildJoin(@NotNull GuildJoinEvent event) {
         // Get GuildData from database
         GuildData.get(event.getGuild());
         // Register slash commands
