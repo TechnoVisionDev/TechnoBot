@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
+import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
 import technobot.listeners.MusicListener;
 import technobot.util.embeds.EmbedColor;
@@ -27,11 +28,11 @@ public class NowPlayingCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        MusicHandler music = bot.musicListener.getMusic(event, false);
+        MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
 
         // Verify the Music Manager isn't null.
         if (music == null) {
-            String text = ":sound: There are no songs in the queue!";
+            String text = ":sound: Not currently playing any music!";
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
@@ -39,7 +40,7 @@ public class NowPlayingCommand extends Command {
         // Get currently playing track
         AudioTrack nowPlaying = music.getQueue().size() > 0 ? music.getQueue().getFirst() : null;
         if (nowPlaying == null) {
-            String text = ":sound: There are no songs in the queue!";
+            String text = ":sound: Not currently playing any music!";
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }

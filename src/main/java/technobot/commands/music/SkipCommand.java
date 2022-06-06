@@ -1,6 +1,8 @@
 package technobot.commands.music;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -27,11 +29,10 @@ public class SkipCommand extends Command {
         if (music == null) return;
 
         music.skipTrack();
-        event.getHook().sendMessage(":fast_forward: Skipping...").queue(m -> {
-            if (music.getQueue().size() == 1) {
-                String text = ":sound: The music queue is now empty!";
-                m.editMessageEmbeds(EmbedUtils.createDefault(text)).queue();
-            }
-        });
+        WebhookMessageAction<Message> action = event.getHook().sendMessage(":fast_forward: Skipping...");
+        if (music.getQueue().size() == 1) {
+            action = action.addEmbeds(EmbedUtils.createDefault(":sound: The music queue is now empty!"));
+        }
+        action.queue();
     }
 }

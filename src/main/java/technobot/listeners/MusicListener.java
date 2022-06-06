@@ -9,7 +9,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -72,7 +71,7 @@ public class MusicListener extends ListenerAdapter {
         }
         // Bot should join voice channel if not already in one.
         AudioChannel channel = Objects.requireNonNull(event.getMember().getVoiceState()).getChannel();
-        if (settings.musicHandler == null || settings.musicHandler.getPlayChannel() == null) {
+        if (settings.musicHandler == null || !event.getGuild().getAudioManager().isConnected()) {
             assert channel != null;
             joinChannel(settings, channel, event.getTextChannel());
         }
@@ -101,10 +100,10 @@ public class MusicListener extends ListenerAdapter {
      */
     public void joinChannel(@NotNull GuildData settings, @NotNull AudioChannel channel, TextChannel logChannel) {
         AudioManager manager = channel.getGuild().getAudioManager();
-        if (!manager.isConnected()) {
+        if (settings.musicHandler == null) {
             settings.musicHandler = new MusicHandler(playerManager.createPlayer());
-            manager.setSendingHandler(settings.musicHandler);
         }
+        manager.setSendingHandler(settings.musicHandler);
         Objects.requireNonNull(settings.musicHandler).setLogChannel(logChannel);
         settings.musicHandler.setPlayChannel(channel);
         manager.openAudioConnection(channel);
@@ -192,36 +191,12 @@ public class MusicListener extends ListenerAdapter {
         });
     }
 
-    /**
-     * Pause music player if bot is alone in voice channel.
-     * If the bot leaves the voice channel, delete data cache.
-     *
-     * @param event executes when someone leaves a voice channel.
-     */
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
-        if (event.getMember().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            GuildData guildData = GuildData.get(event.getGuild());
-            guildData.musicHandler = null;
-        } else if (event.getChannelLeft().getMembers().size() == 1) {
-            MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
-            if (music != null && event.getChannelLeft() == music.getPlayChannel()) {
-                music.pause();
-            }
-        }
-    }
-
-    /**
-     * Unpause music player if bot is no longer alone in voice channel.
-     *
-     * @param event executes when someone joins a voice channel.
-     */
-    @Override
-    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
-        if (event.getChannelJoined().getMembers().size() == 2) {
-            MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
-            if (music != null && event.getChannelJoined() == music.getPlayChannel()) {
-                music.unpause();
+        if (event.getJDA().getSelfUser().getIdLong() == event.getMember().getIdLong()) {
+            GuildData data = GuildData.get(event.getGuild());
+            if (data.musicHandler != null) {
+                data.musicHandler.stop();
             }
         }
     }
