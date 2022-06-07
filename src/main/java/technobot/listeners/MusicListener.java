@@ -19,9 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
+import technobot.util.SecurityUtils;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import java.net.MalformedURLException;
 import java.util.Objects;
 
 /**
@@ -131,6 +133,13 @@ public class MusicListener extends ListenerAdapter {
     public void addTrack(SlashCommandInteractionEvent event, String url) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) return;
+
+        try {
+            boolean isWhitelisted = SecurityUtils.isUrlWhitelisted(url);
+            if(!isWhitelisted) {
+                url = "";
+            }
+        } catch(MalformedURLException ignored) {}
 
         playerManager.loadItem(url, new AudioLoadResultHandler() {
 
