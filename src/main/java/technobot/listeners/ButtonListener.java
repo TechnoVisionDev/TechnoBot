@@ -24,29 +24,29 @@ public class ButtonListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         // Check that these are 'help' buttons
-        String[] args = event.getComponentId().split(":");
+        String[] pressedArgs = event.getComponentId().split(":");
 
         // Check if user owns this menu
-        long userID = Long.parseLong(args[2]);
+        long userID = Long.parseLong(pressedArgs[2]);
         if (userID != event.getUser().getIdLong()) return;
         List<Button> components = buttons.get(userID);
         if (components == null) return;
+        String[] storedArgs = components.get(0).getId().split(":");
 
-        if (args[0].equals("suggestions")) {
-            if (args[1].equals("yes")) {
+        if (pressedArgs[0].equals("suggestions") && storedArgs[0].equals("suggestions")) {
+            if (pressedArgs[1].equals("yes")) {
                 event.deferEdit().queue();
                 GuildData.get(event.getGuild()).suggestionHandler.reset();
                 MessageEmbed embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
                 event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-            } else if (args[1].equals("no")) {
+            } else if (pressedArgs[1].equals("no")) {
                 event.deferEdit().queue();
                 MessageEmbed embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
                 event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
             }
         }
-
-        if (args[0].equals("help")) {
-            if (args[1].equals("next")) {
+        else if (pressedArgs[0].equals("help") && storedArgs[0].equals("help")) {
+            if (pressedArgs[1].equals("next")) {
                 // Move to next embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) + 1;
                 List<MessageEmbed> embeds = menus.get(userID);
@@ -60,7 +60,7 @@ public class ButtonListener extends ListenerAdapter {
                     buttons.put(userID, components);
                     event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
                 }
-            } else if (args[1].equals("prev")) {
+            } else if (pressedArgs[1].equals("prev")) {
                 // Move to previous embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) - 1;
                 List<MessageEmbed> embeds = menus.get(userID);
