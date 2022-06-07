@@ -30,7 +30,9 @@ public class RolesCommand extends Command {
         for (Role role : event.getGuild().getRoles()) {
             int amount = guild.getMembersWithRoles(role).size();
             if (role.getName().equals("@everyone")) amount = guild.getMemberCount();
-            content.append(role.getAsMention()).append(" ").append(amount).append(" Members\n");
+            content.append(role.getAsMention()).append(" ").append(amount).append(" Member");
+            if (amount > 1 || amount == 0) content.append("s");
+            content.append("\n");
         }
 
         EmbedBuilder embed = new EmbedBuilder()

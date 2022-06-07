@@ -1,7 +1,10 @@
 package technobot.commands.levels;
 
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -28,6 +31,7 @@ public class RewardsCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
         LinkedHashMap<String, Integer> rewards = new LinkedHashMap<>();
         GuildData.get(event.getGuild()).config.getRewards().entrySet()
                 .stream()
@@ -36,7 +40,13 @@ public class RewardsCommand extends Command {
 
         StringBuilder content = new StringBuilder();
         for (Map.Entry<String,Integer> reward : rewards.entrySet()) {
-            content.append("Level ").append(reward.getValue()).append(" ----> <@&").append(reward.getKey()).append(">\n");
+            if (event.getGuild().getRoleById(reward.getKey()) != null) {
+                content.append("Level ").append(reward.getValue()).append(" ----> <@&").append(reward.getKey()).append(">\n");
+            } else {
+                // Remove any deleted roles from database
+                Bson filter = Filters.eq("guild", event.getGuild().getIdLong());
+                bot.database.config.updateOne(filter, Updates.unset("rewards."+reward.getKey()));
+            }
         }
 
         if (!content.isEmpty()) {
@@ -44,9 +54,9 @@ public class RewardsCommand extends Command {
                     .setColor(EmbedColor.DEFAULT.color)
                     .setTitle(":crown: Leveling Rewards")
                     .setDescription(content);
-            event.replyEmbeds(embed.build()).queue();
+            event.getHook().sendMessageEmbeds(embed.build()).queue();
             return;
         }
-        event.replyEmbeds(EmbedUtils.createDefault(EmbedUtils.BLUE_X + " No leveling rewards have been set for this server!")).queue();
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(EmbedUtils.BLUE_X + " No leveling rewards have been set for this server!")).queue();
     }
 }

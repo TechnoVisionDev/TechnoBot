@@ -2,6 +2,7 @@ package technobot.listeners;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -12,6 +13,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Leveling;
+import technobot.util.UtilityMethods;
 import technobot.util.placeholders.Placeholder;
 import technobot.util.placeholders.PlaceholderFactory;
 
@@ -111,8 +113,11 @@ public class LevelingListener extends ListenerAdapter {
                 if (level >= rewardLevel) {
                     // Only give role if user doesn't already have it
                     Role role = event.getGuild().getRoleById(reward.getKey());
-                    if (role != null && !memberRoles.contains(role)) {
-                        event.getGuild().addRoleToMember(event.getAuthor(), role).queue();
+                    Role botRole = event.getGuild().getBotRole();
+                    if (role != null && !memberRoles.contains(role) && !role.isManaged()) {
+                        if (role.getPosition() < botRole.getPosition() && UtilityMethods.hasPermission(event.getGuild().getBotRole(), Permission.MANAGE_ROLES)) {
+                            event.getGuild().addRoleToMember(event.getAuthor(), role).queue();
+                        }
                     }
                 }
             }

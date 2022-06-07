@@ -145,6 +145,13 @@ public class LevelingCommand extends Command {
                 int level = event.getOption("level").getAsInt();
                 String reward = event.getOption("role").getAsRole().getId();
 
+                // Check if role can be given by TechnoBot
+                Role role = event.getGuild().getRoleById(reward);
+                int botPos = event.getGuild().getBotRole().getPosition();
+                if (role == null || role.getPosition() >= botPos || role.isManaged()) {
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("I cannot reward that role! Please check my permissions and role position.")).queue();
+                    return;
+                }
                 Integer x = config.getRewards().get(reward);
                 if (x != null && x == level) {
                     config.removeReward(reward);
