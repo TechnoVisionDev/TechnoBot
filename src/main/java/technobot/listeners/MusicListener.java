@@ -134,13 +134,13 @@ public class MusicListener extends ListenerAdapter {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) return;
 
+        // Check for SSRF vulnerability with whitelist
         try {
             boolean isWhitelisted = SecurityUtils.isUrlWhitelisted(url);
             if(!isWhitelisted) {
                 url = "";
             }
         } catch(MalformedURLException ignored) {}
-
         playerManager.loadItem(url, new AudioLoadResultHandler() {
 
             @Override
