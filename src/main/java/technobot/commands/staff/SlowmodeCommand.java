@@ -1,6 +1,7 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -38,6 +39,13 @@ public class SlowmodeCommand extends Command {
         Role botRole = event.getGuild().getBotRole();
         if (!UtilityMethods.hasPermission(botRole, this.permission)) {
             event.replyEmbeds(EmbedUtils.createError("I couldn't set slowmode here. Please check my role and channel permissions.")).queue();
+            return;
+        }
+
+        // Prevent slowmode in threads
+        ChannelType type = event.getChannelType();
+        if (type == ChannelType.GUILD_PUBLIC_THREAD || type == ChannelType.GUILD_NEWS_THREAD || type == ChannelType.GUILD_PRIVATE_THREAD) {
+            event.replyEmbeds(EmbedUtils.createError("You cannot set slowmode on threads!")).queue();
             return;
         }
 
