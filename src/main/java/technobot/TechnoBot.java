@@ -32,11 +32,11 @@ public class TechnoBot {
      */
     public TechnoBot() throws LoginException {
         //Setup Database
-        config = Dotenv.load();
-        database = new Database(config.get("DATABASE"));
+        config = Dotenv.configure().ignoreIfMissing().load();
+        database = new Database(config.get("DATABASE", System.getenv("DATABASE")));
 
         //Build JDA shards
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN"));
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN", System.getenv("TOKEN")));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("/help"));
         builder.setChunkingFilter(ChunkingFilter.ALL);
