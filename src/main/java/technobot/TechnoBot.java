@@ -1,5 +1,6 @@
 package technobot;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -21,6 +22,7 @@ import javax.security.auth.login.LoginException;
 
 public class TechnoBot {
 
+    public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
     public final @NotNull Database database;
     public final @NotNull ButtonListener buttonListener;
@@ -33,10 +35,11 @@ public class TechnoBot {
      */
     public TechnoBot() throws LoginException {
         //Setup Database
-        database = new Database(System.getenv("DATABASE"));
+        config = Dotenv.configure().ignoreIfMissing().load();
+        database = new Database(config.get("DATABASE", System.getenv("DATABASE")));
 
         //Build JDA shards
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(System.getenv("TOKEN"));
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN", System.getenv("TOKEN")));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("/help"));
         builder.setChunkingFilter(ChunkingFilter.ALL);

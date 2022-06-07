@@ -39,6 +39,12 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>3.12.10</version>
         </dependency>
+        <!-- https://github.com/cdimascio/dotenv-java -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.2.3</version>
+        </dependency>
         <!-- https://github.com/Walkyst/lavaplayer-fork -->
         <dependency>
             <groupId>com.github.walkyst</groupId>
