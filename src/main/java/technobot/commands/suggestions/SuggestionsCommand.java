@@ -25,6 +25,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -119,20 +120,21 @@ public class SuggestionsCommand extends Command {
             }
             case "reset" -> {
                 long userID = event.getUser().getIdLong();
+                String uuid = userID + ":" + UUID.randomUUID();
                 text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";
                 List<Button> components = new ArrayList<>();
-                components.add(Button.success("suggestions:yes:"+userID, Emoji.fromMarkdown("\u2714")));
-                components.add(Button.danger("suggestions:no:"+userID, Emoji.fromUnicode("\u2716")));
-                ButtonListener.buttons.put(userID, components);
+                components.add(Button.success("suggestions:yes:"+uuid, Emoji.fromMarkdown("\u2714")));
+                components.add(Button.danger("suggestions:no:"+uuid, Emoji.fromUnicode("\u2716")));
+                ButtonListener.buttons.put(uuid, components);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).addActionRow(components).queue(interactionHook -> {
                     // Timer task to disable buttons and clear cache after 3 minutes
                     Runnable task = () -> {
-                        List<Button> actionRow = ButtonListener.buttons.get(userID);
+                        List<Button> actionRow = ButtonListener.buttons.get(uuid);
                         for (int i = 0; i < actionRow.size(); i++) {
                             actionRow.set(i, actionRow.get(i).asDisabled());
                         }
                         interactionHook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                        ButtonListener.buttons.remove(userID);
+                        ButtonListener.buttons.remove(uuid);
                     };
                     ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
                 });

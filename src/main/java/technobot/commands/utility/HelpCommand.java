@@ -24,6 +24,7 @@ import technobot.util.embeds.EmbedUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
@@ -76,22 +77,23 @@ public class HelpCommand extends Command {
             ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
             if (embeds.size() > 1) {
                 long userID = event.getUser().getIdLong();
-                ButtonListener.menus.put(userID, embeds);
+                String uuid = userID + ":" + UUID.randomUUID();
+                ButtonListener.menus.put(uuid, embeds);
                 // Create buttons
                 List<Button> components = new ArrayList<>();
-                components.add(Button.primary("help:prev:"+userID, "PREVIOUS").asDisabled());
+                components.add(Button.primary("help:prev:"+uuid, "PREVIOUS").asDisabled());
                 components.add(Button.of(ButtonStyle.SECONDARY, "help:page:0", "1/"+embeds.size()).asDisabled());
-                components.add(Button.primary("help:next:"+userID, "NEXT"));
-                ButtonListener.buttons.put(userID, components);
+                components.add(Button.primary("help:next:"+uuid, "NEXT"));
+                ButtonListener.buttons.put(uuid, components);
                 action.addActionRow(components).queue(interactionHook -> {
                     // Timer task to disable buttons and clear cache after 3 minutes
                     Runnable task = () -> {
-                        List<Button> actionRow = ButtonListener.buttons.get(userID);
+                        List<Button> actionRow = ButtonListener.buttons.get(uuid);
                         actionRow.set(0, actionRow.get(0).asDisabled());
                         actionRow.set(2, actionRow.get(2).asDisabled());
                         interactionHook.editOriginalComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                        ButtonListener.buttons.remove(userID);
-                        ButtonListener.menus.remove(userID);
+                        ButtonListener.buttons.remove(uuid);
+                        ButtonListener.menus.remove(uuid);
                     };
                     ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
                 });

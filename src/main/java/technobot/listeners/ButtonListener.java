@@ -18,8 +18,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ButtonListener extends ListenerAdapter {
 
     public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
-    public static final Map<Long, List<MessageEmbed>> menus = new HashMap<>();
-    public static final Map<Long, List<Button>> buttons = new HashMap<>();
+    public static final Map<String, List<MessageEmbed>> menus = new HashMap<>();
+    public static final Map<String, List<Button>> buttons = new HashMap<>();
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -29,7 +29,10 @@ public class ButtonListener extends ListenerAdapter {
         // Check if user owns this menu
         long userID = Long.parseLong(pressedArgs[2]);
         if (userID != event.getUser().getIdLong()) return;
-        List<Button> components = buttons.get(userID);
+
+        // Get other buttons
+        String uuid = userID+":"+pressedArgs[3];
+        List<Button> components = buttons.get(uuid);
         if (components == null) return;
         String[] storedArgs = components.get(0).getId().split(":");
 
@@ -49,7 +52,7 @@ public class ButtonListener extends ListenerAdapter {
             if (pressedArgs[1].equals("next")) {
                 // Move to next embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) + 1;
-                List<MessageEmbed> embeds = menus.get(userID);
+                List<MessageEmbed> embeds = menus.get(uuid);
                 if (page < embeds.size()) {
                     // Update buttons
                     components.set(1, components.get(1).withId("help:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
@@ -57,13 +60,13 @@ public class ButtonListener extends ListenerAdapter {
                     if (page == embeds.size() - 1) {
                         components.set(2, components.get(2).asDisabled());
                     }
-                    buttons.put(userID, components);
+                    buttons.put(uuid, components);
                     event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
                 }
             } else if (pressedArgs[1].equals("prev")) {
                 // Move to previous embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) - 1;
-                List<MessageEmbed> embeds = menus.get(userID);
+                List<MessageEmbed> embeds = menus.get(uuid);
                 if (page >= 0) {
                     // Update buttons
                     components.set(1, components.get(1).withId("help:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
@@ -71,7 +74,7 @@ public class ButtonListener extends ListenerAdapter {
                     if (page == 0) {
                         components.set(0, components.get(0).asDisabled());
                     }
-                    buttons.put(userID, components);
+                    buttons.put(uuid, components);
                     event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
                 }
             }
