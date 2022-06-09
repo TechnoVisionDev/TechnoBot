@@ -13,6 +13,7 @@ import technobot.TechnoBot;
 import technobot.commands.fun.CuteCommand;
 import technobot.commands.fun.JokeCommand;
 import technobot.commands.fun.MemeCommand;
+import technobot.commands.fun.NsfwCommand;
 import technobot.commands.levels.*;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
@@ -50,6 +51,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new JokeCommand(bot),
                 new MemeCommand(bot),
                 new CuteCommand(bot),
+                new NsfwCommand(bot),
 
                 //Leveling commands
                 new RankCommand(bot),
