@@ -50,6 +50,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new NsfwCommand(bot),
                 new EightBallCommand(bot),
                 new GoogleCommand(bot),
+                new RedditCommand(bot),
 
                 //Leveling commands
                 new RankCommand(bot),
