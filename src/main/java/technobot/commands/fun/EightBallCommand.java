@@ -53,7 +53,7 @@ public class EightBallCommand extends Command {
             return;
         }
 
-        int index = ThreadLocalRandom.current().nextInt(14);
+        int index = ThreadLocalRandom.current().nextInt(responses.size());
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
                 .setTitle(question)
