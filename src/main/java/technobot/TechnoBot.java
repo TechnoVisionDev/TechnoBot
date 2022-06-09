@@ -1,5 +1,6 @@
 package technobot;
 
+import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
 import technobot.data.Database;
@@ -18,6 +20,9 @@ import technobot.listeners.*;
 import javax.security.auth.login.LoginException;
 
 public class TechnoBot {
+
+    public Gson gson;
+    public OkHttpClient httpClient;
 
     public final @NotNull Dotenv config;
     public final @NotNull ShardManager shardManager;
@@ -31,6 +36,10 @@ public class TechnoBot {
      * @throws LoginException throws if bot token is invalid.
      */
     public TechnoBot() throws LoginException {
+        //Setup HTTP tools
+        gson = new Gson();
+        httpClient = new OkHttpClient();
+
         //Setup Database
         config = Dotenv.configure().ignoreIfMissing().load();
         database = new Database(config.get("DATABASE", System.getenv("DATABASE")));

@@ -1,6 +1,5 @@
 package technobot.commands.fun;
 
-import com.google.gson.Gson;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import okhttp3.*;
 import technobot.TechnoBot;
@@ -17,13 +16,10 @@ import java.io.IOException;
  */
 public class JokeCommand extends Command {
 
-    private static final Gson gson = new Gson();
-    private static final OkHttpClient httpClient = new OkHttpClient();
-
     public JokeCommand(TechnoBot bot) {
         super(bot);
         this.name = "joke";
-        this.description = "Generate a random joke";
+        this.description = "Get a random joke.";
         this.category = Category.FUN;
     }
 
@@ -36,7 +32,7 @@ public class JokeCommand extends Command {
                 .build();
 
         // Asynchronous API call
-        httpClient.newCall(request).enqueue(new Callback() {
+        bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 String text = "I was unable to fetch any jokes!";
@@ -46,7 +42,7 @@ public class JokeCommand extends Command {
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 if (!response.isSuccessful()) throw new IOException();
-                Joke entity = gson.fromJson(response.body().string(), Joke.class);
+                Joke entity = bot.gson.fromJson(response.body().string(), Joke.class);
                 event.getHook().sendMessage(entity.joke).queue();
             }
         });
