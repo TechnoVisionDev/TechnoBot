@@ -49,6 +49,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new CuteCommand(bot),
                 new NsfwCommand(bot),
                 new EightBallCommand(bot),
+                new GoogleCommand(bot),
 
                 //Leveling commands
                 new RankCommand(bot),
