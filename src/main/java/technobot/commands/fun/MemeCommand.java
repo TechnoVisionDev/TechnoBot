@@ -31,7 +31,7 @@ public class MemeCommand extends Command {
         this.args.add(new OptionData(OptionType.STRING, "category", "The type of meme to generate")
                 .addChoice("meme", "meme")
                 .addChoice("dankmeme", "dankmemes")
-                .addChoice("surreal", "surreal")
+                .addChoice("surreal", "surrealmemes")
                 .addChoice("me_irl", "me_irl")
                 .addChoice("wholesome", "wholesomememes"));
     }
