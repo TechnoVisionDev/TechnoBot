@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.Role;
  *
  * @author TechnoVision
  */
-public class UtilityMethods {
+public class CommandUtils {
 
     /**
      * Checks if a bot has a certain permission or is administrator.

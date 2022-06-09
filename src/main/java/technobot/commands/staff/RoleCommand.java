@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.UtilityMethods;
+import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
 
 /**
@@ -44,7 +44,7 @@ public class RoleCommand extends Command {
 
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!UtilityMethods.hasPermission(botRole, this.permission) || role.isManaged()) {
+        if (!CommandUtils.hasPermission(botRole, this.permission) || role.isManaged()) {
             event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
             return;
         }

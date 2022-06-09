@@ -13,7 +13,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Leveling;
-import technobot.util.UtilityMethods;
+import technobot.util.CommandUtils;
 import technobot.util.placeholders.Placeholder;
 import technobot.util.placeholders.PlaceholderFactory;
 
@@ -115,7 +115,7 @@ public class LevelingListener extends ListenerAdapter {
                     Role role = event.getGuild().getRoleById(reward.getKey());
                     Role botRole = event.getGuild().getBotRole();
                     if (role != null && !memberRoles.contains(role) && !role.isManaged()) {
-                        if (role.getPosition() < botRole.getPosition() && UtilityMethods.hasPermission(event.getGuild().getBotRole(), Permission.MANAGE_ROLES)) {
+                        if (role.getPosition() < botRole.getPosition() && CommandUtils.hasPermission(event.getGuild().getBotRole(), Permission.MANAGE_ROLES)) {
                             event.getGuild().addRoleToMember(event.getAuthor(), role).queue();
                         }
                     }

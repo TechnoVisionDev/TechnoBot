@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.fun.CuteCommand;
 import technobot.commands.fun.JokeCommand;
 import technobot.commands.fun.MemeCommand;
 import technobot.commands.levels.*;
@@ -48,6 +49,7 @@ public class CommandRegistry extends ListenerAdapter {
                 //Fun commands
                 new JokeCommand(bot),
                 new MemeCommand(bot),
+                new CuteCommand(bot),
 
                 //Leveling commands
                 new RankCommand(bot),

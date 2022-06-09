@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.UtilityMethods;
+import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
 
 import java.time.Duration;
@@ -37,7 +37,7 @@ public class SlowmodeCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!UtilityMethods.hasPermission(botRole, this.permission)) {
+        if (!CommandUtils.hasPermission(botRole, this.permission)) {
             event.replyEmbeds(EmbedUtils.createError("I couldn't set slowmode here. Please check my role and channel permissions.")).queue();
             return;
         }
