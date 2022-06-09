@@ -8,6 +8,9 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Command that googles something for the user.
  *
@@ -30,13 +33,7 @@ public class GoogleCommand extends Command {
             event.replyEmbeds(EmbedUtils.createError("google doesn't like questions longer than 250 characters!")).queue();
             return;
         }
-
-        StringBuilder query = new StringBuilder("?q=");
-        String[] words = question.strip().split(" ");
-        for (int i = 0; i < words.length; i++) {
-            query.append(words[i]);
-            if (i+1 != words.length) query.append("+");
-        }
-        event.reply("http://lmgtfy.com/"+query).queue();
+        String query = URLEncoder.encode(question, StandardCharsets.UTF_8);
+        event.reply("http://lmgtfy.com/?q="+query).queue();
     }
 }
