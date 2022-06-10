@@ -59,6 +59,7 @@ public class PlayCommand extends Command {
             } catch (MalformedURLException e) {
                 // Else search youtube using args
                 url = "ytsearch:" + song;
+                music.setLogChannel(event.getTextChannel());
                 bot.musicListener.addTrack(event, url);
                 return;
             }
@@ -68,6 +69,7 @@ public class PlayCommand extends Command {
                 url = "ytsearch:" + contents[3] + "/" + contents[4];
             }
             // Otherwise add real URL to queue
+            music.setLogChannel(event.getTextChannel());
             bot.musicListener.addTrack(event, url);
         } catch (IndexOutOfBoundsException e) {
             String text = "Please specify a song a to play.";

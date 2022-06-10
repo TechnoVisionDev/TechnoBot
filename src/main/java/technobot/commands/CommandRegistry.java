@@ -1,6 +1,5 @@
 package technobot.commands;
 
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.fun.*;
 import technobot.commands.levels.*;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
@@ -43,6 +43,16 @@ public class CommandRegistry extends ListenerAdapter {
      */
     public CommandRegistry(TechnoBot bot) {
         mapCommand(
+                //Fun commands
+                new JokeCommand(bot),
+                new MemeCommand(bot),
+                new CuteCommand(bot),
+                new NsfwCommand(bot),
+                new EightBallCommand(bot),
+                new GoogleCommand(bot),
+                new RedditCommand(bot),
+                new SurpriseCommand(bot),
+
                 //Leveling commands
                 new RankCommand(bot),
                 new TopCommand(bot),

@@ -4,12 +4,14 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.UtilityMethods;
+import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -38,7 +40,7 @@ public class ClearCommand extends Command {
 
         // Check that bot has necessary permissions
         Role botRole = event.getGuild().getBotRole();
-        if (!UtilityMethods.hasPermission(botRole, this.permission)) {
+        if (!CommandUtils.hasPermission(botRole, this.permission)) {
             event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't delete those messages. Please check my role and channel permissions.")).queue();
             return;
         }
@@ -47,9 +49,12 @@ public class ClearCommand extends Command {
         event.getChannel().getHistory().retrievePast(Math.min(amount + 1, 100)).queue(messages -> {
             try {
                 // Delete messages and notify user
-                ((TextChannel) event.getChannel()).deleteMessages(messages).queue();
-                String text = ":ballot_box_with_check: I have deleted `%d messages!`".formatted(amount);
-                event.getHook().sendMessage(text).queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
+                ((TextChannel) event.getChannel()).deleteMessages(messages).queue(result -> {
+                    String text = ":ballot_box_with_check: I have deleted `%d messages!`".formatted(amount);
+                    event.getHook().sendMessage(text).queue(message -> {
+                        message.delete().queueAfter(3, TimeUnit.SECONDS, succ -> {}, fail -> {});
+                    });
+                });
             } catch (IllegalArgumentException e) {
                 // Messages were older than 2 weeks
                 String text = "You cannot clear messages older than 2 weeks!";
