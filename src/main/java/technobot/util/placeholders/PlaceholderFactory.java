@@ -102,6 +102,8 @@ public interface PlaceholderFactory extends Supplier<Placeholder> {
             placeholder.add("username", user.getAsTag());
             placeholder.add("user_id", user.getId());
             placeholder.add("user_mention", "<@!" + user.getId() + ">");
+            placeholder.add("mention", "<@!" + user.getId() + ">");
+            placeholder.add("avatar", user.getEffectiveAvatarUrl());
             placeholder.add("user_avatar", user.getEffectiveAvatarUrl());
             placeholder.add("user_icon", user.getEffectiveAvatarUrl());
         });
@@ -132,6 +134,8 @@ public interface PlaceholderFactory extends Supplier<Placeholder> {
     @SuppressWarnings("UnusedReturnValue")
     default @NotNull PlaceholderFactory withGuildCapabilities(@NotNull Guild guild) {
         accept(placeholder -> {
+            placeholder.add("server", guild.getName());
+            placeholder.add("guild", guild.getName());
             placeholder.add("guild_name", guild.getName());
             placeholder.add("guild_id", guild.getId());
             placeholder.add("guild_icon", guild.getIconUrl());
@@ -155,6 +159,7 @@ public interface PlaceholderFactory extends Supplier<Placeholder> {
             });
         }
         accept(placeholder -> {
+            placeholder.add("channel", channel.getName());
             placeholder.add("channel_name", channel.getName());
             placeholder.add("channel_id", channel.getId());
             placeholder.add("channel_mention", "<#" + channel.getId() + ">");

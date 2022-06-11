@@ -51,6 +51,69 @@ public class GreetingHandler {
     }
 
     /**
+     * Gets the greet message.
+     *
+     * @return string greet message.
+     */
+    public String getGreet() {
+        return greetings.getGreeting();
+    }
+
+    /**
+     * Set a farewell message for this server.
+     *
+     * @param msg the message to send on member leave.
+     */
+    public void setFarewell(String msg) {
+        greetings.setFarewell(msg);
+        bot.database.greetings.updateOne(filter, Updates.set("farewell", msg));
+    }
+
+    /**
+     * Remove farewell message from this server.
+     */
+    public void removeFarewell() {
+        greetings.setGreeting(null);
+        bot.database.greetings.updateOne(filter, Updates.unset("farewell"));
+    }
+
+    /**
+     * Gets the farewell message.
+     *
+     * @return string farewell message.
+     */
+    public String getFarewell() {
+        return greetings.getFarewell();
+    }
+
+    /**
+     * Set a join DM message for this server.
+     *
+     * @param msg the message to send on member leave.
+     */
+    public void setJoinDM(String msg) {
+        greetings.setJoinDM(msg);
+        bot.database.greetings.updateOne(filter, Updates.set("join_dm", msg));
+    }
+
+    /**
+     * Remove join DM message from this server.
+     */
+    public void removeJoinDM() {
+        greetings.setJoinDM(null);
+        bot.database.greetings.updateOne(filter, Updates.unset("join_dm"));
+    }
+
+    /**
+     * Gets the join DM message.
+     *
+     * @return string farewell message.
+     */
+    public String getJoinDM() {
+        return greetings.getJoinDM();
+    }
+
+    /**
      * Set the welcome channel.
      *
      * @param channelID the ID of the channel to set.
@@ -68,6 +131,20 @@ public class GreetingHandler {
         bot.database.greetings.updateOne(filter, Updates.unset("welcome_channel"));
     }
 
+    /**
+     * Gets the ID of the welcome channel.
+     *
+     * @return long id of the welcome channel.
+     */
+    public Long getChannel() {
+        return greetings.getWelcomeChannel();
+    }
+
+    /**
+     * Getter for greetings config POJO object.
+     *
+     * @return instance of greetings config POJO.
+     */
     public Greetings getConfig() {
         return greetings;
     }

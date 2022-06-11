@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.data.cache.Config;
-import technobot.data.cache.Suggestion;
 import technobot.handlers.*;
 
 import java.util.HashMap;
