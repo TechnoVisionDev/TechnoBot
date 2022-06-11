@@ -11,11 +11,8 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
-import technobot.data.cache.Config;
-import technobot.data.cache.Leveling;
-import technobot.data.cache.Suggestion;
+import technobot.data.cache.*;
 import technobot.data.cache.moderation.Moderation;
-import technobot.data.cache.Starboard;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -33,6 +30,7 @@ public class Database {
     public @NotNull MongoCollection<Starboard> starboard;
     public @NotNull MongoCollection<Leveling> leveling;
     public @NotNull MongoCollection<Config> config;
+    public @NotNull MongoCollection<Greetings> greetings;
 
     /**
      * Connect to database using MongoDB URI and
@@ -57,12 +55,14 @@ public class Database {
         starboard = database.getCollection("starboard", Starboard.class);
         leveling = database.getCollection("leveling", Leveling.class);
         config = database.getCollection("config", Config.class);
+        greetings = database.getCollection("greetings", Greetings.class);
 
         Bson guildIndex = Indexes.descending("guild");
         suggestions.createIndex(guildIndex);
         moderation.createIndex(guildIndex);
         starboard.createIndex(guildIndex);
         config.createIndex(guildIndex);
+        greetings.createIndex(guildIndex);
         leveling.createIndex(Indexes.compoundIndex(guildIndex, Indexes.descending("user")));
     }
 }

@@ -33,6 +33,7 @@ public class GuildData {
     public ModerationHandler moderationHandler;
     public StarboardHandler starboardHandler;
     public LevelingHandler levelingHandler;
+    public GreetingHandler greetingHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -46,6 +47,7 @@ public class GuildData {
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
         levelingHandler = new LevelingHandler(bot, guild);
+        greetingHandler = new GreetingHandler(bot, guild);
 
         // Setup guild config
         config = bot.database.config.find(Filters.eq("guild", guild.getIdLong())).first();
