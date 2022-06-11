@@ -22,7 +22,7 @@ public class JoinDMCommand extends Command {
     public JoinDMCommand(TechnoBot bot) {
         super(bot);
         this.name = "join-dm";
-        this.description = "Sets a message to be private messaged when a member joins.";
+        this.description = "Set a private message to be sent when a member joins.";
         this.category = Category.GREETINGS;
         this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a DM"));
         this.permission = Permission.MANAGE_SERVER;

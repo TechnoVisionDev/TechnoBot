@@ -22,7 +22,7 @@ public class FarewellCommand extends Command {
     public FarewellCommand(TechnoBot bot) {
         super(bot);
         this.name = "farewell";
-        this.description = "Sets a farewell to be sent to the welcome channel when a member leaves.";
+        this.description = "Set a farewell to be sent to the welcome channel when a member leaves.";
         this.category = Category.GREETINGS;
         this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a farewell"));
         this.permission = Permission.MANAGE_SERVER;

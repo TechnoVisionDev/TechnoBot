@@ -22,7 +22,7 @@ public class GreetCommand extends Command {
     public GreetCommand(TechnoBot bot) {
         super(bot);
         this.name = "greet";
-        this.description = "Sets a message to be sent to the welcome channel when a member joins.";
+        this.description = "Set a greeting to be sent to the welcome channel when a member joins.";
         this.category = Category.GREETINGS;
         this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a greeting"));
         this.permission = Permission.MANAGE_SERVER;
