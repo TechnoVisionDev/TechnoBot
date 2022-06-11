@@ -5,6 +5,8 @@ import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.GuildData;
+import technobot.data.cache.Config;
 import technobot.data.cache.Greetings;
 
 /**
@@ -147,5 +149,13 @@ public class GreetingHandler {
      */
     public Greetings getConfig() {
         return greetings;
+    }
+
+    /**
+     * Resets all config data for greeting system.
+     */
+    public void reset() {
+        greetings = new Greetings(guild.getIdLong());
+        bot.database.greetings.replaceOne(filter, greetings);
     }
 }

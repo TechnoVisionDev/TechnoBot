@@ -75,7 +75,7 @@ public class LevelingHandler {
      */
     public void resetAll() {
         leaderboard.clear();
-        Bson query = Filters.and(Filters.eq("guild", guild.getIdLong()));
+        Bson query = Filters.eq("guild", guild.getIdLong());
         bot.database.leveling.deleteMany(query);
         Config config = new Config(guild.getIdLong());
         bot.database.config.replaceOne(query, config);

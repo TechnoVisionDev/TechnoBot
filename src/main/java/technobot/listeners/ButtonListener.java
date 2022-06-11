@@ -36,19 +36,7 @@ public class ButtonListener extends ListenerAdapter {
         if (components == null) return;
         String[] storedArgs = components.get(0).getId().split(":");
 
-        if (pressedArgs[0].equals("suggestions") && storedArgs[0].equals("suggestions")) {
-            if (pressedArgs[1].equals("yes")) {
-                event.deferEdit().queue();
-                GuildData.get(event.getGuild()).suggestionHandler.reset();
-                MessageEmbed embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
-                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-            } else if (pressedArgs[1].equals("no")) {
-                event.deferEdit().queue();
-                MessageEmbed embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
-                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
-            }
-        }
-        else if (pressedArgs[0].equals("help") && storedArgs[0].equals("help")) {
+        if (pressedArgs[0].equals("help") && storedArgs[0].equals("help")) {
             if (pressedArgs[1].equals("next")) {
                 // Move to next embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) + 1;
@@ -77,6 +65,30 @@ public class ButtonListener extends ListenerAdapter {
                     buttons.put(uuid, components);
                     event.editComponents(ActionRow.of(components)).setEmbeds(embeds.get(page)).queue();
                 }
+            }
+        }
+        else if (pressedArgs[0].equals("suggestions") && storedArgs[0].equals("suggestions")) {
+            if (pressedArgs[1].equals("yes")) {
+                event.deferEdit().queue();
+                GuildData.get(event.getGuild()).suggestionHandler.reset();
+                MessageEmbed embed = EmbedUtils.createSuccess("Suggestion system was successfully reset!");
+                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
+            } else if (pressedArgs[1].equals("no")) {
+                event.deferEdit().queue();
+                MessageEmbed embed = EmbedUtils.createError("Suggestion system was **NOT** reset!");
+                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
+            }
+        }
+        else if (pressedArgs[0].equals("greetings") && storedArgs[0].equals("greetings")) {
+            if (pressedArgs[1].equals("yes")) {
+                event.deferEdit().queue();
+                GuildData.get(event.getGuild()).greetingHandler.reset();
+                MessageEmbed embed = EmbedUtils.createSuccess("Greeting system was successfully reset!");
+                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
+            } else if (pressedArgs[1].equals("no")) {
+                event.deferEdit().queue();
+                MessageEmbed embed = EmbedUtils.createError("Greeting system was **NOT** reset!");
+                event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
             }
         }
     }
