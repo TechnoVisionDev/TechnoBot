@@ -172,16 +172,16 @@ Below are some resources that have been instrumental in making this project a re
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/TechnoVisionDev/TechnoBot-Dashboard.svg?style=for-the-badge
-[contributors-url]: https://github.com/TechnoVisionDev/TechnoBot-Dashboard/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/TechnoVisionDev/TechnoBot-Dashboard.svg?style=for-the-badge
-[forks-url]: https://github.com/TechnoVisionDev/TechnoBot-Dashboard/network/members
-[stars-shield]: https://img.shields.io/github/stars/TechnoVisionDev/TechnoBot-Dashboard.svg?style=for-the-badge
-[stars-url]: https://github.com/TechnoVisionDev/TechnoBot-Dashboard/stargazers
-[issues-shield]: https://img.shields.io/github/issues/TechnoVisionDev/TechnoBot-Dashboard.svg?style=for-the-badge
-[issues-url]: https://github.com/TechnoVisionDev/TechnoBot-Dashboard/issues
-[license-shield]: https://img.shields.io/github/license/TechnoVisionDev/TechnoBot-Dashboard.svg?style=for-the-badge
-[license-url]: https://github.com/TechnoVisionDev/TechnoBot-Dashboard/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[contributors-url]: https://github.com/TechnoVisionDev/TechnoBot/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[forks-url]: https://github.com/TechnoVisionDev/TechnoBot/network/members
+[stars-shield]: https://img.shields.io/github/stars/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[stars-url]: https://github.com/TechnoVisionDev/TechnoBot/stargazers
+[issues-shield]: https://img.shields.io/github/issues/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[issues-url]: https://github.com/TechnoVisionDev/TechnoBot/issues
+[license-shield]: https://img.shields.io/github/license/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[license-url]: https://github.com/TechnoVisionDev/TechnoBot/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/thomaspeters
 [product-screenshot]: src/main/webapp/assets/github/screenshot.png
