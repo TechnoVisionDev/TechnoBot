@@ -13,18 +13,18 @@ import technobot.handlers.GreetingHandler;
 import technobot.util.embeds.EmbedUtils;
 
 /**
- * Command that configures auto farewells.
+ * Command that configures auto join DMs.
  *
  * @author TechnoVision
  */
-public class FarewellCommand extends Command {
+public class JoinDMCommand extends Command {
 
-    public FarewellCommand(TechnoBot bot) {
+    public JoinDMCommand(TechnoBot bot) {
         super(bot);
-        this.name = "farewell";
-        this.description = "Sets a farewell to be sent to the welcome channel when a member leaves.";
+        this.name = "join-dm";
+        this.description = "Sets a message to be private messaged when a member joins.";
         this.category = Category.GREETINGS;
-        this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a farewell"));
+        this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a DM"));
         this.permission = Permission.MANAGE_SERVER;
     }
 
@@ -36,15 +36,15 @@ public class FarewellCommand extends Command {
 
         // Remove farewell message
         if (farewellOption == null) {
-            greetingHandler.removeFarewell();
-            String text = EmbedUtils.BLUE_X + " Farewell message successfully removed!";
+            greetingHandler.removeJoinDM();
+            String text = EmbedUtils.BLUE_X + " Join DM message successfully removed!";
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
-        greetingHandler.setFarewell(farewellOption.getAsString());
-        String text = EmbedUtils.BLUE_TICK + " Farewell message successfully updated!";
+        greetingHandler.setJoinDM(farewellOption.getAsString());
+        String text = EmbedUtils.BLUE_TICK + " Join DM message successfully updated!";
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

@@ -13,6 +13,7 @@ import technobot.commands.fun.*;
 import technobot.commands.greetings.FarewellCommand;
 import technobot.commands.greetings.GreetCommand;
 import technobot.commands.greetings.GreetingsCommand;
+import technobot.commands.greetings.JoinDMCommand;
 import technobot.commands.levels.*;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
@@ -49,6 +50,7 @@ public class CommandRegistry extends ListenerAdapter {
                 //Greeting commands
                 new GreetCommand(bot),
                 new FarewellCommand(bot),
+                new JoinDMCommand(bot),
                 new GreetingsCommand(bot),
 
                 //Fun commands
