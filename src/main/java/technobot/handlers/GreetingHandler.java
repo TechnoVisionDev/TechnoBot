@@ -73,7 +73,7 @@ public class GreetingHandler {
      * Remove farewell message from this server.
      */
     public void removeFarewell() {
-        greetings.setGreeting(null);
+        greetings.setFarewell(null);
         bot.database.greetings.updateOne(filter, Updates.unset("farewell"));
     }
 

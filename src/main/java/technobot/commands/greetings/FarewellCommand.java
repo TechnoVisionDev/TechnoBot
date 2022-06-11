@@ -17,14 +17,14 @@ import technobot.util.embeds.EmbedUtils;
  *
  * @author TechnoVision
  */
-public class GreetCommand extends Command {
+public class FarewellCommand extends Command {
 
-    public GreetCommand(TechnoBot bot) {
+    public FarewellCommand(TechnoBot bot) {
         super(bot);
-        this.name = "greet";
-        this.description = "Sets a message to be sent to the welcome channel when a member joins.";
+        this.name = "farewell";
+        this.description = "Sets a farewell to be sent to the welcome channel when a member leaves.";
         this.category = Category.GREETINGS;
-        this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a greeting"));
+        this.args.add(new OptionData(OptionType.STRING, "message", "The message to send as a farewell"));
         this.permission = Permission.MANAGE_SERVER;
     }
 
@@ -32,19 +32,19 @@ public class GreetCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         GreetingHandler greetingHandler = GuildData.get(event.getGuild()).greetingHandler;
-        OptionMapping greetingOption = event.getOption("message");
+        OptionMapping farewellOption = event.getOption("message");
 
-        // Remove greeting message
-        if (greetingOption == null) {
-            greetingHandler.removeGreet();
-            String text = EmbedUtils.BLUE_X + " Greeting message successfully removed!";
+        // Remove farewell message
+        if (farewellOption == null) {
+            greetingHandler.removeFarewell();
+            String text = EmbedUtils.BLUE_X + " Farewell message successfully removed!";
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
-        greetingHandler.setGreet(greetingOption.getAsString());
-        String text = EmbedUtils.BLUE_TICK + " Greeting message successfully updated!";
+        greetingHandler.setFarewell(farewellOption.getAsString());
+        String text = EmbedUtils.BLUE_TICK + " Farewell message successfully updated!";
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

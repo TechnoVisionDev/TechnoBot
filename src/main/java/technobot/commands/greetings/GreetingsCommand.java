@@ -79,7 +79,7 @@ public class GreetingsCommand extends Command {
         if (greetings.getGreeting() == null) {
             text += "**Greeting:** none\n";
         } else {
-            text += "**Greeting:** '" + greetings.getGreeting() + "'\n";
+            text += "**Greeting:** " + greetings.getGreeting() + "\n";
         }
         if (greetings.getFarewell() == null) {
             text += "**Farewell:** none\n";
