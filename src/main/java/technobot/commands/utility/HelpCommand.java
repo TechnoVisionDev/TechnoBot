@@ -21,10 +21,7 @@ import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
@@ -47,7 +44,7 @@ public class HelpCommand extends Command {
 
     public void execute(SlashCommandInteractionEvent event) {
         // Create a hashmap that groups commands by categories.
-        HashMap<Category, List<Command>> categories = new HashMap<>();
+        HashMap<Category, List<Command>> categories = new LinkedHashMap<>();
         EmbedBuilder builder = new EmbedBuilder().setColor(EmbedColor.DEFAULT.color);
         for (Category category : Category.values()) {
             categories.put(category, new ArrayList<>());

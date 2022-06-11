@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.fun.*;
 import technobot.commands.greetings.GreetCommand;
+import technobot.commands.greetings.GreetingsCommand;
 import technobot.commands.levels.*;
 import technobot.commands.music.*;
 import technobot.commands.staff.*;
@@ -46,6 +47,7 @@ public class CommandRegistry extends ListenerAdapter {
         mapCommand(
                 //Greeting commands
                 new GreetCommand(bot),
+                new GreetingsCommand(bot),
 
                 //Fun commands
                 new JokeCommand(bot),
@@ -142,7 +144,9 @@ public class CommandRegistry extends ListenerAdapter {
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         String name = event.getName();
         Command cmd = commandsMap.get(name);
-        cmd.execute(event);
+        if (cmd != null) {
+            cmd.execute(event);
+        }
     }
 
     /**

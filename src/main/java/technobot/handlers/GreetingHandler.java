@@ -49,4 +49,26 @@ public class GreetingHandler {
         greetings.setGreeting(null);
         bot.database.greetings.updateOne(filter, Updates.unset("greeting"));
     }
+
+    /**
+     * Set the welcome channel.
+     *
+     * @param channelID the ID of the channel to set.
+     */
+    public void setChannel(Long channelID) {
+        greetings.setWelcomeChannel(channelID);
+        bot.database.greetings.updateOne(filter, Updates.set("welcome_channel", channelID));
+    }
+
+    /**
+     * Remove the welcome channel.
+     */
+    public void removeChannel() {
+        greetings.setWelcomeChannel(null);
+        bot.database.greetings.updateOne(filter, Updates.unset("welcome_channel"));
+    }
+
+    public Greetings getConfig() {
+        return greetings;
+    }
 }

@@ -24,6 +24,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Command that displays and modifies leveling config.
+ *
+ * @author TechnoVision
+ */
 public class LevelingCommand extends Command {
 
     public LevelingCommand(TechnoBot bot) {
