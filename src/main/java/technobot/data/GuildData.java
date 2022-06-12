@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.data.cache.Config;
 import technobot.handlers.*;
+import technobot.handlers.economy.EconomyHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class GuildData {
     public StarboardHandler starboardHandler;
     public LevelingHandler levelingHandler;
     public GreetingHandler greetingHandler;
+    public EconomyHandler economyHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -47,6 +49,7 @@ public class GuildData {
         starboardHandler = new StarboardHandler(bot, guild);
         levelingHandler = new LevelingHandler(bot, guild);
         greetingHandler = new GreetingHandler(bot, guild);
+        economyHandler = new EconomyHandler(bot, guild);
 
         // Setup guild config
         config = bot.database.config.find(Filters.eq("guild", guild.getIdLong())).first();

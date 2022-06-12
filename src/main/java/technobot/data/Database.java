@@ -31,6 +31,7 @@ public class Database {
     public @NotNull MongoCollection<Leveling> leveling;
     public @NotNull MongoCollection<Config> config;
     public @NotNull MongoCollection<Greetings> greetings;
+    public @NotNull MongoCollection<Economy> economy;
 
     /**
      * Connect to database using MongoDB URI and
@@ -56,6 +57,7 @@ public class Database {
         leveling = database.getCollection("leveling", Leveling.class);
         config = database.getCollection("config", Config.class);
         greetings = database.getCollection("greetings", Greetings.class);
+        economy = database.getCollection("economy", Economy.class);
 
         Bson guildIndex = Indexes.descending("guild");
         suggestions.createIndex(guildIndex);
@@ -64,5 +66,6 @@ public class Database {
         config.createIndex(guildIndex);
         greetings.createIndex(guildIndex);
         leveling.createIndex(Indexes.compoundIndex(guildIndex, Indexes.descending("user")));
+        economy.createIndex(Indexes.compoundIndex(guildIndex, Indexes.descending("user")));
     }
 }
