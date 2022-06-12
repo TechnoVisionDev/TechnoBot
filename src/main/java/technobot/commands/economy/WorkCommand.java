@@ -34,7 +34,7 @@ public class WorkCommand extends Command {
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.getTimeoutFormatted(user, EconomyHandler.TIMEOUT_TYPE.WORK);
-            embed.setDescription(":stopwatch: You can next work in " + timestamp + ".");
+            embed.setDescription(":stopwatch: You can next work " + timestamp + ".");
             embed.setColor(EmbedColor.ERROR.color);
         } else {
             // Work
