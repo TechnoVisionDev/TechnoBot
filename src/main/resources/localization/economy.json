@@ -11,14 +11,14 @@
     "You find a rare fossil on the beach and sell it to the museum for {amount}.",
     "You invested in the right stocks a the right time, earning {amount}.",
     "Your NFT collection surges in price, so you sell them for {amount}.",
-    "You finished digging in The Seven Dwarve's mines for the day, They pay you {amount}."
+    "You finished digging in The Seven Dwarves' mines for the day. They pay you {amount}."
   ],
   "crimeSuccess": [
     "You work for the Juarez cartel as a brick-presser and earn {amount}! They'll probably kill you and your family tomorrow. Just saying.",
     "You rob an orphanage for {amount}.",
     "You break into the house next door and sell their gaming PC on E-Bay for {amount}.",
     "You work as a scam seller on Amazon selling fake airpods for full price and make {amount}.",
-    "You break into Rapunzel's kingdom and steal her hair. You sell it on the black market for {amount}."
+    "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {amount}."
   ],
   "crimeFail": [
     "You break into the house next door only to find the whole family eating dinner together. The police fine you {amount}.",
