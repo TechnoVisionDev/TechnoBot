@@ -90,6 +90,9 @@ Below is a comprehensive list of the frameworks and libraries used to build the 
 * [Java Discord API](https://github.com/DV8FromTheWorld/JDA)
 * [MongoDB Java Driver](https://mongodb.github.io/mongo-java-driver)
 * [DotEnv](https://github.com/cdimascio/dotenv-java)
+* [LavaPlayer](https://github.com/Walkyst/lavaplayer-fork)
+* [Gson](https://github.com/google/gson)
+* [OkHttp](https://github.com/square/okhttp)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
