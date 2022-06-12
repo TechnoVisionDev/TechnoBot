@@ -55,7 +55,7 @@ public class EconomyLocalization {
     public EconomyReply getCrimeSuccessResponse(int amount) {
         int index = ThreadLocalRandom.current().nextInt(crimeSuccess.length);
         String reply = crimeSuccess[index].replace("{amount}",EconomyHandler.DEFAULT_CURRENCY+" "+amount);
-        return new EconomyReply(reply, index+1);
+        return new EconomyReply(reply, index+1, true);
     }
 
     /**
@@ -67,6 +67,6 @@ public class EconomyLocalization {
     public EconomyReply getCrimeFailResponse(int amount) {
         int index = ThreadLocalRandom.current().nextInt(crimeFail.length);
         String reply = crimeFail[index].replace("{amount}",EconomyHandler.DEFAULT_CURRENCY+" "+amount);
-        return new EconomyReply(reply, index+1);
+        return new EconomyReply(reply, index+1, false);
     }
 }

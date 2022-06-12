@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.cache.Economy;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -50,6 +52,49 @@ public class EconomyHandler {
     }
 
     /**
+     * 40% chance to add 250-700 to user's balance.
+     * 60% chance to lose 20%-40% of user's balance.
+     *
+     * @param userID the ID of user whose balance to add to.
+     * @return an EconomyReply object with response, ID number, and success boolean.
+     */
+    public EconomyReply crime(long userID) {
+        int amount;
+        EconomyReply reply;
+        if (ThreadLocalRandom.current().nextInt(100) <= 40) {
+            // Crime successful
+            amount = ThreadLocalRandom.current().nextInt(450) + 250;
+            addMoney(userID, amount);
+            reply = responses.getCrimeSuccessResponse(amount);
+        } else {
+            // Crime failed
+            long balance = getBalance(userID);
+            amount = 0;
+            if (balance > 0) {
+                double percent = (ThreadLocalRandom.current().nextInt(20) + 20) * 0.01;
+                amount = (int) (balance * percent);
+            }
+            removeMoney(userID, amount);
+            reply = responses.getCrimeFailResponse(amount);
+        }
+        setTimeout(userID, TIMEOUT_TYPE.CRIME);
+        return reply;
+    }
+
+    /**
+     * Get a user's current balance.
+     *
+     * @param userID the ID of the user to get balance from.
+     * @return the integer value of user's balance.
+     */
+    public long getBalance(long userID) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        Economy profile = bot.database.economy.find(filter).first();
+        if (profile == null) return 0;
+        return profile.getBalance();
+    }
+
+    /**
      * Add money to this user's account
      *
      * @param amount the amount of money to add.
@@ -83,7 +128,6 @@ public class EconomyHandler {
         }
         switch(type) {
             case WORK -> userTimeout.setWorkTimeout(time);
-            case SLUT -> userTimeout.setSlutTimeout(time);
             case CRIME -> userTimeout.setCrimeTimeout(time);
             case ROB -> userTimeout.setRobTimeout(time);
         }
@@ -99,15 +143,26 @@ public class EconomyHandler {
      */
     public @Nullable Long getTimeout(long userID, TIMEOUT_TYPE type) {
         UserTimeout userTimeout = timeouts.get(userID);
-        if (userTimeout == null) return null;
+        if (userTimeout == null) {
+            return null;
+        }
         Long timeout = null;
         switch(type) {
             case WORK -> timeout = userTimeout.getWorkTimeout();
-            case SLUT -> timeout = userTimeout.getSlutTimeout();
             case CRIME -> timeout = userTimeout.getCrimeTimeout();
             case ROB -> timeout = userTimeout.getRobTimeout();
         }
         return timeout;
+    }
+
+    /**
+     * Formats timeout timestamp into a string timestamp for embeds.
+     *
+     * @param timeout the timestamp in millis.
+     * @return a string timeout formatted for embeds.
+     */
+    public @Nullable String formatTimeout(long timeout) {
+        return TimeFormat.RELATIVE.format(timeout);
     }
 
     /**
@@ -127,6 +182,6 @@ public class EconomyHandler {
      * The different types of timeouts
      */
     public enum TIMEOUT_TYPE {
-        WORK, SLUT, CRIME, ROB
+        WORK, CRIME, ROB
     }
 }

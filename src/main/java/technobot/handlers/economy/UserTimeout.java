@@ -9,7 +9,6 @@ public class UserTimeout {
 
     private final long user;
     private Long workTimeout;
-    private Long slutTimeout;
     private Long crimeTimeout;
     private Long robTimeout;
 
@@ -27,14 +26,6 @@ public class UserTimeout {
 
     public void setWorkTimeout(Long workTimeout) {
         this.workTimeout = workTimeout;
-    }
-
-    public Long getSlutTimeout() {
-        return slutTimeout;
-    }
-
-    public void setSlutTimeout(Long slutTimeout) {
-        this.slutTimeout = slutTimeout;
     }
 
     public Long getCrimeTimeout() {

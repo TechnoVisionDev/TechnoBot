@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.economy.CrimeCommand;
 import technobot.commands.economy.WorkCommand;
 import technobot.commands.fun.*;
 import technobot.commands.greetings.FarewellCommand;
@@ -50,6 +51,7 @@ public class CommandRegistry extends ListenerAdapter {
         mapCommand(
                 //Economy commands
                 new WorkCommand(bot),
+                new CrimeCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),
