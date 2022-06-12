@@ -7,6 +7,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
+import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 
 /**
@@ -38,9 +39,10 @@ public class WorkCommand extends Command {
             embed.setColor(EmbedColor.ERROR.color);
         } else {
             // Work
-            int amount = economyHandler.work(user);
-            embed.setDescription("You work for the day and receive " + EconomyHandler.DEFAULT_CURRENCY + " " + amount + ".");
+            EconomyReply reply = economyHandler.work(user);
+            embed.setDescription(reply.getResponse());
             embed.setColor(EmbedColor.SUCCESS.color);
+            embed.setFooter("Reply #"+reply.getId());
         }
         event.getHook().sendMessageEmbeds(embed.build()).queue();
     }

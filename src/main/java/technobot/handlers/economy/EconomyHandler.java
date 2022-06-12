@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,6 +22,7 @@ public class EconomyHandler {
     public static final long DEFAULT_TIMEOUT = 14400000;
     public static final String DEFAULT_CURRENCY = "\uD83E\uDE99";
     private static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
+    private static final EconomyLocalization responses = new EconomyLocalization();
 
     private final Guild guild;
     private final TechnoBot bot;
@@ -37,16 +37,16 @@ public class EconomyHandler {
     }
 
     /**
-     * Adds a random amount between 20-250 to the user's balance.
+     * Adds a random amount between 20-250 to the user's balance and get a reply back.
      *
      * @param userID the ID of user whose balance to add to.
-     * @return the amount added to balance.
+     * @return an EconomyReply object with response and ID number.
      */
-    public int work(long userID) {
+    public EconomyReply work(long userID) {
         int amount = ThreadLocalRandom.current().nextInt(230) + 20;
         addMoney(userID, amount);
         setTimeout(userID, TIMEOUT_TYPE.WORK);
-        return amount;
+        return responses.getWorkResponse(amount);
     }
 
     /**
