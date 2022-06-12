@@ -1,8 +1,11 @@
 package technobot.data.cache.moderation;
 
+import kotlin.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * POJO object that stores warnings and ban timers.
@@ -66,19 +69,21 @@ public class Moderation {
      * Removes a warning with a specific ID from the local cache and database.
      *
      * @param id the ID of the warning to target.
-     * @return the number of warnings cleared.
+     * @return a pair containing the user's ID and the index of the warning cleared.
      */
-    public int removeWarning(int id) {
-        for (List<Warning> warnings : warnings.values()) {
-            for (Warning w : warnings) {
+    public Pair<String, Integer> removeWarning(int id) {
+        for (Map.Entry<String, List<Warning>> entry : warnings.entrySet()) {
+            List<Warning> warnings = entry.getValue();
+            for (int i = 0; i < warnings.size(); i++) {
+                Warning w = warnings.get(i);
                 if (w.getId() == id) {
-                    warnings.remove(w);
+                    this.warnings.get(entry.getKey()).remove(w);
                     this.count--;
-                    return 1;
+                    return new Pair<>(entry.getKey(), i);
                 }
             }
         }
-        return 0;
+        return new Pair<>("null", -1);
     }
 
     /**

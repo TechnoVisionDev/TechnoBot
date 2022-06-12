@@ -1,6 +1,8 @@
 package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import kotlin.Pair;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.conversions.Bson;
@@ -23,6 +25,7 @@ public class ModerationHandler {
 
     private Moderation moderation;
     private final ScheduledExecutorService unbanScheduler;
+    private final Bson filter;
 
     private final Guild guild;
     private final TechnoBot bot;
@@ -39,7 +42,7 @@ public class ModerationHandler {
         this.unbanScheduler = Executors.newScheduledThreadPool(10);
 
         // Get POJO objects from database
-        Bson filter = Filters.eq("guild", guild.getIdLong());
+        filter = Filters.eq("guild", guild.getIdLong());
         moderation = bot.database.moderation.find(filter).first();
         if (moderation == null) {
             moderation = new Moderation(guild.getIdLong());
@@ -70,8 +73,7 @@ public class ModerationHandler {
         // Add banned user and timestamp to database
         Ban ban = new Ban(target.getIdLong(), System.currentTimeMillis(), days);
         moderation.addBan(target.getId(), ban);
-        Bson filter = Filters.eq("guild", guild.getIdLong());
-        Bson addBan = Filters.eq("$set", Filters.eq("bans."+target.getId(), ban));
+        Bson addBan = Updates.set("bans."+target.getId(), ban);
         bot.database.moderation.updateOne(filter, addBan);
 
         // Start scheduled task
@@ -100,8 +102,7 @@ public class ModerationHandler {
         moderation.removeBan(userID);
 
         // Remove ban from database
-        Bson filter = Filters.eq("guild", guild.getIdLong());
-        Bson removeBan = Filters.eq("$unset", Filters.eq("bans."+userID, ""));
+        Bson removeBan = Updates.unset("bans."+userID);
         bot.database.moderation.updateOne(filter, removeBan);
     }
 
@@ -122,10 +123,9 @@ public class ModerationHandler {
         moderation.addWarning(target, warning);
 
         // Update MongoDB database
-        Bson filter = Filters.eq("guild", guild.getIdLong());
-        Bson update = Filters.eq("$push", Filters.eq("warnings."+target, warning));
-        Bson update2 = Filters.eq("$inc", Filters.eq("count", 1));
-        Bson update3 = Filters.eq("$inc", Filters.eq("total", 1));
+        Bson update = Updates.push("warnings."+target, warning);
+        Bson update2 = Updates.inc("count", 1);
+        Bson update3 = Updates.inc("total", 1);
         bot.database.moderation.updateOne(filter, Filters.and(update, update2, update3));
     }
 
@@ -148,9 +148,8 @@ public class ModerationHandler {
     public int clearWarnings(long target) {
         int count = moderation.clearWarnings(target);
         if (count > 0) {
-            Bson filter = Filters.eq("guild", guild);
-            Bson update = Filters.eq("$unset", Filters.eq("warnings."+target, ""));
-            Bson update2 = Filters.eq("$set", Filters.eq("count", moderation.getCount()));
+            Bson update = Updates.unset("warnings."+target);
+            Bson update2 = Updates.set("count", moderation.getCount());
             bot.database.moderation.updateOne(filter, Filters.and(update, update2));
         }
         return count;
@@ -163,6 +162,16 @@ public class ModerationHandler {
      * @return the number of warnings cleared.
      */
     public int removeWarning(int id) {
-        return moderation.removeWarning(id);
+        Pair<String, Integer> result = moderation.removeWarning(id);
+        int index = result.getSecond();
+        String target = result.getFirst();
+        if (index >= 0) {
+            Bson update = Updates.unset("warnings."+target+"."+index);
+            Bson update2 = Updates.set("count", moderation.getCount());
+            bot.database.moderation.updateOne(filter, Filters.and(update, update2));
+            bot.database.moderation.updateOne(filter, Updates.pull("warnings."+target, null));
+            return 1;
+        }
+        return 0;
     }
 }

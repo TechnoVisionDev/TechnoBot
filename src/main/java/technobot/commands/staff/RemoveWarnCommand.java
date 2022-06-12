@@ -40,7 +40,16 @@ public class RemoveWarnCommand extends Command {
         OptionMapping idOption = event.getOption("id");
 
         MessageEmbed embed;
-        if (userOption != null) {
+        if (idOption != null) {
+            // Remove warning with this ID
+            int count = data.moderationHandler.removeWarning(idOption.getAsInt());
+            if (count == 1) {
+                embed = EmbedUtils.createDefault(GREEN_TICK + " 1 warning has been removed.");
+            } else {
+                embed = EmbedUtils.createError("Unable to find a warning with that ID!");
+            }
+            event.getHook().sendMessageEmbeds(embed).queue();
+        } else if (userOption != null) {
             // Remove all warnings from user
             User target = userOption.getAsUser();
             int count = data.moderationHandler.clearWarnings(target.getIdLong());
@@ -50,15 +59,6 @@ public class RemoveWarnCommand extends Command {
                 embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been removed.");
             } else {
                 embed = EmbedUtils.createError("That user does not have any warnings!");
-            }
-            event.getHook().sendMessageEmbeds(embed).queue();
-        } else if (idOption != null) {
-            // Remove warning with this ID
-            int count = data.moderationHandler.removeWarning(idOption.getAsInt());
-            if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK + " 1 warning has been removed.");
-            } else {
-                embed = EmbedUtils.createError("Unable to find a warning with that ID!");
             }
             event.getHook().sendMessageEmbeds(embed).queue();
         } else {
