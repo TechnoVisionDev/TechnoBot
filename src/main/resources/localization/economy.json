@@ -10,18 +10,21 @@
     "Your recent novel becomes a hit, earning you {amount} in royalties.",
     "You find a rare fossil on the beach and sell it to the museum for {amount}.",
     "You invested in the right stocks a the right time, earning {amount}.",
-    "Your NFT collection surges in price, so you sell them for {amount}."
+    "Your NFT collection surges in price, so you sell them for {amount}.",
+    "You finished digging in The Seven Dwarves' mines for the day. They pay you {amount}."
   ],
   "crimeSuccess": [
     "You work for the Juarez cartel as a brick-presser and earn {amount}! They'll probably kill you and your family tomorrow. Just saying.",
     "You rob an orphanage for {amount}.",
     "You break into the house next door and sell their gaming PC on E-Bay for {amount}.",
-    "You work as a scam seller on Amazon selling fake airpods for full price and make {amount}."
+    "You work as a scam seller on Amazon selling fake airpods for full price and make {amount}.",
+    "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {amount}."
   ],
   "crimeFail": [
     "You break into the house next door only to find the whole family eating dinner together. The police fine you {amount}.",
     "You got shot trying to smuggle drugs across the border. The medical bills cost you {amount}.",
     "You get caught shoplifting by the local mall cop, who fines you for {amount}.",
-    "You tried to do a prank call but called the police instead and you have been fined {amount}."
+    "You tried to do a prank call but called the police instead and you have been fined {amount}.",
+    "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {amount} from you."
   ]
 }
