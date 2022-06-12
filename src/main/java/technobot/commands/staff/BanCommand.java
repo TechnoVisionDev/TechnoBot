@@ -100,7 +100,7 @@ public class BanCommand extends Command {
                     message -> guild.ban(user, 7, reason).queue(),
                     failure -> guild.ban(user, 7, reason).queue()
             );
-        });
+        }, fail -> guild.ban(user, 7, reason).queue());
 
         // Send confirmation message
         event.getHook().sendMessageEmbeds(new EmbedBuilder()

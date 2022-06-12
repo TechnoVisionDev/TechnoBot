@@ -80,7 +80,7 @@ public class KickCommand extends Command {
                     message -> target.kick(reason).queue(),
                     failure -> target.kick(reason).queue()
             );
-        });
+        }, fail -> target.kick(reason).queue());
 
         // Send confirmation message
         event.getHook().sendMessageEmbeds(new EmbedBuilder()

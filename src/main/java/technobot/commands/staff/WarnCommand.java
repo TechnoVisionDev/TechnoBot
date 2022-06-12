@@ -70,7 +70,7 @@ public class WarnCommand extends Command {
                     .addField("Reason", reason, false)
                     .setTimestamp(new Date().toInstant());
             privateChannel.sendMessageEmbeds(embed.build()).queue();
-        });
+        }, fail -> { });
 
         // Send confirmation message
         event.getHook().sendMessageEmbeds(new EmbedBuilder()
