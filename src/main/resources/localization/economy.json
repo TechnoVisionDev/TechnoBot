@@ -18,7 +18,8 @@
     "You rob an orphanage for {amount}.",
     "You break into the house next door and sell their gaming PC on E-Bay for {amount}.",
     "You work as a scam seller on Amazon selling fake airpods for full price and make {amount}.",
-    "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {amount}."
+    "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {amount}.",
+    "You are a high school chemistry teacher diagnosed with lung cancer & turn to selling meth for {amount} to secure your family's future."
   ],
   "crimeFail": [
     "You break into the house next door only to find the whole family eating dinner together. The police fine you {amount}.",
