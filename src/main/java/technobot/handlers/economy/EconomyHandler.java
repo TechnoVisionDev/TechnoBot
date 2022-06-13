@@ -12,8 +12,10 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.StreamSupport;
 
 /**
  * Handles the server economy backend.
@@ -223,12 +225,24 @@ public class EconomyHandler {
      */
     public int getRank(long userID) {
         int rank = 1;
+        // TODO: Use aggregate and sum balance and bank for accurate rank
         FindIterable<Economy> profiles = bot.database.economy.find(guildFilter).sort(Sorts.descending("balance", "bank"));
         for (Economy profile : profiles) {
             if (profile.getUser() == userID) return rank;
             rank++;
         }
         return guild.getMemberCount();
+    }
+
+    /**
+     * Get a sorted list of user economy data.
+     *
+     * @return list of user economy data sorted in descending order.
+     */
+    public List<Economy> getLeaderboard() {
+        // TODO: Use aggregate and sum balance and bank for accurate rank
+        FindIterable<Economy> iterable = bot.database.economy.find(guildFilter).sort(Sorts.descending("balance", "bank"));
+        return StreamSupport.stream(iterable.spliterator(), false).toList();
     }
 
     /**

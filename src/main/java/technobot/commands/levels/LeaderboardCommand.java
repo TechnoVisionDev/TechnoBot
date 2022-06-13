@@ -18,20 +18,20 @@ import java.util.Date;
 import java.util.LinkedList;
 
 /**
- * Command that displays various leaderboards.
+ * Command that displays the leveling leaderboard.
  *
  * @author TechnoVision
  */
-public class TopCommand extends Command {
+public class LeaderboardCommand extends Command {
 
     private static final DecimalFormat formatter = new DecimalFormat("#,###");;
 
-    public TopCommand(TechnoBot bot) {
+    public LeaderboardCommand(TechnoBot bot) {
         super(bot);
-        this.name = "top";
+        this.name = "leaderboard";
         this.description = "Displays the most active members on the server.";
         this.category = Category.LEVELS;
-        this.args.add(new OptionData(OptionType.INTEGER, "page", "The page to display").setMinValue(1).setMaxValue(1000));
+        this.args.add(new OptionData(OptionType.INTEGER, "page", "The page to display").setMinValue(1).setMaxValue(5000));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TopCommand extends Command {
         if (maxPage * usersPerPage != leaderboard.size()) { maxPage++; }
         if (maxPage == 0) { maxPage++; }
         EmbedBuilder embed = new EmbedBuilder()
-                .setTitle(":trophy: RANK SCORE ["+(1 + (start / usersPerPage))+"/"+maxPage+"]")
+                .setTitle(":trophy: RANK LEADERBOARD ["+(1 + (start / usersPerPage))+"/"+maxPage+"]")
                 .setColor(EmbedColor.DEFAULT.color)
                 .setDescription(result.toString())
                 .setFooter(event.getUser().getAsTag(), event.getUser().getEffectiveAvatarUrl())
