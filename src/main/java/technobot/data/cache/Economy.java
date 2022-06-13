@@ -8,9 +8,9 @@ package technobot.data.cache;
 public class Economy {
 
     private long guild;
-    private long user;
-    private long balance;
-    private long bank;
+    private Long user;
+    private Long balance;
+    private Long bank;
 
     public Economy() { }
 
@@ -26,27 +26,27 @@ public class Economy {
         this.guild = guild;
     }
 
-    public long getUser() {
+    public Long getUser() {
         return user;
     }
 
-    public void setUser(long user) {
+    public void setUser(Long user) {
         this.user = user;
     }
 
-    public long getBalance() {
+    public Long getBalance() {
         return balance;
     }
 
-    public void setBalance(long balance) {
+    public void setBalance(Long balance) {
         this.balance = balance;
     }
 
-    public long getBank() {
+    public Long getBank() {
         return bank;
     }
 
-    public void setBank(long bank) {
+    public void setBank(Long bank) {
         this.bank = bank;
     }
 }

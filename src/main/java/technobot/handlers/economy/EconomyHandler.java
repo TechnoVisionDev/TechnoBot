@@ -11,6 +11,7 @@ import technobot.TechnoBot;
 import technobot.data.cache.Economy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EconomyHandler {
 
     public static final long DEFAULT_TIMEOUT = 14400000;
-    public static final String DEFAULT_CURRENCY = "\uD83E\uDE99";
     private static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
     private static final EconomyLocalization responses = new EconomyLocalization();
 
@@ -30,12 +30,14 @@ public class EconomyHandler {
     private final TechnoBot bot;
     private final Bson guildFilter;
     private final Map<Long, UserTimeout> timeouts;
+    private String currency;
 
     public EconomyHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
         this.guild = guild;
         this.guildFilter = Filters.eq("guild", guild.getIdLong());
         this.timeouts = new HashMap<>();
+        this.currency = "\uD83E\uDE99";
     }
 
     /**
@@ -48,7 +50,7 @@ public class EconomyHandler {
         int amount = ThreadLocalRandom.current().nextInt(230) + 20;
         addMoney(userID, amount);
         setTimeout(userID, TIMEOUT_TYPE.WORK);
-        return responses.getWorkResponse(amount);
+        return responses.getWorkResponse(amount, getCurrency());
     }
 
     /**
@@ -65,7 +67,7 @@ public class EconomyHandler {
             // Crime successful
             amount = ThreadLocalRandom.current().nextInt(450) + 250;
             addMoney(userID, amount);
-            reply = responses.getCrimeSuccessResponse(amount);
+            reply = responses.getCrimeSuccessResponse(amount, getCurrency());
         } else {
             // Crime failed
             long balance = getBalance(userID);
@@ -75,23 +77,47 @@ public class EconomyHandler {
                 amount = (int) (balance * percent);
             }
             removeMoney(userID, amount);
-            reply = responses.getCrimeFailResponse(amount);
+            reply = responses.getCrimeFailResponse(amount, getCurrency());
         }
         setTimeout(userID, TIMEOUT_TYPE.CRIME);
         return reply;
     }
 
     /**
-     * Get a user's current balance.
+     * Get a user's current cash balance.
      *
-     * @param userID the ID of the user to get balance from.
-     * @return the integer value of user's balance.
+     * @param userID the ID of the user to get cash balance from.
+     * @return the integer value of user's cash balance.
      */
-    public long getBalance(long userID) {
+    private long getBalance(long userID) {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
         return profile.getBalance();
+    }
+
+    /**
+     * Get a user's current bank balance.
+     *
+     * @param userID the ID of the user to get bank balance from.
+     * @return the integer value of user's bank balance.
+     */
+    private long getBank(long userID) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        Economy profile = bot.database.economy.find(filter).first();
+        if (profile == null) return 0;
+        return profile.getBalance();
+    }
+
+    /**
+     * Get a user's current bank balance.
+     *
+     * @param userID the ID of the user to get bank balance from.
+     * @return the integer value of user's bank balance.
+     */
+    public Economy getProfile(long userID) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        return bot.database.economy.find(filter).first();
     }
 
     /**
@@ -176,6 +202,15 @@ public class EconomyHandler {
         Long timeout = getTimeout(userID, type);
         if (timeout == null) return null;
         return TimeFormat.RELATIVE.format(timeout);
+    }
+
+    /**
+     * Get the currency symbol for this guild.
+     *
+     * @return string emoji for currency symbol.
+     */
+    public String getCurrency() {
+        return currency;
     }
 
     /**
