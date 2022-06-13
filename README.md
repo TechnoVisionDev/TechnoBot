@@ -80,7 +80,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TechnoBot is an advanced discord bot built to provide a wide array of features. It's purpose is to replace other bots as the main source of your guild's engagement!
+TechnoBot is an advanced discord bot built to provide a wide array of features, including a leveling system, economy, starboard, suggestion board, moderation commands, fun commands, utility commands, auto roles, and so much more! It's purpose is to make your life easier and replace other bots as the main source of your guild's engagement! This project runs entirely on donations, so please consider supporting at https://www.patreon.com/TechnoVision
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
