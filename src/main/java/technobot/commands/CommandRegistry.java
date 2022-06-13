@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.economy.BalanceCommand;
 import technobot.commands.economy.CrimeCommand;
+import technobot.commands.economy.DepositCommand;
 import technobot.commands.economy.WorkCommand;
 import technobot.commands.fun.*;
 import technobot.commands.greetings.FarewellCommand;
@@ -54,6 +55,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new WorkCommand(bot),
                 new CrimeCommand(bot),
                 new BalanceCommand(bot),
+                new DepositCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),

@@ -85,12 +85,25 @@ public class EconomyHandler {
     }
 
     /**
+     * Deposit money from balance into bank.
+     *
+     * @param userID the ID of user to deposit for.
+     * @param amount the amount to deposit.
+     */
+    public void deposit(long userID, long amount) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        Bson update = Updates.inc("balance", -1 * amount);
+        Bson update2 = Updates.inc("bank", amount);
+        bot.database.economy.updateOne(filter, Filters.and(update, update2));
+    }
+
+    /**
      * Get a user's current cash balance.
      *
      * @param userID the ID of the user to get cash balance from.
      * @return the integer value of user's cash balance.
      */
-    private long getBalance(long userID) {
+    public long getBalance(long userID) {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
@@ -103,7 +116,7 @@ public class EconomyHandler {
      * @param userID the ID of the user to get bank balance from.
      * @return the integer value of user's bank balance.
      */
-    private long getBank(long userID) {
+    public long getBank(long userID) {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
