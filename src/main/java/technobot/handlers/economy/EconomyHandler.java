@@ -243,7 +243,7 @@ public class EconomyHandler {
         return bot.database.economy.aggregate(
                 Arrays.asList(
                         Aggregates.match(Filters.eq("guild", guild.getIdLong())),
-                        Aggregates.addFields(new Field("sum", Filters.eq("$add", Arrays.asList("$balance", "$bank")))),
+                        Aggregates.addFields(new Field("sum", Filters.eq("$add", Arrays.asList("$balance", Filters.eq("$ifNull", Arrays.asList("$bank", 0)))))),
                         Aggregates.sort(Sorts.descending("sum"))
                 )
         );
