@@ -188,7 +188,8 @@ public class EconomyHandler {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
-        return profile.getBalance();
+        Long balance = profile.getBalance();
+        return (balance != null) ? balance : 0;
     }
 
     /**
@@ -201,7 +202,8 @@ public class EconomyHandler {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
-        return profile.getBank();
+        Long bank = profile.getBank();
+        return (bank != null) ? bank : 0;
     }
 
     /**
