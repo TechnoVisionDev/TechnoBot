@@ -40,9 +40,9 @@ public class EconomyLocalization {
      * @param amount the amount of money earned.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getWorkResponse(int amount) {
+    public EconomyReply getWorkResponse(int amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(work.length);
-        String reply = work[index].replace("{amount}",EconomyHandler.DEFAULT_CURRENCY+" "+amount);
+        String reply = work[index].replace("{amount}",currency+" "+amount);
         return new EconomyReply(reply, index+1);
     }
 
@@ -52,10 +52,10 @@ public class EconomyLocalization {
      * @param amount the amount of money earned.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getCrimeSuccessResponse(int amount) {
+    public EconomyReply getCrimeSuccessResponse(int amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(crimeSuccess.length);
-        String reply = crimeSuccess[index].replace("{amount}",EconomyHandler.DEFAULT_CURRENCY+" "+amount);
-        return new EconomyReply(reply, index+1);
+        String reply = crimeSuccess[index].replace("{amount}",currency+" "+amount);
+        return new EconomyReply(reply, index+1, true);
     }
 
     /**
@@ -64,9 +64,9 @@ public class EconomyLocalization {
      * @param amount the amount of money list.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getCrimeFailResponse(int amount) {
+    public EconomyReply getCrimeFailResponse(int amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(crimeFail.length);
-        String reply = crimeFail[index].replace("{amount}",EconomyHandler.DEFAULT_CURRENCY+" "+amount);
-        return new EconomyReply(reply, index+1);
+        String reply = crimeFail[index].replace("{amount}",currency+" "+amount);
+        return new EconomyReply(reply, index+1, false);
     }
 }

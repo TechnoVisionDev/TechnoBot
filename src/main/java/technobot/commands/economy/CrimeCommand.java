@@ -11,16 +11,16 @@ import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 
 /**
- * Command that adds money to your balance.
+ * Command that risks losing money for a greater potential reward.
  *
  * @author TechnoVision
  */
-public class WorkCommand extends Command {
+public class CrimeCommand extends Command {
 
-    public WorkCommand(TechnoBot bot) {
+    public CrimeCommand(TechnoBot bot) {
         super(bot);
-        this.name = "work";
-        this.description = "Work for some extra money.";
+        this.name = "crime";
+        this.description = "Commit a crime for a chance at some extra money.";
         this.category = Category.ECONOMY;
     }
 
@@ -28,21 +28,22 @@ public class WorkCommand extends Command {
         event.deferReply().queue();
         long user = event.getUser().getIdLong();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
-        Long timeout = economyHandler.getTimeout(user, EconomyHandler.TIMEOUT_TYPE.WORK);
+        Long timeout = economyHandler.getTimeout(user, EconomyHandler.TIMEOUT_TYPE.CRIME);
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setAuthor(event.getUser().getAsTag(), null, event.getUser().getEffectiveAvatarUrl());
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.formatTimeout(timeout);
-            embed.setDescription(":stopwatch: You can next work " + timestamp + ".");
+            embed.setDescription(":stopwatch: You can next commit a crime " + timestamp + ".");
             embed.setColor(EmbedColor.ERROR.color);
         } else {
-            // Work
-            EconomyReply reply = economyHandler.work(user);
+            // Commit crime
+            EconomyReply reply = economyHandler.crime(user);
+            int color = reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color;
             embed.setDescription(reply.getResponse());
-            embed.setColor(EmbedColor.SUCCESS.color);
-            embed.setFooter("Reply #"+reply.getId());
+            embed.setColor(color);
+            embed.setFooter("Reply #" + reply.getId());
         }
         event.getHook().sendMessageEmbeds(embed.build()).queue();
     }

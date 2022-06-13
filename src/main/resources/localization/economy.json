@@ -30,14 +30,18 @@
     "You punched some random person and they gave you {amount} to stop.",
     "You smashed a kid's piggy bank and got {amount} from it.",
     "What you did was too horrible to speak of. I can't believe you would do that. Was the {amount} even worth it for those horrible crimes you did? No."
+    "You were hired as an assassin and you succeeded, earning {amount}.",
+    "You need some extra cash for your drug habit. You break into the local dirty video store and rob them of {amount}! You also take a few \"items\" for yourself..."
   ],
   "crimeFail": [
-    "You break into the house next door only to find the whole family eating dinner together. The police fine you {amount}.",
-    "You got shot trying to smuggle drugs across the border. The medical bills cost you {amount}.",
+    "You break into the house next door only to find the whole family eating dinner together. The police fine you for {amount}.",
+    "You got shot trying to smuggle drugs across the border. The medical bills cost you a whopping {amount}.",
     "You get caught shoplifting by the local mall cop, who fines you for {amount}.",
     "You tried to do a prank call but called the police instead and you have been fined {amount}.",
     "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {amount} from you.",
     "You tried to rob someone but they just mugged you instead. You lost {amount}.",
     "You attempted to steal a bar of chocolate from a local store but were caught and had to pay {amount}. It was bad chocolate."
+    "You tried to jump the old lady walking down the street. Turns out she had a gun, and robbed you blind of {amount}.",
+    "You attempted to cook up some drugs to sell on the black market, but the chemicals exploded in your face, costing you {amount} in medical bills."
   ]
 }
