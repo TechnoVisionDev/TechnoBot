@@ -57,9 +57,9 @@ public class BalanceCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder()
             .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
             .setDescription("Leaderboard Rank: #" + economyHandler.getRank(user.getIdLong()))
-            .addField("Cash:", currency + " " + balance, true)
-            .addField("Bank:", currency + " " + bank, true)
-            .addField("Total:", currency + " " + total, true)
+            .addField("Cash:", currency + " " + EconomyHandler.FORMATTER.format(balance), true)
+            .addField("Bank:", currency + " " + EconomyHandler.FORMATTER.format(bank), true)
+            .addField("Total:", currency + " " + EconomyHandler.FORMATTER.format(total), true)
             .setColor(EmbedColor.DEFAULT.color);
         event.getHook().sendMessageEmbeds(embed.build()).queue();
     }

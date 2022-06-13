@@ -9,6 +9,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Economy;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,6 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EconomyHandler {
 
     public static final long DEFAULT_TIMEOUT = 14400000;
+    public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
+
     private static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
     private static final EconomyLocalization responses = new EconomyLocalization();
 
