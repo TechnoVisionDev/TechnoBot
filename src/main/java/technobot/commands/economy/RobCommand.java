@@ -10,68 +10,59 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
+import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 /**
- * Command that transfer cash from one user to another.
+ * Command that steals money from another user.
  *
  * @author TechnoVision
  */
-public class PayCommand extends Command {
+public class RobCommand extends Command {
 
-    public PayCommand(TechnoBot bot) {
+    public RobCommand(TechnoBot bot) {
         super(bot);
-        this.name = "pay";
-        this.description = "Send money to another user.";
+        this.name = "rob";
+        this.description = "Attempt to steal money from another user.";
         this.category = Category.ECONOMY;
-        this.args.add(new OptionData(OptionType.USER, "user", "The user you want to send money to.", true));
-        this.args.add(new OptionData(OptionType.INTEGER, "amount", "The amount of money to send.", true).setMinValue(1));
+        this.args.add(new OptionData(OptionType.USER, "user", "The user you want to rob.", true));
     }
 
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        // Get command data
         User user = event.getUser();
         User target = event.getOption("user").getAsUser();
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (user.getIdLong() == target.getIdLong()) {
             // Check for invalid target
-            embed.setDescription(EmbedUtils.RED_X + " You cannot pay yourself!");
+            embed.setDescription(EmbedUtils.RED_X + " You cannot rob yourself!");
             embed.setColor(EmbedColor.ERROR.color);
             event.getHook().sendMessageEmbeds(embed.build()).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
-            embed.setDescription(EmbedUtils.RED_X + " You cannot pay bots!");
+            embed.setDescription(EmbedUtils.RED_X + " You cannot rob bots, they are too powerful for you!");
             embed.setColor(EmbedColor.ERROR.color);
             event.getHook().sendMessageEmbeds(embed.build()).queue();
             return;
         }
 
-        long amount = event.getOption("amount").getAsLong();
+        // Check for timeout
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
-        String currency = economyHandler.getCurrency();
-
-        // Check that user has necessary funds
-        long balance = economyHandler.getBalance(user.getIdLong());
-        if (amount > balance) {
-            String value = currency + " " + EconomyHandler.FORMATTER.format(balance);
-            String text = "You don't have that much money to give. You currently have " + value + " on hand.";
-            embed.setDescription(EmbedUtils.RED_X + text);
+        Long timeout = economyHandler.getTimeout(user.getIdLong(), EconomyHandler.TIMEOUT_TYPE.ROB);
+        if (timeout != null && System.currentTimeMillis() < timeout) {
+            // On timeout
+            String timestamp = economyHandler.formatTimeout(timeout);
+            embed.setDescription(":stopwatch: You can attempt to rob another member " + timestamp + ".");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
-            return;
+        } else {
+            // Rob target
+            EconomyReply reply = economyHandler.rob(user.getIdLong(), target.getIdLong());
+            embed.setColor(reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color);
+            embed.setDescription(reply.getResponse());
         }
-
-        // Pay target
-        economyHandler.pay(user.getIdLong(), target.getIdLong(), amount);
-        String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
-
-        // Send embed message
-        embed.setDescription(EmbedUtils.GREEN_TICK + " <@" + target.getId() + "> has received your " + value + ".");
-        embed.setColor(EmbedColor.SUCCESS.color);
         event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }

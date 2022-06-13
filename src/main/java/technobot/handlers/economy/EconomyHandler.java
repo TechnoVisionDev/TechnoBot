@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Economy;
+import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -21,7 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EconomyHandler {
 
-    public static final long DEFAULT_TIMEOUT = 14400000;
+    public static final long WORK_TIMEOUT = 14400000;
+    public static final long ROB_TIMEOUT = 86400000;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     private static final UpdateOptions UPSERT = new UpdateOptions().upsert(true);
@@ -62,7 +64,7 @@ public class EconomyHandler {
      * @return an EconomyReply object with response, ID number, and success boolean.
      */
     public EconomyReply crime(long userID) {
-        int amount;
+        long amount;
         EconomyReply reply;
         if (ThreadLocalRandom.current().nextInt(100) <= 40) {
             // Crime successful
@@ -71,17 +73,67 @@ public class EconomyHandler {
             reply = responses.getCrimeSuccessResponse(amount, getCurrency());
         } else {
             // Crime failed
-            long balance = getBalance(userID);
-            amount = 0;
-            if (balance > 0) {
-                double percent = (ThreadLocalRandom.current().nextInt(20) + 20) * 0.01;
-                amount = (int) (balance * percent);
-            }
-            removeMoney(userID, amount);
+            amount = calculateFine(userID);
+            if (amount > 0) removeMoney(userID, calculateFine(userID));
             reply = responses.getCrimeFailResponse(amount, getCurrency());
         }
         setTimeout(userID, TIMEOUT_TYPE.CRIME);
         return reply;
+    }
+
+    /**
+     * Attempt to steal another user's cash.
+     *
+     * @param userID the user attempting the robbery.
+     * @param targetID the target being robbed.
+     * @return an EconomyReply object with a response and success boolean.
+     */
+    public EconomyReply rob(long userID, long targetID) {
+        // Calculate probability of failure (your networth / (their cash + your networth))
+        long userNetworth = getNetworth(userID);
+        long targetCash = getBalance(targetID);
+        double failChance = (double) userNetworth / (targetCash + userNetworth);
+        if (failChance < 0.20) {
+            failChance = 0.20;
+        } else if (failChance > 0.80) {
+            failChance = 0.80;
+        }
+
+        // Calculate mount stolen (success probability * their cash)
+        long amountStolen = (long) ((1 - failChance) * targetCash);
+
+        // Attempt robbery
+        setTimeout(userID, TIMEOUT_TYPE.ROB);
+        if (ThreadLocalRandom.current().nextDouble() > failChance) {
+            // Rob successful
+            pay(targetID, userID, amountStolen);
+            String value = getCurrency() + " " + EconomyHandler.FORMATTER.format(amountStolen);
+            String response = EmbedUtils.GREEN_TICK + " You robbed " + value + " from <@" + targetID + ">";
+            return new EconomyReply(response, 1, true);
+        }
+        // Rob failed (20-40% fine of net worth)
+        long fine = calculateFine(userID);
+        removeMoney(userID, fine);
+        String value = getCurrency() + " " + EconomyHandler.FORMATTER.format(fine);
+        String response = "You were caught attempting to rob <@"+targetID+">, and have been fined " + value + ".";
+        return new EconomyReply(response, 1, false);
+    }
+
+    /**
+     * Calculate fine for commands like /crime and /rob
+     * Default fine is 20-40% of user's networth.
+     *
+     * @param userID the user to calculate fine for.
+     * @return the calculated fine amount.
+     */
+    private long calculateFine(long userID) {
+        long networth = getNetworth(userID);
+        long fine = 0;
+        if (networth > 0) {
+            double percent = (ThreadLocalRandom.current().nextInt(20) + 20) * 0.01;
+            fine = (long) (networth * percent);
+        }
+        return fine;
     }
 
     /**
@@ -110,6 +162,13 @@ public class EconomyHandler {
         bot.database.economy.updateOne(filter, Filters.and(update, update2));
     }
 
+    /**
+     * Transfer money from one user to another.
+     *
+     * @param userID the user to transfer money from.
+     * @param targetID the user to transfer money to.
+     * @param amount the amount of money to transfer.
+     */
     public void pay(long userID, long targetID, long amount) {
         removeMoney(userID, amount);
         addMoney(targetID, amount);
@@ -139,6 +198,21 @@ public class EconomyHandler {
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
         return profile.getBank();
+    }
+
+    /**
+     * Get a user's current networth (balance and bank added together).
+     *
+     * @param userID the ID of the user to get networth from.
+     * @return the integer value of user's networth.
+     */
+    public long getNetworth(long userID) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        Economy profile = bot.database.economy.find(filter).first();
+        if (profile == null) return 0;
+        long balance = profile.getBalance() != null ? profile.getBalance() : 0;
+        long bank = profile.getBank() != null ? profile.getBank() : 0;
+        return balance + bank;
     }
 
     /**
@@ -195,7 +269,7 @@ public class EconomyHandler {
      * @param type the economy command to timeout.
      */
     private void setTimeout(long userID, TIMEOUT_TYPE type) {
-        long time = System.currentTimeMillis() + DEFAULT_TIMEOUT;
+        long time = System.currentTimeMillis() + WORK_TIMEOUT;
         UserTimeout userTimeout = timeouts.get(userID);
         if (userTimeout == null) {
             userTimeout = new UserTimeout(userID);
@@ -203,7 +277,7 @@ public class EconomyHandler {
         switch(type) {
             case WORK -> userTimeout.setWorkTimeout(time);
             case CRIME -> userTimeout.setCrimeTimeout(time);
-            case ROB -> userTimeout.setRobTimeout(time);
+            case ROB -> userTimeout.setRobTimeout(System.currentTimeMillis() + ROB_TIMEOUT);
         }
         timeouts.put(userID, userTimeout);
     }

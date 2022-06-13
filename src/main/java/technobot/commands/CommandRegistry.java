@@ -51,6 +51,7 @@ public class CommandRegistry extends ListenerAdapter {
                 //Economy commands
                 new WorkCommand(bot),
                 new CrimeCommand(bot),
+                new RobCommand(bot),
                 new BalanceCommand(bot),
                 new DepositCommand(bot),
                 new WithdrawCommand(bot),
