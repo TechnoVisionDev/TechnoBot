@@ -36,7 +36,10 @@
   <h3 align="center">TechnoBot</h3>
 
   <p align="center">
-    An advanced, modular bot for Discord
+    An advanced, multi-purpose bot for Discord
+    <br />
+    <a href="https://technobot.app"><strong>Explore this project »</strong></a>
+    <br />
     <br />
     <a href="https://github.com/TechnoVisionDev/TechnoBot/wiki">Visit Wiki</a>
     ·
