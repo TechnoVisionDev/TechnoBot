@@ -47,7 +47,7 @@ public class TechnoBot {
         //Build JDA shards
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN", System.getenv("TOKEN")));
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.setActivity(Activity.playing("/help"));
+        builder.setActivity(Activity.playing("/help | technobot.app"));
         builder.setChunkingFilter(ChunkingFilter.ALL);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableCache(CacheFlag.ONLINE_STATUS);

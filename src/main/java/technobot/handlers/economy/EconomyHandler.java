@@ -110,6 +110,11 @@ public class EconomyHandler {
         bot.database.economy.updateOne(filter, Filters.and(update, update2));
     }
 
+    public void pay(long userID, long targetID, long amount) {
+        removeMoney(userID, amount);
+        addMoney(targetID, amount);
+    }
+
     /**
      * Get a user's current cash balance.
      *

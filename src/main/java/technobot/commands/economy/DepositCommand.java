@@ -48,7 +48,7 @@ public class DepositCommand extends Command {
         OptionMapping amountOption = event.getOption("amount");
         long amount;
         if (amountOption != null) {
-            amount = amountOption.getAsInt();
+            amount = amountOption.getAsLong();
             if (amount > balance) {
                 // Amount is higher than balance
                 String value = currency + " " + EconomyHandler.FORMATTER.format(balance);
