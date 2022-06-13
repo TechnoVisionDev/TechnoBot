@@ -62,11 +62,11 @@ public class RoleCommand extends Command {
         switch (event.getSubcommandName()) {
             case "give" -> {
                 text += "**+" + role.getName() + "**";
-                event.getGuild().addRoleToMember(member, role).queue();
+                event.getGuild().addRoleToMember(member, role).queue(null, fail -> {});
             }
             case "remove" -> {
                 text += "**-" + role.getName() + "**";
-                event.getGuild().removeRoleFromMember(member, role).queue();
+                event.getGuild().removeRoleFromMember(member, role).queue(null, fail -> {});
             }
         }
         event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
