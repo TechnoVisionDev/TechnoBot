@@ -36,14 +36,14 @@ public class ButtonListener extends ListenerAdapter {
         if (components == null) return;
         String[] storedArgs = components.get(0).getId().split(":");
 
-        if (pressedArgs[0].equals("help") && storedArgs[0].equals("help")) {
+        if (pressedArgs[0].equals("pagination") && storedArgs[0].equals("pagination")) {
             if (pressedArgs[1].equals("next")) {
                 // Move to next embed
                 int page = Integer.parseInt(components.get(1).getId().split(":")[2]) + 1;
                 List<MessageEmbed> embeds = menus.get(uuid);
                 if (page < embeds.size()) {
                     // Update buttons
-                    components.set(1, components.get(1).withId("help:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
+                    components.set(1, components.get(1).withId("pagination:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
                     components.set(0, components.get(0).asEnabled());
                     if (page == embeds.size() - 1) {
                         components.set(2, components.get(2).asDisabled());
@@ -57,7 +57,7 @@ public class ButtonListener extends ListenerAdapter {
                 List<MessageEmbed> embeds = menus.get(uuid);
                 if (page >= 0) {
                     // Update buttons
-                    components.set(1, components.get(1).withId("help:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
+                    components.set(1, components.get(1).withId("pagination:page:" + page).withLabel((page + 1) + "/" + embeds.size()));
                     components.set(2, components.get(2).asEnabled());
                     if (page == 0) {
                         components.set(0, components.get(0).asDisabled());

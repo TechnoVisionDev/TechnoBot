@@ -78,9 +78,9 @@ public class HelpCommand extends Command {
                 ButtonListener.menus.put(uuid, embeds);
                 // Create buttons
                 List<Button> components = new ArrayList<>();
-                components.add(Button.primary("help:prev:"+uuid, "PREVIOUS").asDisabled());
-                components.add(Button.of(ButtonStyle.SECONDARY, "help:page:0", "1/"+embeds.size()).asDisabled());
-                components.add(Button.primary("help:next:"+uuid, "NEXT"));
+                components.add(Button.primary("pagination:prev:"+uuid, "Previous").asDisabled());
+                components.add(Button.of(ButtonStyle.SECONDARY, "pagination:page:0", "1/"+embeds.size()).asDisabled());
+                components.add(Button.primary("pagination:next:"+uuid, "Next"));
                 ButtonListener.buttons.put(uuid, components);
                 action.addActionRow(components).queue(interactionHook -> {
                     // Timer task to disable buttons and clear cache after 3 minutes

@@ -56,7 +56,6 @@ public class CommandRegistry extends ListenerAdapter {
                 new DepositCommand(bot),
                 new WithdrawCommand(bot),
                 new PayCommand(bot),
-                new BalTopCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),
@@ -76,7 +75,7 @@ public class CommandRegistry extends ListenerAdapter {
 
                 //Leveling commands
                 new RankCommand(bot),
-                new LeaderboardCommand(bot),
+                new TopCommand(bot),
                 new RewardsCommand(bot),
                 new RankcardCommand(bot),
                 new LevelingCommand(bot),
