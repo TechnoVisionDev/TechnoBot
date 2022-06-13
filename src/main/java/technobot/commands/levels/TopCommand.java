@@ -49,8 +49,8 @@ public class TopCommand extends Command {
         this.description = "Displays the most active members on the server.";
         this.category = Category.LEVELS;
         this.args.add(new OptionData(OptionType.STRING, "type", "The leaderboard type to display")
-                .addChoice("Leveling", "Leveling")
-                .addChoice("Economy", "Economy"));
+                .addChoice("leveling", "leveling")
+                .addChoice("economy", "economy"));
     }
 
     @Override
@@ -166,7 +166,9 @@ public class TopCommand extends Command {
 
         embed.setAuthor("Economy Leaderboard", null, ECONOMY_ICON);
         AggregateIterable<Economy> leaderboard = economyHandler.getLeaderboard();
-        long maxPages = 1 + (bot.database.economy.countDocuments(Filters.eq("guild", guildID)) / 10);
+        long size = bot.database.economy.countDocuments(Filters.eq("guild", guildID));
+        if (size % 10 == 0) size--;
+        long maxPages = 1 + (size / 10);
         for (Economy profile : leaderboard) {
             if (!foundRank) rank++;
             if (profile.getUser() == userID) foundRank = true;
@@ -220,7 +222,9 @@ public class TopCommand extends Command {
 
         embed.setAuthor("Leveling Leaderboard", null, LEVELING_ICON);
         LinkedList<Leveling> leaderboard = levelingHandler.getLeaderboard();
-        long maxPages = 1 + (leaderboard.size() / 10);
+        long size = leaderboard.size();
+        if (size % 10 == 0) size--;
+        long maxPages = 1 + (size / 10);
         for (Leveling profile : leaderboard) {
             if (!foundRank) rank++;
             if (profile.getUser() == userID) foundRank = true;
@@ -230,8 +234,6 @@ public class TopCommand extends Command {
                     .append(profile.getUser())
                     .append("> XP: `")
                     .append(FORMATTER.format(profile.getTotalXP()))
-                    .append("` Level: `")
-                    .append(FORMATTER.format(profile.getLevel()))
                     .append("`\n");
             if (counter == 0 && page == 1) description.append("**");
             counter++;
