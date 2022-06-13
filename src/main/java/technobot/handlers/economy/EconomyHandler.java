@@ -1,8 +1,7 @@
 package technobot.handlers.economy;
 
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.*;
 import com.mongodb.lang.Nullable;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
@@ -11,7 +10,6 @@ import technobot.TechnoBot;
 import technobot.data.cache.Economy;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -107,6 +105,22 @@ public class EconomyHandler {
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
         return profile.getBalance();
+    }
+
+    /**
+     * Gets the rank of the specified user in their guild based on balance and bank.
+     *
+     * @param userID the ID of the user to get rank for.
+     * @return integer ranking on this server.
+     */
+    public int getRank(long userID) {
+        int rank = 1;
+        FindIterable<Economy> profiles = bot.database.economy.find(guildFilter).sort(Sorts.descending("balance", "bank"));
+        for (Economy profile : profiles) {
+            if (profile.getUser() == userID) return rank;
+            rank++;
+        }
+        return guild.getMemberCount();
     }
 
     /**

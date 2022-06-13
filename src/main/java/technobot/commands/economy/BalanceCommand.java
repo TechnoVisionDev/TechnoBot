@@ -56,7 +56,7 @@ public class BalanceCommand extends Command {
         String currency = economyHandler.getCurrency();
         EmbedBuilder embed = new EmbedBuilder()
             .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-            .setDescription("Leaderboard Rank: (Coming Soon)")
+            .setDescription("Leaderboard Rank: #" + economyHandler.getRank(user.getIdLong()))
             .addField("Cash:", currency + " " + balance, true)
             .addField("Bank:", currency + " " + bank, true)
             .addField("Total:", currency + " " + total, true)
