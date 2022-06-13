@@ -98,6 +98,19 @@ public class EconomyHandler {
     }
 
     /**
+     * Withdraw money from bank into balance.
+     *
+     * @param userID the ID of user to withdraw for.
+     * @param amount the amount to withdraw.
+     */
+    public void withdraw(long userID, long amount) {
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        Bson update = Updates.inc("balance", amount);
+        Bson update2 = Updates.inc("bank", -1 * amount);
+        bot.database.economy.updateOne(filter, Filters.and(update, update2));
+    }
+
+    /**
      * Get a user's current cash balance.
      *
      * @param userID the ID of the user to get cash balance from.
@@ -120,7 +133,7 @@ public class EconomyHandler {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         Economy profile = bot.database.economy.find(filter).first();
         if (profile == null) return 0;
-        return profile.getBalance();
+        return profile.getBank();
     }
 
     /**
