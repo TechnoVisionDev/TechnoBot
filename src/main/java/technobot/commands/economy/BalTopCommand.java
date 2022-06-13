@@ -16,6 +16,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 /**
  * Command that displays the economy leaderboard.
@@ -39,7 +40,7 @@ public class BalTopCommand extends Command {
         int start = 0;
         OptionMapping pageOption = event.getOption("page");
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
-        List<Economy> leaderboard = economyHandler.getLeaderboard();
+        List<Economy> leaderboard = StreamSupport.stream(economyHandler.getLeaderboard().spliterator(), false).toList();
 
         // Check for pages
         if (pageOption != null) {

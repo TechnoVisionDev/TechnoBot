@@ -1,5 +1,6 @@
 package technobot.handlers.economy;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.*;
 import com.mongodb.lang.Nullable;
@@ -11,6 +12,7 @@ import technobot.data.cache.Economy;
 import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,9 +227,7 @@ public class EconomyHandler {
      */
     public int getRank(long userID) {
         int rank = 1;
-        // TODO: Use aggregate and sum balance and bank for accurate rank
-        FindIterable<Economy> profiles = bot.database.economy.find(guildFilter).sort(Sorts.descending("balance", "bank"));
-        for (Economy profile : profiles) {
+        for (Economy profile : getLeaderboard()) {
             if (profile.getUser() == userID) return rank;
             rank++;
         }
@@ -235,14 +235,18 @@ public class EconomyHandler {
     }
 
     /**
-     * Get a sorted list of user economy data.
+     * Get a sorted list of user economy data sorted by networth.
      *
-     * @return list of user economy data sorted in descending order.
+     * @return iterable of user economy data sorted in descending order.
      */
-    public List<Economy> getLeaderboard() {
-        // TODO: Use aggregate and sum balance and bank for accurate rank
-        FindIterable<Economy> iterable = bot.database.economy.find(guildFilter).sort(Sorts.descending("balance", "bank"));
-        return StreamSupport.stream(iterable.spliterator(), false).toList();
+    public AggregateIterable<Economy> getLeaderboard() {
+        return bot.database.economy.aggregate(
+                Arrays.asList(
+                        Aggregates.match(Filters.eq("guild", guild.getIdLong())),
+                        Aggregates.addFields(new Field("sum", Filters.eq("$add", Arrays.asList("$balance", "$bank")))),
+                        Aggregates.sort(Sorts.descending("sum"))
+                )
+        );
     }
 
     /**
