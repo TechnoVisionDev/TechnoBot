@@ -18,7 +18,11 @@
     "You decided to buy a lottery ticket. You won {amount}.",
     "You made a viral video on the internet and got {amount} from ad revenue.",
     "You found a lost cat and were given {amount} as a thanks.",
-    "You decided to become a web developer (why). Anyway you earned {amount}."
+    "You decided to become a web developer (why). Anyway you earned {amount}.",
+    "You teached some people that Africa isn't a country. They paid you {amount}.",
+    "You streamed playing Minecraft and got donated {amount}.",
+    "You discovered a new endangered insect species and got paid {amount} from the International Union for Conservation of Nature.", 
+    "You found the largest prime number found so far. You were paid {amount} by your local university."
   ],
   "crimeSuccess": [
     "You work for the Juarez cartel as a brick-presser and earn {amount}! They'll probably kill you and your family tomorrow. Just saying.",
