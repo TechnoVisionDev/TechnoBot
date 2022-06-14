@@ -161,8 +161,7 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        int rank = 0;
-        boolean foundRank = false;
+        int rank = economyHandler.getRank(userID);
 
         embed.setAuthor("Economy Leaderboard", null, ECONOMY_ICON);
         AggregateIterable<Economy> leaderboard = economyHandler.getLeaderboard();
@@ -170,8 +169,6 @@ public class TopCommand extends Command {
         if (size % 10 == 0) size--;
         long maxPages = 1 + (size / 10);
         for (Economy profile : leaderboard) {
-            if (!foundRank) rank++;
-            if (profile.getUser() == userID) foundRank = true;
             long networth = calculateNetworth(profile.getBalance(), profile.getBank());
             if (counter == 0 && page == 1) description.append("**");
             description.append("#").append(currRank)
@@ -217,8 +214,7 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        int rank = 0;
-        boolean foundRank = false;
+        int rank = levelingHandler.getRank(userID);
 
         embed.setAuthor("Leveling Leaderboard", null, LEVELING_ICON);
         LinkedList<Leveling> leaderboard = levelingHandler.getLeaderboard();
@@ -226,8 +222,6 @@ public class TopCommand extends Command {
         if (size % 10 == 0) size--;
         long maxPages = 1 + (size / 10);
         for (Leveling profile : leaderboard) {
-            if (!foundRank) rank++;
-            if (profile.getUser() == userID) foundRank = true;
             if (counter == 0 && page == 1) description.append("**");
             description.append("#").append(currRank)
                     .append(" | <@!")
