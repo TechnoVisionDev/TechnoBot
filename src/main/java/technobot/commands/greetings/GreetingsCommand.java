@@ -74,11 +74,9 @@ public class GreetingsCommand extends Command {
             case "reset" -> {
                 long userID = event.getUser().getIdLong();
                 String uuid = userID + ":" + UUID.randomUUID();
-                text = "Would you like to reset the greeting system?\nThis will delete **ALL** data!";
-                List<Button> components = new ArrayList<>();
-                components.add(Button.success("greetings:yes:"+uuid, Emoji.fromMarkdown("\u2714")));
-                components.add(Button.danger("greetings:no:"+uuid, Emoji.fromUnicode("\u2716")));
+                List<Button> components = ButtonListener.getResetButtons(uuid, "Greeting");
                 ButtonListener.buttons.put(uuid, components);
+                text = "Would you like to reset the greeting system?\nThis will delete **ALL** data!";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).addActionRow(components).queue(interactionHook -> {
                     // Timer task to disable buttons and clear cache after 3 minutes
                     Runnable task = () -> {
