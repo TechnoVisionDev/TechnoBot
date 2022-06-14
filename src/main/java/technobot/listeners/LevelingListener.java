@@ -72,7 +72,6 @@ public class LevelingListener extends ListenerAdapter {
         if (profile == null) {
             profile = new Leveling(guildID, userID);
             bot.database.leveling.insertOne(profile);
-            data.levelingHandler.addProfile(profile);
         }
 
         // Calculate XP
@@ -96,12 +95,6 @@ public class LevelingListener extends ListenerAdapter {
         updates.add(Updates.set("xp", xp));
         updates.add(Updates.set("total_xp", totalXP));
         bot.database.leveling.updateOne(filter, updates);
-
-        // Update leaderboard
-        profile.setXp(xp);
-        profile.setTotalXP(totalXP);
-        profile.setLevel(level);
-        data.levelingHandler.updateLeaderboard(profile);
 
         if (levelUp) {
             // Give reward roles

@@ -1,6 +1,7 @@
 package technobot.commands.levels;
 
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -97,7 +98,7 @@ public class TopCommand extends Command {
             else { paginateMenu(action, embeds, userID); }
         } else {
             // Top 5 for all leaderboards
-            LinkedList<Leveling> levelLeaderboard = data.levelingHandler.getLeaderboard();
+            FindIterable<Leveling> levelLeaderboard = data.levelingHandler.getLeaderboard();
             AggregateIterable<Economy> econLeaderboard = data.economyHandler.getLeaderboard();
 
             EmbedBuilder embed = new EmbedBuilder()
@@ -161,7 +162,7 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        int rank = economyHandler.getRank(userID);
+        String rank = ordinalSuffixOf(economyHandler.getRank(userID));
 
         embed.setAuthor("Economy Leaderboard", null, ECONOMY_ICON);
         AggregateIterable<Economy> leaderboard = economyHandler.getLeaderboard();
@@ -184,7 +185,7 @@ public class TopCommand extends Command {
             currRank++;
             if (counter % USERS_PER_PAGE == 0) {
                 embed.setDescription(description);
-                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + ordinalSuffixOf(rank));
+                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
                 embeds.add(embed.build());
                 description = new StringBuilder();
                 counter = 0;
@@ -193,7 +194,7 @@ public class TopCommand extends Command {
         }
         if (counter != 0) {
             embed.setDescription(description);
-            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + ordinalSuffixOf(rank));
+            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
             embeds.add(embed.build());
         }
         return embeds;
@@ -214,11 +215,11 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        int rank = levelingHandler.getRank(userID);
+        String rank = ordinalSuffixOf(levelingHandler.getRank(userID));
 
         embed.setAuthor("Leveling Leaderboard", null, LEVELING_ICON);
-        LinkedList<Leveling> leaderboard = levelingHandler.getLeaderboard();
-        long size = leaderboard.size();
+        FindIterable<Leveling> leaderboard = levelingHandler.getLeaderboard();
+        long size = bot.database.leveling.countDocuments(Filters.eq("guild", guildID));
         if (size % 10 == 0) size--;
         long maxPages = 1 + (size / 10);
         for (Leveling profile : leaderboard) {
@@ -234,7 +235,7 @@ public class TopCommand extends Command {
             currRank++;
             if (counter % USERS_PER_PAGE == 0) {
                 embed.setDescription(description);
-                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + ordinalSuffixOf(rank));
+                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
                 embeds.add(embed.build());
                 description = new StringBuilder();
                 counter = 0;
@@ -243,7 +244,7 @@ public class TopCommand extends Command {
         }
         if (counter != 0) {
             embed.setDescription(description);
-            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + ordinalSuffixOf(rank));
+            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
             embeds.add(embed.build());
         }
         return embeds;
