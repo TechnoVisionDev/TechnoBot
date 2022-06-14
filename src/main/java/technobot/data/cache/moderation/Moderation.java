@@ -1,6 +1,7 @@
 package technobot.data.cache.moderation;
 
 import kotlin.Pair;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class Moderation {
     private long guild;
     private int total;
     private int count;
+    @BsonProperty("mute_role")
+    private Long muteRole;
     private HashMap<String, Ban> bans;
     private HashMap<String, List<Warning>> warnings;
 
@@ -129,6 +132,14 @@ public class Moderation {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public Long getMuteRole() {
+        return muteRole;
+    }
+
+    public void setMuteRole(Long muteRole) {
+        this.muteRole = muteRole;
     }
 
     public HashMap<String, Ban> getBans() {

@@ -2,8 +2,10 @@ package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.lang.Nullable;
 import kotlin.Pair;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
@@ -173,5 +175,26 @@ public class ModerationHandler {
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * Sets the mute role for this guild.
+     *
+     * @param roleID the ID of the mute role to set.
+     */
+    public void setMuteRole(long roleID) {
+        moderation.setMuteRole(roleID);
+        bot.database.moderation.updateOne(filter, Updates.set("mute_role", roleID));
+    }
+
+    /**
+     * Get the mute role for this guild if set.
+     *
+     * @return the set mute role, or null if not set or invalid.
+     */
+    public @Nullable Role getMuteRole() {
+        Long roleID = moderation.getMuteRole();
+        if (roleID == null) return null;
+        return guild.getRoleById(roleID);
     }
 }

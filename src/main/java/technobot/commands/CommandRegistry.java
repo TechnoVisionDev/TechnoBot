@@ -98,6 +98,9 @@ public class CommandRegistry extends ListenerAdapter {
                 new UnlockCommand(bot),
                 new RoleCommand(bot),
                 new SetNickCommand(bot),
+                new MuteCommand(bot),
+                new UnMuteCommand(bot),
+                new MuteRoleCommand(bot),
 
                 //Music commands
                 new PlayCommand(bot),
