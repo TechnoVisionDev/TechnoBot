@@ -3,19 +3,13 @@ package technobot.commands.levels;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.commands.Category;
@@ -29,10 +23,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Command that displays and modifies leveling config.
@@ -191,23 +181,9 @@ public class LevelingCommand extends Command {
                 return;
             }
             case "reset-all" -> {
-                long userID = event.getUser().getIdLong();
-                String uuid = userID + ":" + UUID.randomUUID();
-                List<Button> components = ButtonListener.getResetButtons(uuid, "Leveling");
-                ButtonListener.buttons.put(uuid, components);
                 text = "Would you like to reset the leveling system?\nThis will delete **ALL** data!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).addActionRow(components).queue(interactionHook -> {
-                    // Timer task to disable buttons and clear cache after 3 minutes
-                    Runnable task = () -> {
-                        List<Button> actionRow = ButtonListener.buttons.get(uuid);
-                        for (int i = 0; i < actionRow.size(); i++) {
-                            actionRow.set(i, actionRow.get(i).asDisabled());
-                        }
-                        interactionHook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                        ButtonListener.buttons.remove(uuid);
-                    };
-                    ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
-                });
+                WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
+                ButtonListener.sendResetMenu(event.getUser().getId(), "Leveling", action);
                 return;
             }
         }

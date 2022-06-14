@@ -7,14 +7,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import technobot.TechnoBot;
 import technobot.commands.Category;
@@ -29,7 +24,6 @@ import technobot.util.embeds.EmbedColor;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Command that displays various leaderboards.
@@ -95,7 +89,7 @@ public class TopCommand extends Command {
             // Send paginated embeds
             WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(embeds.get(0));
             if (embeds.size() == 1) { action.queue(); }
-            else { paginateMenu(action, embeds, userID); }
+            else { ButtonListener.sendPaginatedMenu(String.valueOf(userID), action, embeds); }
         } else {
             // Top 5 for all leaderboards
             FindIterable<Leveling> levelLeaderboard = data.levelingHandler.getLeaderboard();
@@ -248,37 +242,6 @@ public class TopCommand extends Command {
             embeds.add(embed.build());
         }
         return embeds;
-    }
-
-    /**
-     * Add pagination buttons and functionality to an embed.
-     *
-     * @param action the embed send action to add onto.
-     * @param embeds list of message embeds for each page.
-     * @param userID the ID of the user who can access this menu.
-     */
-    private void paginateMenu(WebhookMessageAction<Message> action, List<MessageEmbed> embeds, long userID) {
-        // Add buttons to paginated menu
-        String uuid = userID + ":" + UUID.randomUUID();
-        ButtonListener.menus.put(uuid, embeds);
-        List<Button> components = Arrays.asList(
-                Button.primary("pagination:prev:"+uuid, "Previous").asDisabled(),
-                Button.of(ButtonStyle.SECONDARY, "top:page:0", "1/"+embeds.size()).asDisabled(),
-                Button.primary("pagination:next:"+uuid, "Next")
-        );
-        ButtonListener.buttons.put(uuid, components);
-        action.addActionRow(components).queue(interactionHook -> {
-            // Timer task to disable buttons and clear cache after 3 minutes
-            Runnable task = () -> {
-                List<Button> actionRow = ButtonListener.buttons.get(uuid);
-                actionRow.set(0, actionRow.get(0).asDisabled());
-                actionRow.set(2, actionRow.get(2).asDisabled());
-                interactionHook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                ButtonListener.buttons.remove(uuid);
-                ButtonListener.menus.remove(uuid);
-            };
-            ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
-        });
     }
 
     /**

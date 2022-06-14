@@ -1,23 +1,97 @@
 package technobot.listeners;
 
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import technobot.data.GuildData;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * Listens for button input and handles all button backend.
+ *
+ * @author TechnoVision
+ */
 public class ButtonListener extends ListenerAdapter {
+
+    public static final int MINUTES_TO_DISABLE = 3;
 
     public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
     public static final Map<String, List<MessageEmbed>> menus = new HashMap<>();
     public static final Map<String, List<Button>> buttons = new HashMap<>();
+
+    /**
+     * Adds pagination buttons to a message action.
+     *
+     * @param userID the ID of the user who is accessing this menu.
+     * @param action the ReplyCallbackAction to add components to.
+     * @param embeds the embed pages.
+     */
+    public static void sendPaginatedMenu(String userID, ReplyCallbackAction action, List<MessageEmbed> embeds) {
+        String uuid = userID + ":" + UUID.randomUUID();
+        List<Button> components = getPaginationButtons(uuid, embeds.size());
+        buttons.put(uuid, components);
+        menus.put(uuid, embeds);
+        action.addActionRow(components).queue(interactionHook -> ButtonListener.disableButtons(uuid, interactionHook));
+    }
+
+    /**
+     * Adds pagination buttons to a deferred reply message action.
+     *
+     * @param userID the ID of the user who is accessing this menu.
+     * @param action the WebhookMessageAction<Message> to add components to.
+     * @param embeds the embed pages.
+     */
+    public static void sendPaginatedMenu(String userID, WebhookMessageAction<Message> action, List<MessageEmbed> embeds) {
+        String uuid = userID + ":" + UUID.randomUUID();
+        List<Button> components = getPaginationButtons(uuid, embeds.size());
+        buttons.put(uuid, components);
+        menus.put(uuid, embeds);
+        action.addActionRow(components).queue(interactionHook -> ButtonListener.disableButtons(uuid, interactionHook));
+    }
+
+    /**
+     * Adds reset buttons to a deferred reply message action.
+     *
+     * @param userID the ID of the user who is accessing this menu.
+     * @param systemName the name of the system to reset.
+     * @param action the WebhookMessageAction<Message> to add components to.
+     */
+    public static void sendResetMenu(String userID, String systemName, WebhookMessageAction<Message> action) {
+        String uuid = userID + ":" + UUID.randomUUID();
+        List<Button> components = getResetButtons(uuid, systemName);
+        buttons.put(uuid, components);
+        action.addActionRow(components).queue(interactionHook -> ButtonListener.disableButtons(uuid, interactionHook));
+    }
+
+    /**
+     * Get a list of buttons for paginated embeds.
+     *
+     * @param uuid the unique ID generated for these buttons.
+     * @param maxPages the total number of embed pages.
+     * @return A list of components to use on a paginated embed.
+     */
+    private static List<Button> getPaginationButtons(String uuid, int maxPages) {
+        return Arrays.asList(
+                Button.primary("pagination:prev:"+uuid, "Previous").asDisabled(),
+                Button.of(ButtonStyle.SECONDARY, "pagination:page:0", "1/"+maxPages).asDisabled(),
+                Button.primary("pagination:next:"+uuid, "Next")
+        );
+    }
 
     /**
      * Get a list of buttons for reset embeds (selectable yes and no).
@@ -26,11 +100,49 @@ public class ButtonListener extends ListenerAdapter {
      * @param systemName the name of the system being reset.
      * @return A list of components to use on a reset embed.
      */
-    public static List<Button> getResetButtons(String uuid, String systemName) {
+    private static List<Button> getResetButtons(String uuid, String systemName) {
         return Arrays.asList(
             Button.success("reset:yes:"+uuid+":"+systemName, Emoji.fromMarkdown("\u2714")),
             Button.danger("reset:no:"+uuid+":"+systemName, Emoji.fromUnicode("\u2716"))
         );
+    }
+
+    /**
+     * Schedules a timer task to disable buttons and clear cache after a set time.
+     *
+     * @param uuid the uuid of the components to disable.
+     * @param hook a interaction hook pointing to original message.
+     */
+    public static void disableButtons(String uuid, InteractionHook hook) {
+        Runnable task = () -> {
+            List<Button> actionRow = ButtonListener.buttons.get(uuid);
+            for (int i = 0; i < actionRow.size(); i++) {
+                actionRow.set(i, actionRow.get(i).asDisabled());
+            }
+            hook.editOriginalComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
+            ButtonListener.buttons.remove(uuid);
+            ButtonListener.menus.remove(uuid);
+        };
+        ButtonListener.executor.schedule(task, MINUTES_TO_DISABLE, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Schedules a timer task to disable buttons and clear cache after a set time.
+     *
+     * @param uuid the uuid of the components to disable.
+     * @param hook a message hook pointing to original message.
+     */
+    public static void disableButtons(String uuid, Message hook) {
+        Runnable task = () -> {
+            List<Button> actionRow = ButtonListener.buttons.get(uuid);
+            for (int i = 0; i < actionRow.size(); i++) {
+                actionRow.set(i, actionRow.get(i).asDisabled());
+            }
+            hook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
+            ButtonListener.buttons.remove(uuid);
+            ButtonListener.menus.remove(uuid);
+        };
+        ButtonListener.executor.schedule(task, MINUTES_TO_DISABLE, TimeUnit.MINUTES);
     }
 
     @Override

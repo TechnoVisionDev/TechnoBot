@@ -3,15 +3,10 @@ package technobot.commands.utility;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import technobot.TechnoBot;
 import technobot.commands.Category;
@@ -22,7 +17,6 @@ import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
 
@@ -73,27 +67,7 @@ public class HelpCommand extends Command {
             // Send paginated help menu
             ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
             if (embeds.size() > 1) {
-                long userID = event.getUser().getIdLong();
-                String uuid = userID + ":" + UUID.randomUUID();
-                ButtonListener.menus.put(uuid, embeds);
-                // Create buttons
-                List<Button> components = new ArrayList<>();
-                components.add(Button.primary("pagination:prev:"+uuid, "Previous").asDisabled());
-                components.add(Button.of(ButtonStyle.SECONDARY, "pagination:page:0", "1/"+embeds.size()).asDisabled());
-                components.add(Button.primary("pagination:next:"+uuid, "Next"));
-                ButtonListener.buttons.put(uuid, components);
-                action.addActionRow(components).queue(interactionHook -> {
-                    // Timer task to disable buttons and clear cache after 3 minutes
-                    Runnable task = () -> {
-                        List<Button> actionRow = ButtonListener.buttons.get(uuid);
-                        actionRow.set(0, actionRow.get(0).asDisabled());
-                        actionRow.set(2, actionRow.get(2).asDisabled());
-                        interactionHook.editOriginalComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                        ButtonListener.buttons.remove(uuid);
-                        ButtonListener.menus.remove(uuid);
-                    };
-                    ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
-                });
+                ButtonListener.sendPaginatedMenu(event.getUser().getId(), action, embeds);
                 return;
             }
             action.queue();
