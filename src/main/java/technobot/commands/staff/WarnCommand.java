@@ -32,7 +32,7 @@ public class WarnCommand extends Command {
         this.category = Category.STAFF;
         this.args.add(new OptionData(OptionType.USER, "user", "The user to warn", true));
         this.args.add(new OptionData(OptionType.STRING, "reason", "Reason for the warning"));
-        this.permission = Permission.MODERATE_MEMBERS;
+        this.permission = Permission.MANAGE_ROLES;
     }
 
     @Override

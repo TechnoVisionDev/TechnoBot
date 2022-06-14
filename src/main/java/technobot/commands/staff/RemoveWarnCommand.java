@@ -29,7 +29,7 @@ public class RemoveWarnCommand extends Command {
         this.category = Category.STAFF;
         this.args.add(new OptionData(OptionType.USER, "user", "User to clear ALL warnings for"));
         this.args.add(new OptionData(OptionType.INTEGER, "id", "ID number for the warning to remove").setMinValue(1));
-        this.permission = Permission.MODERATE_MEMBERS;
+        this.permission = Permission.MANAGE_ROLES;
     }
 
     @Override
