@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
@@ -127,20 +128,24 @@ public class LevelingListener extends ListenerAdapter {
             String levelingMessage = (data.config.getLevelingMessage() != null) ? data.config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
             String parsedMessage = placeholder.parse(levelingMessage);
 
-            // Send level-up message in DMs
-            if (data.config.isLevelingDM()) {
-                event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(parsedMessage).queue());
-                return;
-            }
+            try {
+                // Send level-up message in DMs
+                if (data.config.isLevelingDM()) {
+                    event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(parsedMessage).queue());
+                    return;
+                }
 
-            // Send level-up message in channel
-            if (data.config.getLevelingChannel() != null) {
-                TextChannel channel = event.getGuild().getTextChannelById(data.config.getLevelingChannel());
-                if (channel == null) { channel = event.getTextChannel(); }
-                channel.sendMessage(parsedMessage).queue();
-            } else {
-                event.getChannel().sendMessage(parsedMessage).queue();
-            }
+                // Send level-up message in channel
+                if (data.config.getLevelingChannel() != null) {
+                    TextChannel channel = event.getGuild().getTextChannelById(data.config.getLevelingChannel());
+                    if (channel == null) {
+                        channel = event.getTextChannel();
+                    }
+                    channel.sendMessage(parsedMessage).queue();
+                } else {
+                    event.getChannel().sendMessage(parsedMessage).queue();
+                }
+            } catch (InsufficientPermissionException ignored) { }
         }
     }
 }
