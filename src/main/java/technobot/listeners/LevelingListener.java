@@ -89,11 +89,14 @@ public class LevelingListener extends ListenerAdapter {
             level++;
             levelUp = true;
             updates.add(Updates.set("level", level));
+            profile.setLevel(level);
         }
 
         // Update MongoDB data file
         updates.add(Updates.set("xp", xp));
         updates.add(Updates.set("total_xp", totalXP));
+        profile.setXp(xp);
+        profile.setTotalXP(totalXP);
         bot.database.leveling.updateOne(filter, updates);
 
         if (levelUp) {
