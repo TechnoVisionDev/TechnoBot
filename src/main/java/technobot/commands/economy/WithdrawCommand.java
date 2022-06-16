@@ -30,7 +30,6 @@ public class WithdrawCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         User user = event.getUser();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
         String currency = economyHandler.getCurrency();
@@ -41,7 +40,7 @@ public class WithdrawCommand extends Command {
             // Bank is at 0
             embed.setDescription(EmbedUtils.RED_X + " You don't have any money in your bank to withdraw!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
 
@@ -54,7 +53,7 @@ public class WithdrawCommand extends Command {
                 String value = currency + " " + EconomyHandler.FORMATTER.format(bank);
                 embed.setDescription(EmbedUtils.RED_X + " You cannot withdraw more than " + value + "!");
                 embed.setColor(EmbedColor.ERROR.color);
-                event.getHook().sendMessageEmbeds(embed.build()).queue();
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 return;
             }
         } else {
@@ -66,6 +65,6 @@ public class WithdrawCommand extends Command {
         String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
         embed.setDescription(EmbedUtils.GREEN_TICK + " Withdrew " + value + " from your bank!");
         embed.setColor(EmbedColor.SUCCESS.color);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

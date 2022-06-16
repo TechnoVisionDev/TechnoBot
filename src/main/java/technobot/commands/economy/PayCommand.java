@@ -30,7 +30,6 @@ public class PayCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         // Get command data
         User user = event.getUser();
         User target = event.getOption("user").getAsUser();
@@ -39,14 +38,14 @@ public class PayCommand extends Command {
             // Check for invalid target
             embed.setDescription(EmbedUtils.RED_X + " You cannot pay yourself!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
             embed.setDescription(EmbedUtils.RED_X + " You cannot pay bots!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
 
@@ -61,7 +60,7 @@ public class PayCommand extends Command {
             String text = "You don't have that much money to give. You currently have " + value + " on hand.";
             embed.setDescription(EmbedUtils.RED_X + text);
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
 
@@ -72,6 +71,6 @@ public class PayCommand extends Command {
         // Send embed message
         embed.setDescription(EmbedUtils.GREEN_TICK + " <@" + target.getId() + "> has received your " + value + ".");
         embed.setColor(EmbedColor.SUCCESS.color);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }
