@@ -1,7 +1,6 @@
 package technobot.commands.utility;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import technobot.TechnoBot;
@@ -25,14 +24,12 @@ public class RolesCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        Guild guild = event.getGuild();
         StringBuilder content = new StringBuilder();
         for (Role role : event.getGuild().getRoles()) {
-            int amount = guild.getMembersWithRoles(role).size();
-            if (role.getName().equals("@everyone")) amount = guild.getMemberCount();
-            content.append(role.getAsMention()).append(" ").append(amount).append(" Member");
-            if (amount > 1 || amount == 0) content.append("s");
-            content.append("\n");
+            if (!role.isManaged()) {
+                content.append(role.getAsMention());
+                content.append("\n");
+            }
         }
 
         EmbedBuilder embed = new EmbedBuilder()
