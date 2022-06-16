@@ -1,20 +1,14 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Purges a channel of a specified number of messages.
@@ -36,24 +30,14 @@ public class ClearCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-
-        // Check that bot has necessary permissions
-        Role botRole = event.getGuild().getBotRole();
-        if (!CommandUtils.hasPermission(botRole, this.permission)) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't delete those messages. Please check my role and channel permissions.")).queue();
-            return;
-        }
-
+        event.deferReply().setEphemeral(true).queue();
         int amount = event.getOption("amount").getAsInt();
         event.getChannel().getHistory().retrievePast(Math.min(amount + 1, 100)).queue(messages -> {
             try {
                 // Delete messages and notify user
                 ((TextChannel) event.getChannel()).deleteMessages(messages).queue(result -> {
                     String text = ":ballot_box_with_check: I have deleted `%d messages!`".formatted(amount);
-                    event.getHook().sendMessage(text).queue(message -> {
-                        message.delete().queueAfter(3, TimeUnit.SECONDS, succ -> {}, fail -> {});
-                    });
+                    event.getHook().sendMessage(text).queue();
                 });
             } catch (IllegalArgumentException e) {
                 // Messages were older than 2 weeks

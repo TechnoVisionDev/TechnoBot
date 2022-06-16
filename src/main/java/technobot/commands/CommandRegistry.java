@@ -1,5 +1,7 @@
 package technobot.commands;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,6 +24,7 @@ import technobot.commands.starboard.StarboardCommand;
 import technobot.commands.suggestions.*;
 import technobot.commands.utility.*;
 import technobot.data.GuildData;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,6 +145,11 @@ public class CommandRegistry extends ListenerAdapter {
         }
     }
 
+    /**
+     * Creates a list of CommandData for all commands.
+     *
+     * @return a list of CommandData to be used for registration.
+     */
     public static List<CommandData> unpackCommandData() {
         // Register slash commands
         List<CommandData> commandData = new ArrayList<>();
@@ -158,11 +166,24 @@ public class CommandRegistry extends ListenerAdapter {
         return commandData;
     }
 
+    /**
+     * Runs whenever a slash command is run in Discord.
+     */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String name = event.getName();
-        Command cmd = commandsMap.get(name);
+        // Get command by name
+        Command cmd = commandsMap.get(event.getName());
         if (cmd != null) {
+            // Check for required bot permissions
+            Role botRole = event.getGuild().getBotRole();
+            if (cmd.botPermission != null) {
+                if (!botRole.hasPermission(cmd.botPermission) && !botRole.hasPermission(Permission.ADMINISTRATOR)) {
+                    String text = "I need the `" + cmd.botPermission.getName() + "` permission to execute that command.";
+                    event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
+                    return;
+                }
+            }
+            // Run command
             cmd.execute(event);
         }
     }

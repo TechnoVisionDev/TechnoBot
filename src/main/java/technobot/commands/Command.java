@@ -22,7 +22,8 @@ public abstract class Command {
     public Category category;
     public List<OptionData> args;
     public List<SubcommandData> subCommands;
-    public Permission permission;
+    public Permission permission; //Permission user needs to execute this command
+    public Permission botPermission; //Permission bot needs to execute this command
 
     public Command(TechnoBot bot) {
         this.bot = bot;

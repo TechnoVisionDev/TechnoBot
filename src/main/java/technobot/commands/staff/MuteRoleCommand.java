@@ -33,6 +33,7 @@ public class MuteRoleCommand extends Command {
         this.description = "Create or set a mute role for the server.";
         this.category = Category.STAFF;
         this.permission = Permission.MANAGE_SERVER;
+        this.botPermission = Permission.MANAGE_ROLES;
         this.subCommands.add(new SubcommandData("set", "Set an existing role as the mute role.")
                 .addOption(OptionType.ROLE, "role", "The role to set as the mute role", true));
         this.subCommands.add(new SubcommandData("create", "Create a mute role for this server.")
@@ -41,17 +42,17 @@ public class MuteRoleCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         Guild guild = event.getGuild();
         GuildData data = GuildData.get(guild);
 
         // Check for admin permissions
         Role botRole = event.getGuild().getBotRole();
         if (!botRole.hasPermission(Permission.ADMINISTRATOR)) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I am unable to create roles. Please check my permissions and role position.")).queue();
+            event.replyEmbeds(EmbedUtils.createError("I am unable to create roles. Please check my permissions and role position.")).setEphemeral(true).queue();
             return;
         }
 
+        event.deferReply().queue();
         switch(event.getSubcommandName()) {
             case "set" -> {
                 // Set existing role as the mute role

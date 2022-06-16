@@ -1,16 +1,16 @@
 package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
 
 /**
@@ -25,19 +25,14 @@ public class UnlockCommand extends Command {
         this.name = "unlock";
         this.description = "Allows @everyone to send messages in a channel.";
         this.category = Category.STAFF;
-        this.args.add(new OptionData(OptionType.CHANNEL, "channel", "The channel to unlock"));
+        this.args.add(new OptionData(OptionType.CHANNEL, "channel", "The channel to unlock")
+                .setChannelTypes(ChannelType.TEXT, ChannelType.NEWS));
         this.permission = Permission.MANAGE_CHANNEL;
+        this.botPermission = Permission.MANAGE_CHANNEL;
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        // Check that bot has necessary permissions
-        Role botRole = event.getGuild().getBotRole();
-        if (!CommandUtils.hasPermission(botRole, this.permission)) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("I couldn't unlock that channel. Please check my role and channel permissions.")).queue();
-            return;
-        }
-
         OptionMapping channelOption = event.getOption("channel");
         TextChannel channel;
 
@@ -45,12 +40,16 @@ public class UnlockCommand extends Command {
         else { channel = event.getTextChannel(); }
 
         if (channel == null) {
-            event.replyEmbeds(EmbedUtils.createError("That is not a valid channel!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("That is not a valid channel!")).setEphemeral(true).queue();
             return;
         }
 
-        channel.upsertPermissionOverride(event.getGuild().getPublicRole()).clear(Permission.MESSAGE_SEND).queue();
-        String channelString = "<#"+channel.getId()+">";
-        event.replyEmbeds(EmbedUtils.createDefault(":unlock: "+channelString+" has been unlocked.")).queue();
+        try {
+            channel.upsertPermissionOverride(event.getGuild().getPublicRole()).clear(Permission.MESSAGE_SEND).queue();
+            String channelString = "<#" + channel.getId() + ">";
+            event.replyEmbeds(EmbedUtils.createDefault(":unlock: " + channelString + " has been unlocked.")).queue();
+        } catch (InsufficientPermissionException e) {
+            event.replyEmbeds(EmbedUtils.createError("I am lacking some permissions required to unlock channels.")).queue();
+        }
     }
 }
