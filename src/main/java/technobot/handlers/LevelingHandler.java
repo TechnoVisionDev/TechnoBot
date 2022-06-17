@@ -3,16 +3,11 @@ package technobot.handlers;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
-import technobot.data.cache.Config;
 import technobot.data.cache.Leveling;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Handles leveling and leaderboard.
@@ -68,18 +63,7 @@ public class LevelingHandler {
      */
     public void resetAll() {
         bot.database.leveling.deleteMany(guildFilter);
-        Config config = bot.database.config.find(guildFilter).first();
-        if (config != null) {
-            config.setLevelingDM(false);
-            config.setLevelingMute(false);
-            config.setLevelingMod(1);
-            config.setLevelingBackground(null);
-            config.setLevelingMessage(null);
-            config.setLevelingChannel(null);
-            config.getRewards().clear();
-            bot.database.config.replaceOne(guildFilter, config);
-            GuildData.get(guild).config = config;
-        }
+        GuildData.get(guild).configHandler.resetLevelingConfig();
     }
 
     /**

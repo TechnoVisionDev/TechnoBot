@@ -57,6 +57,10 @@ public class MuteRoleCommand extends Command {
             case "set" -> {
                 // Set existing role as the mute role
                 Role role = event.getOption("role").getAsRole();
+                if (role.isManaged() || role.isPublicRole()) {
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("I cannot set bot/managed roles as the mute role!")).setEphemeral(true).queue();
+                    return;
+                }
                 data.moderationHandler.setMuteRole(role.getIdLong());
                 String text = EmbedUtils.BLUE_TICK + " The "+role.getAsMention()+" role will be used for the `mute` command.";
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();

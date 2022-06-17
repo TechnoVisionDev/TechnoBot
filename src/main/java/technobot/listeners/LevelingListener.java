@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
+import technobot.data.cache.Config;
 import technobot.data.cache.Leveling;
 import technobot.util.placeholders.Placeholder;
 import technobot.util.placeholders.PlaceholderFactory;
@@ -103,7 +104,8 @@ public class LevelingListener extends ListenerAdapter {
             // Give reward roles
             Member member = event.getMember();
             List<Role> memberRoles = member.getRoles();
-            for (Map.Entry<String,Integer> reward : data.config.getRewards().entrySet()) {
+            Config config = data.configHandler.getConfig();
+            for (Map.Entry<String,Integer> reward : config.getRewards().entrySet()) {
                 // Check for required level
                 int rewardLevel = reward.getValue();
                 if (level >= rewardLevel) {
@@ -119,24 +121,24 @@ public class LevelingListener extends ListenerAdapter {
             }
 
             // Check for mute and modulus
-            if (data.config.isLevelingMute()) return;
-            if (profile.getLevel() % data.config.getLevelingMod() != 0) return;
+            if (config.isLevelingMute()) return;
+            if (profile.getLevel() % config.getLevelingMod() != 0) return;
 
             // Parse level-up message for placeholders
             Placeholder placeholder = PlaceholderFactory.fromLevelingEvent(event, profile).get();
-            String levelingMessage = (data.config.getLevelingMessage() != null) ? data.config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
+            String levelingMessage = (config.getLevelingMessage() != null) ? config.getLevelingMessage() : DEFAULT_LEVEL_MESSAGE;
             String parsedMessage = placeholder.parse(levelingMessage);
 
             try {
                 // Send level-up message in DMs
-                if (data.config.isLevelingDM()) {
+                if (config.isLevelingDM()) {
                     event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(parsedMessage).queue());
                     return;
                 }
 
                 // Send level-up message in channel
-                if (data.config.getLevelingChannel() != null) {
-                    TextChannel channel = event.getGuild().getTextChannelById(data.config.getLevelingChannel());
+                if (config.getLevelingChannel() != null) {
+                    TextChannel channel = event.getGuild().getTextChannelById(config.getLevelingChannel());
                     if (channel == null) {
                         channel = event.getTextChannel();
                     }

@@ -62,7 +62,7 @@ public class LevelingCommand extends Command {
         event.deferReply().queue();
         Bson filter = Filters.eq("guild", event.getGuild().getIdLong());
         GuildData data = GuildData.get(event.getGuild());
-        Config config = data.config;
+        Config config = data.configHandler.getConfig();
 
         String text = "";
         Bson update = null;

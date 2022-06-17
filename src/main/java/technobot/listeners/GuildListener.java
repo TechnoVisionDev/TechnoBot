@@ -1,10 +1,14 @@
 package technobot.listeners;
 
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
+import technobot.commands.automation.AutoRoleCommand;
 import technobot.data.GuildData;
 
 /**
@@ -30,12 +34,27 @@ public class GuildListener extends ListenerAdapter {
     }
 
     /**
-     * Persists mute roles on guild member join.
-     * Used to prevent members from mute evading by kicking themselves.
+     * Add roles on guild member join. Used for role persists and auto-roles.
      */
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        GuildData data = GuildData.get(event.getGuild());
-        data.moderationHandler.persistMuteRole(event.getMember());
+        Guild guild = event.getGuild();
+        Member member = event.getMember();
+        GuildData data = GuildData.get(guild);
+
+        // Persist mute role
+        data.moderationHandler.persistMuteRole(member);
+
+        // Give auto roles
+        int count = 0;
+        int max = data.configHandler.isPremium() ? AutoRoleCommand.MAX_AUTO_ROLES : 1;
+        for (long roleID : data.configHandler.getConfig().getAutoRoles()) {
+            Role role = guild.getRoleById(roleID);
+            if (role != null) {
+                guild.addRoleToMember(member, role).queue();
+                count++;
+                if (count == max) break;
+            }
+        }
     }
 }

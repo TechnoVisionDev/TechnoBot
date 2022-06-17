@@ -33,7 +33,7 @@ public class RewardsCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         LinkedHashMap<String, Integer> rewards = new LinkedHashMap<>();
-        GuildData.get(event.getGuild()).config.getRewards().entrySet()
+        GuildData.get(event.getGuild()).configHandler.getConfig().getRewards().entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
                 .forEachOrdered(x -> rewards.put(x.getKey(), x.getValue()));

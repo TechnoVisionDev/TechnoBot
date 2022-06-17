@@ -43,7 +43,7 @@ public class RoleCommand extends Command {
             event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).setEphemeral(true).queue();
             return;
         }
-        if (role.isManaged()) {
+        if (role.isManaged() || role.isPublicRole()) {
             event.replyEmbeds(EmbedUtils.createError("I cannot give/remove bot or managed roles!")).setEphemeral(true).queue();
             return;
         }

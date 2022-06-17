@@ -1,10 +1,8 @@
 package technobot.data;
 
-import com.mongodb.client.model.Filters;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
-import technobot.data.cache.Config;
 import technobot.handlers.*;
 import technobot.handlers.economy.EconomyHandler;
 
@@ -27,7 +25,6 @@ public class GuildData {
     private static boolean initialized;
 
     /** Local memory caches. */
-    public Config config;
     public MusicHandler musicHandler;
     public SuggestionHandler suggestionHandler;
     public ModerationHandler moderationHandler;
@@ -35,6 +32,7 @@ public class GuildData {
     public LevelingHandler levelingHandler;
     public GreetingHandler greetingHandler;
     public EconomyHandler economyHandler;
+    public ConfigHandler configHandler;
 
     /**
      * Represents the local memory cache of guild data stored in the MongoDB databases.
@@ -50,13 +48,7 @@ public class GuildData {
         levelingHandler = new LevelingHandler(bot, guild);
         greetingHandler = new GreetingHandler(bot, guild);
         economyHandler = new EconomyHandler(bot, guild);
-
-        // Setup guild config
-        config = bot.database.config.find(Filters.eq("guild", guild.getIdLong())).first();
-        if (config == null) {
-            config = new Config(guild.getIdLong());
-            bot.database.config.insertOne(config);
-        }
+        configHandler = new ConfigHandler(bot, guild);
     }
 
     /**

@@ -96,8 +96,8 @@ public class RankCommand extends Command {
             BufferedImage background;
             if (!profile.getBackground().isEmpty()) {
                 background = ImageIO.read(new URL(profile.getBackground()));
-            } else if (data.config.getLevelingBackground() != null) {
-                background = ImageIO.read(new URL(data.config.getLevelingBackground()));
+            } else if (data.configHandler.getConfig().getLevelingBackground() != null) {
+                background = ImageIO.read(new URL(data.configHandler.getConfig().getLevelingBackground()));
             } else {
                 background = ImageIO.read(cl.getResource(PATH + "background.png"));
             }
