@@ -277,7 +277,17 @@ public class ModerationHandler {
      */
     public void muteUser(long userID) {
         moderation.addMute(userID);
-        bot.database.moderation.updateOne(filter, Updates.push("mutes", userID));
+        bot.database.moderation.updateOne(filter, Updates.addToSet("mutes", userID));
+    }
+
+    /**
+     * Removes a user from the list of mutes (for role persists).
+     *
+     * @param userID the ID of the user to unmute.
+     */
+    public void unMuteUser(long userID) {
+        moderation.removeMute(userID);
+        bot.database.moderation.updateOne(filter, Updates.pull("mutes", userID));
     }
 
     /**

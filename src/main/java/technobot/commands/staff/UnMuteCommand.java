@@ -74,6 +74,7 @@ public class UnMuteCommand extends Command {
 
         // Remove muted role to user
         event.getGuild().removeRoleFromMember(target, muteRole).queue();
+        moderationHandler.unMuteUser(target.getIdLong());
         user.openPrivateChannel().queue(privateChannel -> {
             // Private message user with reason for kick
             MessageEmbed msg = moderationHandler.createCaseMessage(event.getUser().getIdLong(),"Un-Mute", EmbedColor.SUCCESS.color);

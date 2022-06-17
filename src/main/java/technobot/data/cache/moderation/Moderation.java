@@ -40,8 +40,16 @@ public class Moderation {
      * @param userID the ID of the user to mute.
      */
     public void addMute(long userID) {
-        //if (mutes == null) mutes = new HashSet<>();
         mutes.add(userID);
+    }
+
+    /**
+     * Remove a user ID from the mute list
+     *
+     * @param userID the ID of the user to unmute.
+     */
+    public void removeMute(long userID) {
+        mutes.remove(userID);
     }
 
     /**
