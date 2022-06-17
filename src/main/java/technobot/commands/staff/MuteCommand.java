@@ -80,6 +80,7 @@ public class MuteCommand extends Command {
 
         // Add muted role to user
         event.getGuild().addRoleToMember(target, muteRole).queue();
+        moderationHandler.muteUser(target.getIdLong());
         user.openPrivateChannel().queue(privateChannel -> {
             // Private message user with reason for kick
             MessageEmbed msg = moderationHandler.createCaseMessage(event.getUser().getIdLong(), "Mute", reason, EmbedColor.WARNING.color);

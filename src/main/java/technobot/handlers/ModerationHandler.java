@@ -269,4 +269,28 @@ public class ModerationHandler {
         if (roleID == null) return null;
         return guild.getRoleById(roleID);
     }
+
+    /**
+     * Add a user to the list of mutes (for role persists).
+     *
+     * @param userID the ID of the user to mute.
+     */
+    public void muteUser(long userID) {
+        moderation.addMute(userID);
+        bot.database.moderation.updateOne(filter, Updates.push("mutes", userID));
+    }
+
+    /**
+     * Add the mute role to a member (to be used for role persists)
+     *
+     * @param member the member to get muted.
+     */
+    public void persistMuteRole(Member member) {
+        if (moderation.getMutes().contains(member.getIdLong())) {
+            Role muteRole = guild.getRoleById(moderation.getMuteRole());
+            if (muteRole != null) {
+                guild.addRoleToMember(member, muteRole).queue();
+            }
+        }
+    }
 }

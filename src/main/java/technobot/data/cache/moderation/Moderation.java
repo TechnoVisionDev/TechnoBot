@@ -3,10 +3,7 @@ package technobot.data.cache.moderation;
 import kotlin.Pair;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * POJO object that stores warnings and ban timers.
@@ -22,15 +19,29 @@ public class Moderation {
     private Long muteRole;
     private HashMap<String, Ban> bans;
     private HashMap<String, List<Warning>> warnings;
+    private Set<Long> mutes;
 
-    public Moderation() { }
+    public Moderation() {
+        mutes = new HashSet<>();
+    }
 
     public Moderation(long guild) {
         this.guild = guild;
         this.bans = new HashMap<>();
         this.warnings = new HashMap<>();
+        this.mutes = new HashSet<>();
         this.total = 0;
         this.count = 0;
+    }
+
+    /**
+     * Add a user ID to the mute list
+     *
+     * @param userID the ID of the user to mute.
+     */
+    public void addMute(long userID) {
+        //if (mutes == null) mutes = new HashSet<>();
+        mutes.add(userID);
     }
 
     /**
@@ -156,5 +167,13 @@ public class Moderation {
 
     public void setWarnings(HashMap<String, List<Warning>> warnings) {
         this.warnings = warnings;
+    }
+
+    public Set<Long> getMutes() {
+        return mutes;
+    }
+
+    public void setMutes(Set<Long> mutes) {
+        this.mutes = mutes;
     }
 }

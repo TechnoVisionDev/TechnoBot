@@ -1,6 +1,7 @@
 package technobot.listeners;
 
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
@@ -26,5 +27,15 @@ public class GuildListener extends ListenerAdapter {
         GuildData.get(event.getGuild());
         // Register slash commands
         event.getGuild().updateCommands().addCommands(CommandRegistry.unpackCommandData()).queue();
+    }
+
+    /**
+     * Persists mute roles on guild member join.
+     * Used to prevent members from mute evading by kicking themselves.
+     */
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        GuildData data = GuildData.get(event.getGuild());
+        data.moderationHandler.persistMuteRole(event.getMember());
     }
 }
