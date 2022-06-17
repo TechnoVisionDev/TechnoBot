@@ -7,7 +7,6 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
-import technobot.util.embeds.EmbedUtils;
 
 /**
  * Creates button links to the Patreon to buy premium.

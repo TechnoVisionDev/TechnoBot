@@ -134,6 +134,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new PollCommand(bot),
                 new InviteCommand(bot),
                 new PremiumCommand(bot),
+                new MathCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
     }
