@@ -75,6 +75,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new MemeCommand(bot),
                 new CuteCommand(bot),
                 new EmoteCommand(bot),
+                new ActionCommand(bot),
                 new NsfwCommand(bot),
                 new EightBallCommand(bot),
                 new GoogleCommand(bot),
