@@ -43,7 +43,7 @@ public class EconomyLocalization {
     public EconomyReply getWorkResponse(long amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(work.length);
         String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = work[index].replace("{amount}", value);
+        String reply = work[index].replaceAll("\\{amount}", value);
         return new EconomyReply(reply, index+1);
     }
 
@@ -56,7 +56,7 @@ public class EconomyLocalization {
     public EconomyReply getCrimeSuccessResponse(long amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(crimeSuccess.length);
         String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = crimeSuccess[index].replace("{amount}", value);
+        String reply = crimeSuccess[index].replaceAll("\\{amount}", value);
         return new EconomyReply(reply, index+1, true);
     }
 
@@ -69,7 +69,7 @@ public class EconomyLocalization {
     public EconomyReply getCrimeFailResponse(long amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(crimeFail.length);
         String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = crimeFail[index].replace("{amount}", value);
+        String reply = crimeFail[index].replaceAll("\\{amount}", value);
         return new EconomyReply(reply, index+1, false);
     }
 }
