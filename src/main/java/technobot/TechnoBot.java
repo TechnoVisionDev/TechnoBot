@@ -48,9 +48,8 @@ public class TechnoBot {
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN", System.getenv("TOKEN")));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("/help | technobot.app"));
-        builder.setChunkingFilter(ChunkingFilter.ALL);
-        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableCache(CacheFlag.ONLINE_STATUS);
+        builder.setChunkingFilter(ChunkingFilter.NONE);
+        builder.setMemberCachePolicy(MemberCachePolicy.NONE);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,

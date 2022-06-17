@@ -30,7 +30,6 @@ public class DepositCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         User user = event.getUser();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
         String currency = economyHandler.getCurrency();
@@ -41,7 +40,7 @@ public class DepositCommand extends Command {
             // Balance is at 0
             embed.setDescription(EmbedUtils.RED_X + " You don't have any money to deposit!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
 
@@ -54,7 +53,7 @@ public class DepositCommand extends Command {
                 String value = currency + " " + EconomyHandler.FORMATTER.format(balance);
                 embed.setDescription(EmbedUtils.RED_X + " You cannot deposit more than " + value + "!");
                 embed.setColor(EmbedColor.ERROR.color);
-                event.getHook().sendMessageEmbeds(embed.build()).queue();
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 return;
             }
         } else {
@@ -66,6 +65,6 @@ public class DepositCommand extends Command {
         String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
         embed.setDescription(EmbedUtils.GREEN_TICK + " Deposited " + value + " to your bank!");
         embed.setColor(EmbedColor.SUCCESS.color);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

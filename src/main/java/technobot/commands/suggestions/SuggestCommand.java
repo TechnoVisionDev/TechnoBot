@@ -3,6 +3,7 @@ package technobot.commands.suggestions;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
@@ -65,8 +66,10 @@ public class SuggestCommand extends Command {
         // Add suggestion and reaction buttons
         channel.sendMessageEmbeds(embed.build()).queue(suggestion -> {
             suggestionHandler.add(suggestion.getIdLong(), event.getUser().getIdLong());
-            suggestion.addReaction("⬆").queue();
-            suggestion.addReaction("⬇").queue();
+            try {
+                suggestion.addReaction("⬆").queue();
+                suggestion.addReaction("⬇").queue();
+            } catch (InsufficientPermissionException ignored) { }
         });
 
         // Send a response message

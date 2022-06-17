@@ -2,19 +2,14 @@ package technobot.commands.suggestions;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.exceptions.ContextException;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -24,9 +19,6 @@ import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Admin command to setup and modify the suggestion board.
@@ -119,25 +111,9 @@ public class SuggestionsCommand extends Command {
                 return;
             }
             case "reset" -> {
-                long userID = event.getUser().getIdLong();
-                String uuid = userID + ":" + UUID.randomUUID();
                 text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";
-                List<Button> components = new ArrayList<>();
-                components.add(Button.success("suggestions:yes:"+uuid, Emoji.fromMarkdown("\u2714")));
-                components.add(Button.danger("suggestions:no:"+uuid, Emoji.fromUnicode("\u2716")));
-                ButtonListener.buttons.put(uuid, components);
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).addActionRow(components).queue(interactionHook -> {
-                    // Timer task to disable buttons and clear cache after 3 minutes
-                    Runnable task = () -> {
-                        List<Button> actionRow = ButtonListener.buttons.get(uuid);
-                        for (int i = 0; i < actionRow.size(); i++) {
-                            actionRow.set(i, actionRow.get(i).asDisabled());
-                        }
-                        interactionHook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
-                        ButtonListener.buttons.remove(uuid);
-                    };
-                    ButtonListener.executor.schedule(task, 3, TimeUnit.MINUTES);
-                });
+                WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
+                ButtonListener.sendResetMenu(event.getUser().getId(), "Suggestion", action);
                 return;
             }
         }

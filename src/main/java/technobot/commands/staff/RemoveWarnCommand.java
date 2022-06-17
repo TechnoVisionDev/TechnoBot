@@ -34,7 +34,6 @@ public class RemoveWarnCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         GuildData data = GuildData.get(event.getGuild());
         OptionMapping userOption = event.getOption("user");
         OptionMapping idOption = event.getOption("id");
@@ -44,26 +43,30 @@ public class RemoveWarnCommand extends Command {
             // Remove warning with this ID
             int count = data.moderationHandler.removeWarning(idOption.getAsInt());
             if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK + " 1 warning has been removed.");
+                embed = EmbedUtils.createDefault(GREEN_TICK + " Warning `#"+idOption.getAsInt()+"` has been removed.");
             } else {
                 embed = EmbedUtils.createError("Unable to find a warning with that ID!");
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+                return;
             }
-            event.getHook().sendMessageEmbeds(embed).queue();
+            event.replyEmbeds(embed).queue();
         } else if (userOption != null) {
             // Remove all warnings from user
             User target = userOption.getAsUser();
             int count = data.moderationHandler.clearWarnings(target.getIdLong());
             if (count > 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" "+count+" warnings have been removed.");
+                embed = EmbedUtils.createDefault(GREEN_TICK+" "+count+" warnings have been removed for <@!"+target.getId()+">.");
             } else if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been removed.");
+                embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been removed for <@!"+target.getId()+">.");
             } else {
                 embed = EmbedUtils.createError("That user does not have any warnings!");
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+                return;
             }
-            event.getHook().sendMessageEmbeds(embed).queue();
+            event.replyEmbeds(embed).queue();
         } else {
             // No user or ID specified
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("You must specify a user or a warning ID!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("You must specify a user or a warning ID!")).setEphemeral(true).queue();
         }
     }
 }

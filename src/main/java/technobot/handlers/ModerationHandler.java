@@ -2,15 +2,17 @@ package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.lang.Nullable;
 import kotlin.Pair;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.moderation.Ban;
 import technobot.data.cache.moderation.Moderation;
 import technobot.data.cache.moderation.Warning;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,6 +61,78 @@ public class ModerationHandler {
                 }
             });
         }
+    }
+
+    /**
+     * Creates a private message embed for one of the moderation commands with reason.
+     *
+     * @param moderatorID the moderator who ran the command.
+     * @param action the command action (Kick, Ban, Warn, etc).
+     * @param reason the reason for the action.
+     * @param color the color to display on the embed.
+     * @return embed custom to this case.
+     */
+    public MessageEmbed createCaseMessage(long moderatorID, String action, String reason, int color) {
+        return caseMessageHelper(moderatorID, action, reason, null, color);
+    }
+
+    /**
+     * Creates a private message embed for one of the moderation commands with reason and duration.
+     *
+     * @param moderatorID the moderator who ran the command.
+     * @param action the command action (Kick, Ban, Warn, etc).
+     * @param reason the reason for the action.
+     * @param duration the duration of the action (days, weeks, months, etc).
+     * @param color the color to display on the embed.
+     * @return embed custom to this case.
+     */
+    public MessageEmbed createCaseMessage(long moderatorID, String action, String reason, String duration, int color) {
+        return caseMessageHelper(moderatorID, action, reason, duration, color);
+    }
+
+    /**
+     * Creates a private message embed for one of the moderation commands.
+     *
+     * @param moderatorID the moderator who ran the command.
+     * @param action the command action (Kick, Ban, Warn, etc).
+     * @param color the color to display on the embed.
+     * @return embed custom to this case.
+     */
+    public MessageEmbed createCaseMessage(long moderatorID, String action, int color) {
+        return caseMessageHelper(moderatorID, action, null, null, color);
+    }
+
+    /**
+     * Creates the actual embed for createCaseMessage(), ignoring null values.
+     */
+    private MessageEmbed caseMessageHelper(long moderatorID, String action, String reason, String duration, int color) {
+        String text = "**Server:** " + guild.getName();
+        text += "\n**Actioned by:** <@!" + moderatorID + ">";
+        text += "\n**Action:** " + action;
+        if (duration != null) text += "\n**Duration:** " + duration;
+        if (reason != null) text += "\n**Reason:** " + reason;
+        return new EmbedBuilder().setColor(color).setDescription(text).setTimestamp(new Date().toInstant()).build();
+    }
+
+    /**
+     * Checks if bot can run staff command against this member.
+     *
+     * @param target the member targeted by this command.
+     * @return true if bot can target this member, otherwise false.
+     */
+    public boolean canTargetMember(Member target) {
+        // Check that target is not the owner of the guild
+        if (target.isOwner()) {
+            return false;
+        }
+        // Check if bot has a higher role than user
+        int botPos = guild.getBotRole().getPosition();
+        for (Role role : target.getRoles()) {
+            if (role.getPosition() >= botPos) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -173,5 +247,60 @@ public class ModerationHandler {
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * Sets the mute role for this guild.
+     *
+     * @param roleID the ID of the mute role to set.
+     */
+    public void setMuteRole(long roleID) {
+        moderation.setMuteRole(roleID);
+        bot.database.moderation.updateOne(filter, Updates.set("mute_role", roleID));
+    }
+
+    /**
+     * Get the mute role for this guild if set.
+     *
+     * @return the set mute role, or null if not set or invalid.
+     */
+    public @Nullable Role getMuteRole() {
+        Long roleID = moderation.getMuteRole();
+        if (roleID == null) return null;
+        return guild.getRoleById(roleID);
+    }
+
+    /**
+     * Add a user to the list of mutes (for role persists).
+     *
+     * @param userID the ID of the user to mute.
+     */
+    public void muteUser(long userID) {
+        moderation.addMute(userID);
+        bot.database.moderation.updateOne(filter, Updates.addToSet("mutes", userID));
+    }
+
+    /**
+     * Removes a user from the list of mutes (for role persists).
+     *
+     * @param userID the ID of the user to unmute.
+     */
+    public void unMuteUser(long userID) {
+        moderation.removeMute(userID);
+        bot.database.moderation.updateOne(filter, Updates.pull("mutes", userID));
+    }
+
+    /**
+     * Add the mute role to a member (to be used for role persists)
+     *
+     * @param member the member to get muted.
+     */
+    public void persistMuteRole(Member member) {
+        if (moderation.getMutes().contains(member.getIdLong())) {
+            Role muteRole = guild.getRoleById(moderation.getMuteRole());
+            if (muteRole != null) {
+                guild.addRoleToMember(member, muteRole).queue();
+            }
+        }
     }
 }

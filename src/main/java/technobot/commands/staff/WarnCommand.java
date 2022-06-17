@@ -3,6 +3,7 @@ package technobot.commands.staff;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -37,15 +38,14 @@ public class WarnCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         // Get command and member data
         User user = event.getOption("user").getAsUser();
         Member target = event.getGuild().getMemberById(user.getIdLong());
         if (target == null) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("That user is not in this server!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("That user is not in this server!")).setEphemeral(true).queue();
             return;
         } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("Why would I warn myself... silly human!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("Why would I warn myself... silly human!")).setEphemeral(true).queue();
             return;
         }
         OptionMapping reasonOption = event.getOption("reason");
@@ -53,7 +53,7 @@ public class WarnCommand extends Command {
 
         // Check that target is not the same as author
         if (target.getIdLong() == event.getUser().getIdLong()) {
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError("You cannot warn yourself!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("You cannot warn yourself!")).setEphemeral(true).queue();
             return;
         }
 
@@ -63,17 +63,12 @@ public class WarnCommand extends Command {
 
         // Private message user with reason for warn
         user.openPrivateChannel().queue(privateChannel -> {
-            EmbedBuilder embed = new EmbedBuilder()
-                    .setColor(Color.yellow)
-                    .setTitle(":warning: You were warned!")
-                    .addField("Server", event.getGuild().getName(), false)
-                    .addField("Reason", reason, false)
-                    .setTimestamp(new Date().toInstant());
-            privateChannel.sendMessageEmbeds(embed.build()).queue();
+            MessageEmbed msg = data.moderationHandler.createCaseMessage(event.getUser().getIdLong(), "Warn", reason, Color.yellow.getRGB());
+            privateChannel.sendMessageEmbeds(msg).queue();
         }, fail -> { });
 
         // Send confirmation message
-        event.getHook().sendMessageEmbeds(new EmbedBuilder()
+        event.replyEmbeds(new EmbedBuilder()
                 .setAuthor(user.getAsTag() + " has been warned", null, user.getEffectiveAvatarUrl())
                 .setDescription("**Reason:** " + reason)
                 .setColor(EmbedColor.DEFAULT.color)

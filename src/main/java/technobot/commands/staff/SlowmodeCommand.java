@@ -2,7 +2,6 @@ package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -11,7 +10,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.CommandUtils;
 import technobot.util.embeds.EmbedUtils;
 
 import java.time.Duration;
@@ -31,21 +29,15 @@ public class SlowmodeCommand extends Command {
         this.category = Category.STAFF;
         this.args.add(new OptionData(OptionType.STRING, "time", "The time to set for slowmode"));
         this.permission = Permission.MANAGE_CHANNEL;
+        this.botPermission = Permission.MANAGE_CHANNEL;
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        // Check that bot has necessary permissions
-        Role botRole = event.getGuild().getBotRole();
-        if (!CommandUtils.hasPermission(botRole, this.permission)) {
-            event.replyEmbeds(EmbedUtils.createError("I couldn't set slowmode here. Please check my role and channel permissions.")).queue();
-            return;
-        }
-
         // Prevent slowmode in threads
         ChannelType type = event.getChannelType();
         if (type == ChannelType.GUILD_PUBLIC_THREAD || type == ChannelType.GUILD_NEWS_THREAD || type == ChannelType.GUILD_PRIVATE_THREAD) {
-            event.replyEmbeds(EmbedUtils.createError("You cannot set slowmode on threads!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("You cannot set slowmode on threads!")).setEphemeral(true).queue();
             return;
         }
 
@@ -71,7 +63,7 @@ public class SlowmodeCommand extends Command {
             }
             // Set slowmode timer
             if (time > TextChannel.MAX_SLOWMODE) {
-                event.replyEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).queue();
+                event.replyEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).setEphemeral(true).queue();
                 return;
             }
             event.getTextChannel().getManager().setSlowmode(time).queue();

@@ -23,7 +23,7 @@ public class InviteCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        Button b1 = Button.link("https://discord.com/api/oauth2/authorize?client_id=979590525428580363&permissions=2080374975&scope=applications.commands%20bot", "Invite TechnoBot");
+        Button b1 = Button.link("https://discord.com/oauth2/authorize?client_id=979590525428580363&permissions=2088234238&scope=applications.commands%20bot", "Invite TechnoBot");
         Button b2 = Button.link("https://discord.gg/2TKJqfUQas", "Support Server");
         Button b3 = Button.link("https://technobot.app", "Dashboard");
         event.replyEmbeds(EmbedUtils.createDefault(":robot: Click the button below to invite TechnoBot to your servers!"))

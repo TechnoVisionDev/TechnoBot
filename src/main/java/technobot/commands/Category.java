@@ -13,9 +13,12 @@ public enum Category {
     ECONOMY(":moneybag:", "Economy"),
     STARBOARD(":star:", "Starboard"),
     FUN(":smile:", "Fun"),
+    AUTOMATION(":gear:", "Automation"),
     UTILITY(":tools:", "Utility"),
     GREETINGS(":wave:", "Greetings"),
-    SUGGESTIONS(":thought_balloon:", "Suggestions");
+    SUGGESTIONS(":thought_balloon:", "Suggestions"),
+    CASINO(":game_die:", "Casino"),
+    PETS(":dog:", "Pets");
 
     public final String emoji;
     public final String name;

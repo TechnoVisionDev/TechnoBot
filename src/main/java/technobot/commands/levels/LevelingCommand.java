@@ -3,20 +3,20 @@ package technobot.commands.levels;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.data.cache.Config;
+import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedUtils;
 
 import javax.imageio.ImageIO;
@@ -62,7 +62,7 @@ public class LevelingCommand extends Command {
         event.deferReply().queue();
         Bson filter = Filters.eq("guild", event.getGuild().getIdLong());
         GuildData data = GuildData.get(event.getGuild());
-        Config config = data.config;
+        Config config = data.configHandler.getConfig();
 
         String text = "";
         Bson update = null;
@@ -181,9 +181,9 @@ public class LevelingCommand extends Command {
                 return;
             }
             case "reset-all" -> {
-                data.levelingHandler.resetAll();
-                text = EmbedUtils.BLUE_TICK + " All leveling data and config settings were reset for this server.";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+                text = "Would you like to reset the leveling system?\nThis will delete **ALL** data!";
+                WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
+                ButtonListener.sendResetMenu(event.getUser().getId(), "Leveling", action);
                 return;
             }
         }

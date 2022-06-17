@@ -9,7 +9,8 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.util.CommandUtils;
+import technobot.data.GuildData;
+import technobot.handlers.ModerationHandler;
 import technobot.util.embeds.EmbedUtils;
 
 /**
@@ -25,6 +26,7 @@ public class RoleCommand extends Command {
         this.description = "Manages roles for a user.";
         this.category = Category.STAFF;
         this.permission = Permission.MANAGE_ROLES;
+        this.botPermission = Permission.MANAGE_ROLES;
         this.subCommands.add(new SubcommandData("give", "Gives a role to a user.")
                 .addOption(OptionType.USER, "user", "The user to give the role to", true)
                 .addOption(OptionType.ROLE, "role", "The role to give", true));
@@ -38,24 +40,19 @@ public class RoleCommand extends Command {
         Member member = event.getOption("user").getAsMember();
         Role role = event.getOption("role").getAsRole();
         if (member == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).queue();
+            event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).setEphemeral(true).queue();
+            return;
+        }
+        if (role.isManaged() || role.isPublicRole()) {
+            event.replyEmbeds(EmbedUtils.createError("I cannot give/remove bot or managed roles!")).setEphemeral(true).queue();
             return;
         }
 
-        // Check that bot has necessary permissions
-        Role botRole = event.getGuild().getBotRole();
-        if (!CommandUtils.hasPermission(botRole, this.permission) || role.isManaged()) {
-            event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
+        // Check target role position
+        ModerationHandler moderationHandler = GuildData.get(event.getGuild()).moderationHandler;
+        if (!moderationHandler.canTargetMember(member)) {
+            event.replyEmbeds(EmbedUtils.createError("This member cannot be updated. I need my role moved higher than theirs.")).setEphemeral(true).queue();
             return;
-        }
-
-        // Check if bot has a higher role than user
-        int botPos = event.getGuild().getBotRole().getPosition();
-        for (Role r : member.getRoles()) {
-            if (r.getPosition() >= botPos) {
-                event.replyEmbeds(EmbedUtils.createError("I couldn't change the roles for that user. Please check my permissions and role position.")).queue();
-                return;
-            }
         }
 
         String text = EmbedUtils.GREEN_TICK + " Changed roles for " + member.getEffectiveName() + ", ";

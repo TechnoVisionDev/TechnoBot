@@ -30,7 +30,6 @@ public class RobCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         User user = event.getUser();
         User target = event.getOption("user").getAsUser();
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
@@ -38,14 +37,14 @@ public class RobCommand extends Command {
             // Check for invalid target
             embed.setDescription(EmbedUtils.RED_X + " You cannot rob yourself!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
             embed.setDescription(EmbedUtils.RED_X + " You cannot rob bots, they are too powerful for you!");
             embed.setColor(EmbedColor.ERROR.color);
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
 
@@ -57,12 +56,13 @@ public class RobCommand extends Command {
             String timestamp = economyHandler.formatTimeout(timeout);
             embed.setDescription(":stopwatch: You can attempt to rob another member " + timestamp + ".");
             embed.setColor(EmbedColor.ERROR.color);
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {
             // Rob target
             EconomyReply reply = economyHandler.rob(user.getIdLong(), target.getIdLong());
             embed.setColor(reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color);
             embed.setDescription(reply.getResponse());
+            event.replyEmbeds(embed.build()).queue();
         }
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }

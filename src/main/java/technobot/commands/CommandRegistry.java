@@ -1,5 +1,7 @@
 package technobot.commands;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,6 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
+import technobot.commands.automation.AutoRoleCommand;
 import technobot.commands.economy.*;
 import technobot.commands.fun.*;
 import technobot.commands.greetings.FarewellCommand;
@@ -22,6 +25,7 @@ import technobot.commands.starboard.StarboardCommand;
 import technobot.commands.suggestions.*;
 import technobot.commands.utility.*;
 import technobot.data.GuildData;
+import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +52,9 @@ public class CommandRegistry extends ListenerAdapter {
      */
     public CommandRegistry(TechnoBot bot) {
         mapCommand(
+                //Automation commands
+                new AutoRoleCommand(bot),
+
                 //Economy commands
                 new WorkCommand(bot),
                 new CrimeCommand(bot),
@@ -56,7 +63,6 @@ public class CommandRegistry extends ListenerAdapter {
                 new DepositCommand(bot),
                 new WithdrawCommand(bot),
                 new PayCommand(bot),
-                new BalTopCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),
@@ -68,6 +74,8 @@ public class CommandRegistry extends ListenerAdapter {
                 new JokeCommand(bot),
                 new MemeCommand(bot),
                 new CuteCommand(bot),
+                new EmoteCommand(bot),
+                new ActionCommand(bot),
                 new NsfwCommand(bot),
                 new EightBallCommand(bot),
                 new GoogleCommand(bot),
@@ -76,7 +84,7 @@ public class CommandRegistry extends ListenerAdapter {
 
                 //Leveling commands
                 new RankCommand(bot),
-                new LeaderboardCommand(bot),
+                new TopCommand(bot),
                 new RewardsCommand(bot),
                 new RankcardCommand(bot),
                 new LevelingCommand(bot),
@@ -99,6 +107,9 @@ public class CommandRegistry extends ListenerAdapter {
                 new UnlockCommand(bot),
                 new RoleCommand(bot),
                 new SetNickCommand(bot),
+                new MuteCommand(bot),
+                new UnMuteCommand(bot),
+                new MuteRoleCommand(bot),
 
                 //Music commands
                 new PlayCommand(bot),
@@ -124,6 +135,8 @@ public class CommandRegistry extends ListenerAdapter {
                 new RolesCommand(bot),
                 new PollCommand(bot),
                 new InviteCommand(bot),
+                new PremiumCommand(bot),
+                new MathCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
     }
@@ -140,6 +153,11 @@ public class CommandRegistry extends ListenerAdapter {
         }
     }
 
+    /**
+     * Creates a list of CommandData for all commands.
+     *
+     * @return a list of CommandData to be used for registration.
+     */
     public static List<CommandData> unpackCommandData() {
         // Register slash commands
         List<CommandData> commandData = new ArrayList<>();
@@ -156,11 +174,24 @@ public class CommandRegistry extends ListenerAdapter {
         return commandData;
     }
 
+    /**
+     * Runs whenever a slash command is run in Discord.
+     */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String name = event.getName();
-        Command cmd = commandsMap.get(name);
+        // Get command by name
+        Command cmd = commandsMap.get(event.getName());
         if (cmd != null) {
+            // Check for required bot permissions
+            Role botRole = event.getGuild().getBotRole();
+            if (cmd.botPermission != null) {
+                if (!botRole.hasPermission(cmd.botPermission) && !botRole.hasPermission(Permission.ADMINISTRATOR)) {
+                    String text = "I need the `" + cmd.botPermission.getName() + "` permission to execute that command.";
+                    event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
+                    return;
+                }
+            }
+            // Run command
             cmd.execute(event);
         }
     }

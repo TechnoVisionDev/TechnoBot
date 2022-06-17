@@ -25,7 +25,6 @@ public class CrimeCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         long user = event.getUser().getIdLong();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
         Long timeout = economyHandler.getTimeout(user, EconomyHandler.TIMEOUT_TYPE.CRIME);
@@ -37,6 +36,7 @@ public class CrimeCommand extends Command {
             String timestamp = economyHandler.formatTimeout(timeout);
             embed.setDescription(":stopwatch: You can next commit a crime " + timestamp + ".");
             embed.setColor(EmbedColor.ERROR.color);
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {
             // Commit crime
             EconomyReply reply = economyHandler.crime(user);
@@ -44,7 +44,7 @@ public class CrimeCommand extends Command {
             embed.setDescription(reply.getResponse());
             embed.setColor(color);
             embed.setFooter("Reply #" + reply.getId());
+            event.replyEmbeds(embed.build()).queue();
         }
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }

@@ -3,7 +3,9 @@ package technobot.data.cache;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * POJO object that stores config data for a guild.
@@ -13,6 +15,8 @@ import java.util.Map;
 public class Config {
 
     private long guild;
+
+    private Long premium;
 
     @BsonProperty("leveling_channel")
     private Long levelingChannel;
@@ -34,17 +38,24 @@ public class Config {
 
     private Map<String,Integer> rewards;
 
-    public Config() { }
+    @BsonProperty("auto_roles")
+    private Set<Long> autoRoles;
+
+    public Config() {
+        autoRoles = new HashSet<>();
+    }
 
     public Config(long guild) {
         this.guild = guild;
-        levelingChannel = null;
-        levelingMessage = null;
-        levelingDM = false;
-        levelingMod = 1;
-        levelingMute = false;
-        levelingBackground = null;
-        rewards = new HashMap<>();
+        this.premium = null;
+        this.levelingChannel = null;
+        this.levelingMessage = null;
+        this.levelingDM = false;
+        this.levelingMod = 1;
+        this.levelingMute = false;
+        this.levelingBackground = null;
+        this.rewards = new HashMap<>();
+        this.autoRoles = new HashSet<>();
     }
 
     public long getGuild() {
@@ -53,6 +64,14 @@ public class Config {
 
     public void setGuild(long guild) {
         this.guild = guild;
+    }
+
+    public Long getPremium() {
+        return premium;
+    }
+
+    public void setPremium(Long premium) {
+        this.premium = premium;
     }
 
     public Long getLevelingChannel() {
@@ -116,4 +135,18 @@ public class Config {
     }
 
     public void removeReward(String roleID) { this.rewards.remove(roleID); }
+
+    public Set<Long> getAutoRoles() {
+        return autoRoles;
+    }
+
+    public void setAutoRoles(Set<Long> autoRoles) {
+        this.autoRoles = autoRoles;
+    }
+
+    public void addAutoRole(long roleID) {
+        this.autoRoles.add(roleID);
+    }
+
+    public void removeAutoRole(long roleID) { this.autoRoles.remove(roleID); }
 }

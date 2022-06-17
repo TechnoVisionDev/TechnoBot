@@ -1,9 +1,7 @@
 package technobot.commands.utility;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import technobot.TechnoBot;
@@ -36,14 +34,7 @@ public class ServerCommand extends Command {
                 .addField(":calendar: Created On", guildTime, true)
                 .addField(":crown: Owned By", "<@" + guild.getOwnerId() + ">", true);
 
-        int online = 0;
-        for (Member member : guild.getMembers()) {
-            if (member.getOnlineStatus() != OnlineStatus.OFFLINE) {
-                online++;
-            }
-        }
-
-        String members = String.format("**%s** Online\n**%s** Boosts :sparkles:", online, guild.getBoostCount());
+        String members = String.format("**%s** Boosts :sparkles:", guild.getBoostCount());
         embed.addField(":busts_in_silhouette: Members (" + guild.getMemberCount() + ")", members, true);
 
         int textChannels = guild.getTextChannels().size();

@@ -34,7 +34,6 @@ public class WarningsCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         GuildData data = GuildData.get(event.getGuild());
         OptionMapping option = event.getOption("user");
         User target;
@@ -52,11 +51,9 @@ public class WarningsCommand extends Command {
         List<Warning> warnings = data.moderationHandler.getWarnings(target.getId());
         if (warnings == null || warnings.isEmpty()) {
             embed.setAuthor(target.getAsTag()+" has no infractions", null, target.getEffectiveAvatarUrl());
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).queue();
             return;
         }
-
-        TimeUnit.HOURS.toMillis(24);
 
         // Display warnings in an embed
         int lastSevenDays = 0;
@@ -82,6 +79,6 @@ public class WarningsCommand extends Command {
         embed.addField("Last 7 Days", lastSevenDays+" warnings", true);
         embed.addField("Total", warnings.size()+" warnings", true);
         embed.addField("[ID] Last 10 Warnings", content.toString(), false);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

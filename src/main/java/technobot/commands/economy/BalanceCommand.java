@@ -30,7 +30,6 @@ public class BalanceCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         // Get user
         OptionMapping userOption = event.getOption("user");
         User user = (userOption != null) ? userOption.getAsUser() : event.getUser();
@@ -61,6 +60,6 @@ public class BalanceCommand extends Command {
             .addField("Bank:", currency + " " + EconomyHandler.FORMATTER.format(bank), true)
             .addField("Total:", currency + " " + EconomyHandler.FORMATTER.format(total), true)
             .setColor(EmbedColor.DEFAULT.color);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+        event.replyEmbeds(embed.build()).queue();
     }
 }

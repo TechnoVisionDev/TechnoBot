@@ -25,6 +25,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.net.MalformedURLException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Module for music player backend and voice channel events.
@@ -50,11 +51,16 @@ public class MusicListener extends ListenerAdapter {
      * @return string of track length (ex. 2:11)
      */
     public static @NotNull String formatTrackLength(long trackLength) {
-        long msPos = trackLength;
-        long minPos = msPos / 60000;
-        msPos = msPos % 60000;
-        int secPos = (int) Math.floor((float) msPos / 1000f);
-        return minPos + ":" + ((secPos < 10) ? "0" + secPos : secPos);
+        long hours = TimeUnit.MILLISECONDS.toHours(trackLength);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(trackLength) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(trackLength));
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(trackLength) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(trackLength));
+        String time = "";
+        if (hours > 0) time += hours + ":";
+        if (minutes < 10 && hours > 0) time += "0";
+        time += minutes + ":";
+        if (seconds < 10) time += "0";
+        time += seconds;
+        return time;
     }
 
     /**
