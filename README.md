@@ -200,7 +200,7 @@ Below are some resources that have been instrumental in making this project a re
 [issues-shield]: https://img.shields.io/github/issues/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
 [issues-url]: https://github.com/TechnoVisionDev/TechnoBot/issues
 [license-shield]: https://img.shields.io/badge/LICENSE-CC%20BY--NC--SA%204.0-orange.svg?style=for-the-badge
-[license-url]: https://github.com/TechnoVisionDev/TechnoBot/blob/main/LICENSE
+[license-url]: https://github.com/TechnoVisionDev/TechnoBot/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/thomaspeters
 [product-screenshot]: src/main/webapp/assets/github/screenshot.png
