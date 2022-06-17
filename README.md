@@ -102,9 +102,9 @@ Below is a comprehensive list of the frameworks and libraries used to build the 
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Self Hosting
 
-To get a local copy of this website up and running, follow these simple steps.
+To get a local copy of TechnoBot up and running, follow these simple steps.
 
 ### Prerequisites
 
@@ -119,7 +119,7 @@ _Below are the necessary steps needed to run this project._
    git clone https://github.com/TechnoVisionDev/TechnoBot.git
    ```
 2. Create a `.env` file in the root project folder and populate it with all the variables in `.env.example`.
-3. You can now run the application using maven.
+3. You can now build and run the application using maven or the provided docker file.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -128,7 +128,7 @@ _Below are the necessary steps needed to run this project._
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. You can also contribute monetarily at https://www.patreon.com/TechnoVision.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -179,6 +179,8 @@ Project Link: [https://github.com/TechnoVisionDev/TechnoBot](https://github.com/
 
 Below are some resources that have been instrumental in making this project a reality!
 
+* [JDA Wiki](https://jda.wiki/introduction/jda/)
+* [JDA Support Discord](https://discord.gg/0hMr4ce0tIl3SLv5)
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
 * [GitHub Pages](https://pages.github.com)
@@ -197,7 +199,7 @@ Below are some resources that have been instrumental in making this project a re
 [stars-url]: https://github.com/TechnoVisionDev/TechnoBot/stargazers
 [issues-shield]: https://img.shields.io/github/issues/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
 [issues-url]: https://github.com/TechnoVisionDev/TechnoBot/issues
-[license-shield]: https://img.shields.io/github/license/TechnoVisionDev/TechnoBot.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/badge/LICENSE-CC%20BY--NC--SA%204.0-orange.svg?style=for-the-badge
 [license-url]: https://github.com/TechnoVisionDev/TechnoBot/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/thomaspeters
