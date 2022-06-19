@@ -13,6 +13,8 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.localization.Localization.get;
+
 /**
  * Command that transfer cash from one user to another.
  *
@@ -36,14 +38,14 @@ public class PayCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (user.getIdLong() == target.getIdLong()) {
             // Check for invalid target
-            embed.setDescription(EmbedUtils.RED_X + " You cannot pay yourself!");
+            embed.setDescription(get(s -> s.economy().pay().paySelf()));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
-            embed.setDescription(EmbedUtils.RED_X + " You cannot pay bots!");
+            embed.setDescription(get(s -> s.economy().pay().payBots()));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -51,14 +53,14 @@ public class PayCommand extends Command {
 
         long amount = event.getOption("amount").getAsLong();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
-        String currency = economyHandler.getCurrency();
 
         // Check that user has necessary funds
         long balance = economyHandler.getBalance(user.getIdLong());
         if (amount > balance) {
-            String value = currency + " " + EconomyHandler.FORMATTER.format(balance);
-            String text = "You don't have that much money to give. You currently have " + value + " on hand.";
-            embed.setDescription(EmbedUtils.RED_X + text);
+            embed.setDescription(get(
+                    s -> s.economy().pay().notEnough(),
+                    EconomyHandler.FORMATTER.format(balance)
+            ));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -66,10 +68,13 @@ public class PayCommand extends Command {
 
         // Pay target
         economyHandler.pay(user.getIdLong(), target.getIdLong(), amount);
-        String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
 
         // Send embed message
-        embed.setDescription(EmbedUtils.GREEN_TICK + " <@" + target.getId() + "> has received your " + value + ".");
+        embed.setDescription(get(
+                s -> s.economy().pay().success(),
+                target.getId(),
+                EconomyHandler.FORMATTER.format(amount)
+        ));
         embed.setColor(EmbedColor.SUCCESS.color);
         event.replyEmbeds(embed.build()).queue();
     }

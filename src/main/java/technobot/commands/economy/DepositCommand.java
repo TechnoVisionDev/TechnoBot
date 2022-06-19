@@ -14,6 +14,8 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.localization.Localization.get;
+
 /**
  * Command that deposits cash into user's bank.
  *
@@ -38,7 +40,7 @@ public class DepositCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (balance <= 0) {
             // Balance is at 0
-            embed.setDescription(EmbedUtils.RED_X + " You don't have any money to deposit!");
+            embed.setDescription(get(s -> s.economy().deposit().noMoney()));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -50,8 +52,10 @@ public class DepositCommand extends Command {
             amount = amountOption.getAsLong();
             if (amount > balance) {
                 // Amount is higher than balance
-                String value = currency + " " + EconomyHandler.FORMATTER.format(balance);
-                embed.setDescription(EmbedUtils.RED_X + " You cannot deposit more than " + value + "!");
+                embed.setDescription(get(
+                        s -> s.economy().deposit().notEnough(),
+                        EconomyHandler.FORMATTER.format(balance)
+                ));
                 embed.setColor(EmbedColor.ERROR.color);
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 return;
@@ -62,8 +66,10 @@ public class DepositCommand extends Command {
         economyHandler.deposit(user.getIdLong(), amount);
 
         // Send embed message
-        String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
-        embed.setDescription(EmbedUtils.GREEN_TICK + " Deposited " + value + " to your bank!");
+        embed.setDescription(get(
+                s -> s.economy().deposit().success(),
+                EconomyHandler.FORMATTER.format(amount)
+        ));
         embed.setColor(EmbedColor.SUCCESS.color);
         event.replyEmbeds(embed.build()).queue();
     }

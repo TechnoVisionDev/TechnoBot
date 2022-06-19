@@ -1,7 +1,6 @@
 package technobot.handlers.economy;
 
 import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.*;
 import com.mongodb.lang.Nullable;
 import net.dv8tion.jda.api.entities.Guild;
@@ -9,15 +8,14 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Economy;
-import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.StreamSupport;
+
+import static technobot.util.localization.Localization.get;
 
 /**
  * Handles the server economy backend.
@@ -37,7 +35,7 @@ public class EconomyHandler {
     private final TechnoBot bot;
     private final Bson guildFilter;
     private final Map<Long, UserTimeout> timeouts;
-    private String currency;
+    private final String currency;
 
     public EconomyHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
@@ -57,7 +55,7 @@ public class EconomyHandler {
         int amount = ThreadLocalRandom.current().nextInt(230) + 20;
         addMoney(userID, amount);
         setTimeout(userID, TIMEOUT_TYPE.WORK);
-        return responses.getWorkResponse(amount, getCurrency());
+        return responses.getWorkResponse(amount);
     }
 
     /**
@@ -74,12 +72,12 @@ public class EconomyHandler {
             // Crime successful
             amount = ThreadLocalRandom.current().nextInt(450) + 250;
             addMoney(userID, amount);
-            reply = responses.getCrimeSuccessResponse(amount, getCurrency());
+            reply = responses.getCrimeSuccessResponse(amount);
         } else {
             // Crime failed
             amount = calculateFine(userID);
             if (amount > 0) removeMoney(userID, calculateFine(userID));
-            reply = responses.getCrimeFailResponse(amount, getCurrency());
+            reply = responses.getCrimeFailResponse(amount);
         }
         setTimeout(userID, TIMEOUT_TYPE.CRIME);
         return reply;
@@ -88,7 +86,7 @@ public class EconomyHandler {
     /**
      * Attempt to steal another user's cash.
      *
-     * @param userID the user attempting the robbery.
+     * @param userID   the user attempting the robbery.
      * @param targetID the target being robbed.
      * @return an EconomyReply object with a response and success boolean.
      */
@@ -111,15 +109,21 @@ public class EconomyHandler {
         if (ThreadLocalRandom.current().nextDouble() > failChance) {
             // Rob successful
             pay(targetID, userID, amountStolen);
-            String value = getCurrency() + " " + EconomyHandler.FORMATTER.format(amountStolen);
-            String response = EmbedUtils.GREEN_TICK + " You robbed " + value + " from <@" + targetID + ">";
+            String response = get(
+                    s -> s.economy().rob().success(),
+                    EconomyHandler.FORMATTER.format(amountStolen),
+                    targetID
+            );
             return new EconomyReply(response, 1, true);
         }
         // Rob failed (20-40% fine of net worth)
         long fine = calculateFine(userID);
         removeMoney(userID, fine);
-        String value = getCurrency() + " " + EconomyHandler.FORMATTER.format(fine);
-        String response = "You were caught attempting to rob <@"+targetID+">, and have been fined " + value + ".";
+        String response = get(
+                s -> s.economy().rob().failure(),
+                EconomyHandler.FORMATTER.format(fine),
+                targetID
+        );
         return new EconomyReply(response, 1, false);
     }
 
@@ -169,9 +173,9 @@ public class EconomyHandler {
     /**
      * Transfer money from one user to another.
      *
-     * @param userID the user to transfer money from.
+     * @param userID   the user to transfer money from.
      * @param targetID the user to transfer money to.
-     * @param amount the amount of money to transfer.
+     * @param amount   the amount of money to transfer.
      */
     public void pay(long userID, long targetID, long amount) {
         removeMoney(userID, amount);
@@ -245,7 +249,7 @@ public class EconomyHandler {
         return bot.database.economy.aggregate(
                 Arrays.asList(
                         Aggregates.match(Filters.eq("guild", guild.getIdLong())),
-                        Aggregates.addFields(new Field("sum", Filters.eq("$add", Arrays.asList("$balance", Filters.eq("$ifNull", Arrays.asList("$bank", 0)))))),
+                        Aggregates.addFields(new Field<>("sum", Filters.eq("$add", Arrays.asList("$balance", Filters.eq("$ifNull", Arrays.asList("$bank", 0)))))),
                         Aggregates.sort(Sorts.descending("sum"))
                 )
         );
@@ -286,7 +290,7 @@ public class EconomyHandler {
      * Set a user timeout for a specific economy command.
      *
      * @param userID the user to set timeout for.
-     * @param type the economy command to timeout.
+     * @param type   the economy command to timeout.
      */
     private void setTimeout(long userID, TIMEOUT_TYPE type) {
         long time = System.currentTimeMillis() + WORK_TIMEOUT;
@@ -294,7 +298,7 @@ public class EconomyHandler {
         if (userTimeout == null) {
             userTimeout = new UserTimeout(userID);
         }
-        switch(type) {
+        switch (type) {
             case WORK -> userTimeout.setWorkTimeout(time);
             case CRIME -> userTimeout.setCrimeTimeout(time);
             case ROB -> userTimeout.setRobTimeout(System.currentTimeMillis() + ROB_TIMEOUT);
@@ -306,7 +310,7 @@ public class EconomyHandler {
      * Get a user's timeout for a specific econony command.
      *
      * @param userID the user to get the timeout from.
-     * @param type the economy command that is timed out.
+     * @param type   the economy command that is timed out.
      * @return time in millis till timeout is up. Null if not set.
      */
     public @Nullable Long getTimeout(long userID, TIMEOUT_TYPE type) {
@@ -315,7 +319,7 @@ public class EconomyHandler {
             return null;
         }
         Long timeout = null;
-        switch(type) {
+        switch (type) {
             case WORK -> timeout = userTimeout.getWorkTimeout();
             case CRIME -> timeout = userTimeout.getCrimeTimeout();
             case ROB -> timeout = userTimeout.getRobTimeout();

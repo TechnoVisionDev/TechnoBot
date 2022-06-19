@@ -41,6 +41,9 @@ public class Config {
     @BsonProperty("auto_roles")
     private Set<Long> autoRoles;
 
+    @BsonProperty("locale")
+    private String locale;
+
     public Config() {
         autoRoles = new HashSet<>();
     }
@@ -56,6 +59,7 @@ public class Config {
         this.levelingBackground = null;
         this.rewards = new HashMap<>();
         this.autoRoles = new HashSet<>();
+        this.locale = "en_US";
     }
 
     public long getGuild() {
@@ -149,4 +153,12 @@ public class Config {
     }
 
     public void removeAutoRole(long roleID) { this.autoRoles.remove(roleID); }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 }

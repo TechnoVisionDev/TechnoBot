@@ -12,6 +12,8 @@ import technobot.data.GuildData;
 import technobot.handlers.GreetingHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.localization.Localization.get;
+
 /**
  * Command that configures auto greetings.
  *
@@ -37,14 +39,14 @@ public class GreetCommand extends Command {
         // Remove greeting message
         if (greetingOption == null) {
             greetingHandler.removeGreet();
-            String text = EmbedUtils.BLUE_X + " Greeting message successfully removed!";
+            String text = get(s -> s.greeting().greet().removed());
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
         greetingHandler.setGreet(greetingOption.getAsString());
-        String text = EmbedUtils.BLUE_TICK + " Greeting message successfully updated!";
+        String text = get(s -> s.greeting().greet().removed());
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

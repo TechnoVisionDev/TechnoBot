@@ -1,0 +1,213 @@
+{
+  "automation": {
+    "autoRole": {
+      "add": {
+        "higherLevel": "I cannot give out roles that have a higher position than me!",
+        "premium": "You can set multiple auto-roles with premium! For more info, use `/premium`.",
+        "maxRolesReached": "You have hit the maximum number of auto-roles for this guild!",
+        "roleAdded": "{blue_tick} The {role} role will be given to all new members when they join the server."
+      },
+      "remove": {
+        "roleNotSet": "The {role} role is not set as an auto-role.",
+        "roleRemoved": "{blue_x} The {role} role will no longer be given to new members when they join the server."
+      },
+      "list": {
+        "noAutoRoles": "Use `/auto-role add <role>` to set your first auto role!",
+        "premium": "Add additional roles with `/premium`",
+        "roleCount": "There are {} auto roles given to new members:",
+        "role": "**{}**. {role}"
+      }
+    }
+  },
+  "economy": {
+    "replyId": "Reply #{}",
+    "balance": {
+      "leaderboardRank": "Leaderboard Rank: #{}",
+      "cash": "Cash:",
+      "bank": "Bank:",
+      "total": "Total:"
+    },
+    "crime": {
+      "timeout": ":stopwatch: You can next commit a crime {}.",
+      "success": [
+        "You work for the Juarez cartel as a brick-presser and earn {currency} {}! They'll probably kill you and your family tomorrow. Just saying.",
+        "You rob an orphanage for {currency} {}.",
+        "You break into the house next door and sell their gaming PC on E-Bay for {currency} {}.",
+        "You work as a scam seller on Amazon selling fake airpods for {currency} {}.",
+        "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {currency} {}.",
+        "You are a high school chemistry teacher diagnosed with lung cancer & turn to selling meth for {currency} {} to secure your family's future.",
+        "You punched some random person and they gave you {currency} {} to stop.",
+        "You smashed a kid's piggy bank and got {currency} {} from it.",
+        "What you did was too horrible to speak of. I can't believe you would do that. Was the {currency} {} even worth it for those horrible crimes you did? No.",
+        "You were hired as an assassin and you succeeded, earning {currency} {}.",
+        "You need some extra cash for your drug habit. You break into the local dirty video store and rob them of {currency} {}! You also take a few \"items\" for yourself..."
+      ],
+      "failure": [
+        "You break into the house next door only to find the whole family eating dinner together. Your bail cost {currency} {}.",
+        "You got shot trying to smuggle drugs across the border. The medical bills cost you a whopping {currency} {}.",
+        "You get caught shoplifting by the local mall cop, who fines you for {currency} {}.",
+        "You tried to do a prank call but called the police instead and were fined {currency} {}.",
+        "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {currency} {} from you.",
+        "You tried to rob someone but they just mugged you instead. You lost {currency} {}.",
+        "You attempted to steal a bar of chocolate from a local store but were caught and had to pay {currency} {}. It was bad chocolate.",
+        "You tried to jump the old lady walking down the street. Turns out she had a gun, and robbed you blind of {currency} {}.",
+        "You attempted to cook up some drugs to sell on the black market, but the chemicals exploded in your face, costing you {currency} {} in medical bills."
+      ]
+    },
+    "deposit": {
+      "noMoney": "{red_x} You don't have any money to deposit!",
+      "notEnough": "{red_x} You cannot deposit more than {currency} {}!",
+      "success": "{green_tick} Deposited {currency} {} to your bank!"
+    },
+    "pay": {
+      "paySelf": "{red_x} You cannot pay yourself!",
+      "payBots": "{red_x} You cannot pay bots!",
+      "notEnough": "{red_x} You don't have that much money to give. You currently have {currency} {} on hand.",
+      "success": "{green_tick} {mention} has received your {currency} {}."
+    },
+    "rob": {
+      "robSelf": "{red_x} You cannot rob yourself!",
+      "robBots": "{red_x} You cannot rob bots, they are too powerful for you!",
+      "timeout": ":stopwatch: You can attempt to rob another member {}.",
+      "failure": "You were caught attempting to rob {mention}, and have been fined {currency} {}.",
+      "success": "{green_tick} You robbed {currency} {} from {mention}!"
+    },
+    "withdraw": {
+      "noMoney": "{red_x} You don't have any money in your bank to withdraw!",
+      "tooMuch": "{red_x} You cannot withdraw more than {currency} {}!",
+      "success": "{green_tick} Withdrew {currency} {} from your bank!"
+    },
+    "work": {
+      "timeout": ":stopwatch: You can next work {}.",
+      "success": [
+        "You suggest something good and get rewarded {currency} {}.",
+        "You drove the school bus today and were only 5 minutes late, but you still got {currency} {} for your efforts!",
+        "You dig up some buried treasure on an island and find {currency} {} worth of gold jewelry!",
+        "You work as a teacher and earn {currency} {} for inspiring young minds.",
+        "Your boring nine-to-five office job pays you {currency} {}.",
+        "You've worked on a farm cultivating wheat from dawn to dusk. The land lord pays you {currency} {} for your struggles.",
+        "You discover a cure for a rare disease and earn {currency} {} in grant money!",
+        "Your recent novel becomes a hit, earning you {currency} {} in royalties.",
+        "You find a rare fossil on the beach and sell it to the museum for {currency} {}.",
+        "You invested in the right stocks a the right time, earning {currency} {}.",
+        "Your NFT collection surges in price, so you sell them for {currency} {}.",
+        "You finished digging in the mines for the day. It's hard work, but they paid you {currency} {}.",
+        "Dogecoin went to the moon! Your patient waiting got you {currency} {}.",
+        "The lemonade sold well. Your efforts gathered you {currency} {}.",
+        "Your dog dug up some cash. Finders keepers! {currency} {}",
+        "You decided to buy a lottery ticket. You won {currency} {}.",
+        "You made a viral video on the internet and got {currency} {} from ad revenue.",
+        "You found a lost cat and were given {currency} {} as a thanks.",
+        "You decided to become a web developer (why). Anyway you earned {currency} {}."
+      ]
+    }
+  },
+  "fun": {
+    "action": {
+      "failure": "I was unable to fetch that emote!",
+      "bite":"takes a bit out of {}.",
+      "brofist":"and {} brofist!",
+      "cuddle": "cuddles with {}.",
+      "handhold":"and {} hold hands. How sweet <3",
+      "hug": "gives {} a big hug!",
+      "kiss":"kisses {}.",
+      "lick": "licks {}... gross!",
+      "pat":"gives {} a little pat on the head",
+      "pinch": "pinches {}. Ouch!",
+      "poke":"gives {} a little poke.",
+      "punch": "punches {} right in the face!",
+      "slap":"slaps {}. They deserved it!",
+      "smack": "gives {} a smack they will remember.",
+      "sorry":"apologizes to {}.",
+      "stare": "won't stop staring at {}...",
+      "thumbsup":"gives {} two thumbs up!",
+      "tickle": "tickles {}.",
+      "wave":"waves at {}. ",
+      "wink": "winks at {}."
+    },
+    "cute": {
+      "failure": "I was unable to fetch any cute pictures!"
+    },
+    "eightBall": {
+      "tooLong": "The 8ball doesn't like questions longer than 250 characters!",
+      "responses": [
+        "I can tell you certainly, no.",
+        "I'm not sure but ur def stupid.",
+        "It is certain.",
+        "Without a doubt.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Signs point to yes.",
+        "Reply hazy try again.",
+        "Better not tell you now.",
+        "Hmm imma just let u figure it out.",
+        "Don't count on it.",
+        "Outlook not so good.",
+        "My sources say no."
+      ]
+    },
+    "emote": {
+      "failure": "I was unable to fetch that emote!",
+      "mad": "doesn't like that.",
+      "blush": "has turned into a tomato.",
+      "celebrate": "is ready to celebrate!",
+      "clap": "claps excitedly.",
+      "confused": "is really confused.",
+      "cry": "needs a hug...",
+      "dance": "is dancing!",
+      "facepalm": "is in disbelief.",
+      "happy": "smiles.",
+      "laugh": "laughs out loud.",
+      "pout": "is in a bad mood.",
+      "shrug": "doesn't care...",
+      "shy": "is feeling timid.",
+      "sigh": "is disappointed.",
+      "slowClap": "is not amused.",
+      "scared": "fears for their life.",
+      "sleep": "falls into a deep sleep.",
+      "yawn": "is getting very sleepy."
+    },
+    "google":{
+      "tooLong": "google doesn't like questions longer than 250 characters!"
+    },
+    "joke": {
+      "failure": "I was unable to fetch any jokes!"
+    },
+    "meme": {
+      "failure": "I was unable to fetch any memes!"
+    },
+    "nsfw": {
+      "failure": "I was unable to fetch any nsfw pictures!"
+    },
+    "reddit": {
+      "failure": "I was unable to fetch any posts from that subreddit!"
+    },
+    "surprise": {
+      "failure": "I was unable to fetch any surprises!"
+    }
+  },
+  "greeting": {
+    "farewell": {
+      "removed": "{blue_x} Farewell message successfully removed!",
+      "set": "{blue_tick} Farewell message successfully updated!"
+    },
+    "greet": {
+      "removed": "{blue_x} Greeting message successfully removed!",
+      "set": "{blue_tick} Greeting message successfully updated!"
+    },
+    "greetings": {
+      "removed": "{blue_x} Welcome channel successfully removed!",
+      "set": "{blue_x} Welcome channel set to {channel}",
+      "reset": "Would you like to reset the greeting system?\nThis will delete **ALL** data!",
+      "welcomeConfig": "**Welcome Channel:** {}",
+      "greetingConfig": "**Greeting:** {}",
+      "farewellConfig": "**Farewell:** {}",
+      "joinDmConfig": "**Join DM:** {}"
+    },
+    "joinDm": {
+      "removed": "{blue_x} Join DM message successfully removed!",
+      "set": "{blue_tick} Join DM message successfully updated!"
+    }
+  }
+}
