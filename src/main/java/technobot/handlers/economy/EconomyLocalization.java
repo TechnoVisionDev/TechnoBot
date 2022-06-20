@@ -43,7 +43,7 @@ public class EconomyLocalization {
     public EconomyReply getWorkResponse(long amount, String currency) {
         int index = ThreadLocalRandom.current().nextInt(work.length);
         String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = work[index].replaceAll("\\{amount}", value);
+        String reply = work[index].replace("{amount}", value);
         return new EconomyReply(reply, index+1);
     }
 
