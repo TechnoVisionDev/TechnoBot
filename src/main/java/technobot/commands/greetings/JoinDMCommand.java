@@ -39,7 +39,7 @@ public class JoinDMCommand extends Command {
         // Remove farewell message
         if (farewellOption == null) {
             greetingHandler.removeJoinDM();
-            String text = get(s -> s.greeting().joinDm().removed());
+            String text = get(s -> s.greeting().joinDm().reset());
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }

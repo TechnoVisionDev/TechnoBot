@@ -43,7 +43,7 @@ public class RemoveWarnCommand extends Command {
             // Remove warning with this ID
             int count = data.moderationHandler.removeWarning(idOption.getAsInt());
             if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK + " Warning `#"+idOption.getAsInt()+"` has been removed.");
+                embed = EmbedUtils.createDefault(GREEN_TICK + " Warning `#"+idOption.getAsInt()+"` has been reset.");
             } else {
                 embed = EmbedUtils.createError("Unable to find a warning with that ID!");
                 event.replyEmbeds(embed).setEphemeral(true).queue();
@@ -55,9 +55,9 @@ public class RemoveWarnCommand extends Command {
             User target = userOption.getAsUser();
             int count = data.moderationHandler.clearWarnings(target.getIdLong());
             if (count > 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" "+count+" warnings have been removed for <@!"+target.getId()+">.");
+                embed = EmbedUtils.createDefault(GREEN_TICK+" "+count+" warnings have been reset for <@!"+target.getId()+">.");
             } else if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been removed for <@!"+target.getId()+">.");
+                embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been reset for <@!"+target.getId()+">.");
             } else {
                 embed = EmbedUtils.createError("That user does not have any warnings!");
                 event.replyEmbeds(embed).setEphemeral(true).queue();

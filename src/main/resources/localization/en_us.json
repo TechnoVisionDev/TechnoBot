@@ -8,8 +8,8 @@
         "roleAdded": "{blue_tick} The {role} role will be given to all new members when they join the server."
       },
       "remove": {
-        "roleNotSet": "The {role} role is not set as an auto-role.",
-        "roleRemoved": "{blue_x} The {role} role will no longer be given to new members when they join the server."
+        "failure": "The {role} role is not set as an auto-role.",
+        "success": "{blue_x} The {role} role will no longer be given to new members when they join the server."
       },
       "list": {
         "noAutoRoles": "Use `/auto-role add <role>` to set your first auto role!",
@@ -105,29 +105,27 @@
   "fun": {
     "action": {
       "failure": "I was unable to fetch that emote!",
-      "bite":"takes a bit out of {}.",
-      "brofist":"and {} brofist!",
+      "bite": "takes a bit out of {}.",
+      "brofist": "and {} brofist!",
       "cuddle": "cuddles with {}.",
-      "handhold":"and {} hold hands. How sweet <3",
+      "handhold": "and {} hold hands. How sweet <3",
       "hug": "gives {} a big hug!",
-      "kiss":"kisses {}.",
+      "kiss": "kisses {}.",
       "lick": "licks {}... gross!",
-      "pat":"gives {} a little pat on the head",
+      "pat": "gives {} a little pat on the head",
       "pinch": "pinches {}. Ouch!",
-      "poke":"gives {} a little poke.",
+      "poke": "gives {} a little poke.",
       "punch": "punches {} right in the face!",
-      "slap":"slaps {}. They deserved it!",
+      "slap": "slaps {}. They deserved it!",
       "smack": "gives {} a smack they will remember.",
-      "sorry":"apologizes to {}.",
+      "sorry": "apologizes to {}.",
       "stare": "won't stop staring at {}...",
-      "thumbsup":"gives {} two thumbs up!",
+      "thumbsup": "gives {} two thumbs up!",
       "tickle": "tickles {}.",
-      "wave":"waves at {}. ",
+      "wave": "waves at {}. ",
       "wink": "winks at {}."
     },
-    "cute": {
-      "failure": "I was unable to fetch any cute pictures!"
-    },
+    "cute": "I was unable to fetch any cute pictures!",
     "eightBall": {
       "tooLong": "The 8ball doesn't like questions longer than 250 characters!",
       "responses": [
@@ -168,32 +166,20 @@
       "sleep": "falls into a deep sleep.",
       "yawn": "is getting very sleepy."
     },
-    "google":{
-      "tooLong": "google doesn't like questions longer than 250 characters!"
-    },
-    "joke": {
-      "failure": "I was unable to fetch any jokes!"
-    },
-    "meme": {
-      "failure": "I was unable to fetch any memes!"
-    },
-    "nsfw": {
-      "failure": "I was unable to fetch any nsfw pictures!"
-    },
-    "reddit": {
-      "failure": "I was unable to fetch any posts from that subreddit!"
-    },
-    "surprise": {
-      "failure": "I was unable to fetch any surprises!"
-    }
+    "google": "google doesn't like questions longer than 250 characters!",
+    "joke": "I was unable to fetch any jokes!",
+    "meme": "I was unable to fetch any memes!",
+    "nsfw": "I was unable to fetch any nsfw pictures!",
+    "reddit": "I was unable to fetch any posts from that subreddit!",
+    "surprise": "I was unable to fetch any surprises!"
   },
   "greeting": {
     "farewell": {
-      "removed": "{blue_x} Farewell message successfully removed!",
+      "reset": "{blue_x} Farewell message successfully removed!",
       "set": "{blue_tick} Farewell message successfully updated!"
     },
     "greet": {
-      "removed": "{blue_x} Greeting message successfully removed!",
+      "reset": "{blue_x} Greeting message successfully removed!",
       "set": "{blue_tick} Greeting message successfully updated!"
     },
     "greetings": {
@@ -206,8 +192,97 @@
       "joinDmConfig": "**Join DM:** {}"
     },
     "joinDm": {
-      "removed": "{blue_x} Join DM message successfully removed!",
+      "reset": "{blue_x} Join DM message successfully removed!",
       "set": "{blue_tick} Join DM message successfully updated!"
+    }
+  },
+  "levels": {
+    "leveling": {
+      "channel": {
+        "specific": "{blue_tick} Leveling messages will now only display in {channel}",
+        "user": "{blue_tick} Leveling messages will now display in the channel the user levels up in."
+      },
+      "message": {
+        "set": "{blue_tick} Successfully set a custom level-up message.",
+        "reset": "{blue_tick} Reset the level-up message to default."
+      },
+      "dm": {
+        "enable": "{blue_tick} Level-up messages will now be sent through DMs.",
+        "disable": "{blue_tick} Level-up messages will no longer be sent through DMs."
+      },
+      "mod": {
+        "set": "{blue_tick} Leveling messages will now only display every **{}** levels.",
+        "reset": "{blue_tick} Leveling messages have been reset to display every level."
+      },
+      "serverBackground": {
+        "set": "{blue_tick} Successfully updated the server rank card background!",
+        "reset": "{blue_tick} Reset the server rank card background to default image!",
+        "failure": "Unable to set that URL as the server rank card background!"
+      },
+      "mute": {
+        "enable": "{blue_x} Leveling messages have been muted and will not be displayed!",
+        "disable": "{blue_tick} Leveling messages will now be displayed!"
+      },
+      "reward": {
+        "add": "{blue_tick} Users will now receive the {role} role at level **{}**.",
+        "remove": "{blue_tick Successfully removed the {role} reward role.",
+        "failure": "I cannot reward that role! Please check my permissions and role position."
+      },
+      "config": {
+        "channel": "**Level-up Channel:** {}",
+        "modulus": "**Leveling Modulus:** {}",
+        "muted": "**Is Muted:** {}",
+        "dms": "**Level-Up DMs:** {}",
+        "message": "**Custom Message:** {}",
+        "background": "**Custom Background:** {}"
+      },
+      "reset": "{blue_tick} All leveling data was reset for **{}**.",
+      "resetAll": "Would you like to reset the leveling system?\nThis will delete **ALL** data!"
+    },
+    "rankCard": {
+      "noRank": "You do not have a rank yet! Send some messages first.",
+      "background": {
+        "success": "Successfully updated your background!",
+        "failure": "Unable to set that URL as your background!"
+      },
+      "color": {
+        "success": "Successfully updated your color to **{}**",
+        "failure": "That is not a valid hex code, please use a valid color."
+      },
+      "accent": {
+        "success": "Successfully updated your accent color to **{}**",
+        "failure": "That is not a valid hex code, please use a valid color."
+      },
+      "opacity": "Successfully updated your opacity to **{}%**",
+      "reset": "Successfully reset your rank card to default settings!"
+    },
+    "rank": {
+      "noRankSelf": "You do not have a rank yet! Send some messages first.",
+      "noRankOther": "That user does not have a rank yet!",
+      "accessFailure": "An error occurred while trying to access that rank card!"
+    },
+    "rewards": {
+      "reward": "Level {} ----> {role}",
+      "title": ":crown: Leveling Rewards",
+      "noRewards": "{blue_x} No leveling rewards have been set for this server!"
+    },
+    "top": {
+      "guild": {
+        "name": "Guild Leaderboards",
+        "more": ":sparkles: **More?** `/top {}`",
+        "title": "TOP 5 {} {}"
+      },
+      "leveling": {
+        "name": "Leveling Leaderboard",
+        "empty": "Nobody has earned any XP or levels yet!\nSend some messages in chat and use `/rank` to get started!",
+        "entry": "#{} | {user} XP: `{}`"
+      },
+      "economy": {
+        "name": "Economy Leaderboard",
+        "empty": "Nobody has earned any money yet!\nUse `/work` and `/balance` to get started!",
+        "entry": "#{} | {user} {currency} {}"
+      },
+      "footer": "Page {}/{}  •  Your rank: #{}"
     }
   }
 }

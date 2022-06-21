@@ -66,6 +66,7 @@ public class Localization {
                 .replaceAll("\\{blue_x\\}", EmbedUtils.BLUE_X)
                 .replaceAll("\\{blue_tick\\}", EmbedUtils.BLUE_TICK)
                 .replaceAll("\\{mention\\}", "<@{}>")
+                .replaceAll("\\{user\\}", "<@!{}>")
                 .replaceAll("\\{role\\}", "<@&{}>")
                 .replaceAll("\\{channel\\}", "<#{}>")
                 .replaceAll("\\{currency\\}", "\uD83E\uDE99");

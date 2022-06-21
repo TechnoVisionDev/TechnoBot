@@ -39,7 +39,7 @@ public class FarewellCommand extends Command {
         // Remove farewell message
         if (farewellOption == null) {
             greetingHandler.removeFarewell();
-            String text = get(s -> s.greeting().farewell().removed());
+            String text = get(s -> s.greeting().farewell().reset());
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }

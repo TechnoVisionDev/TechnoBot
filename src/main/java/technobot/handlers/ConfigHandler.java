@@ -64,7 +64,7 @@ public class ConfigHandler {
     /**
      * Removes an auto role from the local cache and database.
      *
-     * @param roleID the ID of the role to be removed from auto-role list.
+     * @param roleID the ID of the role to be reset from auto-role list.
      */
     public void removeAutoRole(long roleID) {
         config.removeAutoRole(roleID);

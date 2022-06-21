@@ -39,14 +39,14 @@ public class GreetCommand extends Command {
         // Remove greeting message
         if (greetingOption == null) {
             greetingHandler.removeGreet();
-            String text = get(s -> s.greeting().greet().removed());
+            String text = get(s -> s.greeting().greet().reset());
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
         greetingHandler.setGreet(greetingOption.getAsString());
-        String text = get(s -> s.greeting().greet().removed());
+        String text = get(s -> s.greeting().greet().reset());
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

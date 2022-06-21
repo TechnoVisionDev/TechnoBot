@@ -74,11 +74,11 @@ public class AutoRoleCommand extends Command {
                 Role role = event.getOption("role").getAsRole();
                 if (!configHandler.getConfig().getAutoRoles().contains(role.getIdLong())) {
                     event.replyEmbeds(EmbedUtils.createError(
-                            get(s -> s.automation().autoRole().remove().roleNotSet(), role.getId())
+                            get(s -> s.automation().autoRole().remove().failure(), role.getId())
                     )).setEphemeral(true).queue();
                     return;
                 }
-                embed = EmbedUtils.createDefault(get(s -> s.automation().autoRole().remove().roleRemoved(), role.getId()));
+                embed = EmbedUtils.createDefault(get(s -> s.automation().autoRole().remove().success(), role.getId()));
                 if (!configHandler.isPremium()) {
                     configHandler.clearAutoRoles();
                 } else {

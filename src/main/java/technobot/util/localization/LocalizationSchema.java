@@ -1,17 +1,18 @@
 package technobot.util.localization;
 
+import technobot.util.localization.SchemaUtils.Result;
+import technobot.util.localization.SchemaUtils.Value;
+
 public record LocalizationSchema(
         Automation automation,
         Economy economy,
         Fun fun,
-        Greeting greeting
+        Greeting greeting,
+        Levels levels
 ) {
     public record Automation(AutoRole autoRole) {
-        public record AutoRole(Add add, Remove remove, List list) {
+        public record AutoRole(Add add, Result remove, List list) {
             public record Add(String higherLevel, String premium, String maxRolesReached, String roleAdded) {
-            }
-
-            public record Remove(String roleNotSet, String roleRemoved) {
             }
 
             public record List(String noAutoRoles, String premium, String roleCount, String role) {
@@ -59,15 +60,15 @@ public record LocalizationSchema(
 
     public record Fun(
             Action action,
-            Cute cute,
+            String cute,
             EightBall eightBall,
             Emote emote,
-            Google google,
-            Joke joke,
-            Meme meme,
-            Nsfw nsfw,
-            Reddit reddit,
-            Surprise surprise
+            String google,
+            String joke,
+            String meme,
+            String nsfw,
+            String reddit,
+            String surprise
     ) {
         public record Action(
                 String failure,
@@ -91,9 +92,6 @@ public record LocalizationSchema(
                 String wave,
                 String wink
         ) {
-        }
-
-        public record Cute(String failure) {
         }
 
         public record EightBall(String tooLong, String[] responses) {
@@ -121,33 +119,9 @@ public record LocalizationSchema(
                 String yawn
         ) {
         }
-
-        public record Google(String tooLong) {
-        }
-
-        public record Joke(String failure) {
-        }
-
-        public record Meme(String failure) {
-        }
-
-        public record Nsfw(String failure) {
-        }
-
-        public record Reddit(String failure) {
-        }
-
-        public record Surprise(String failure) {
-        }
     }
 
-    public record Greeting(Farewell farewell, Greet greet, Greetings greetings, JoinDM joinDm) {
-        public record Farewell(String set, String removed) {
-        }
-
-        public record Greet(String set, String removed) {
-        }
-
+    public record Greeting(Value farewell, Value greet, Greetings greetings, Value joinDm) {
         public record Greetings(
                 String removed,
                 String set,
@@ -158,8 +132,72 @@ public record LocalizationSchema(
                 String joinDmConfig
         ) {
         }
+    }
 
-        public record JoinDM(String set, String removed) {
+    public record Levels(Leveling leveling, RankCard rankCard, Rank rank, Rewards rewards, Top top) {
+        public record Leveling(
+                Channel channel,
+                Value message,
+                Dm dm,
+                Value mod,
+                ServerBackground serverBackground,
+                Mute mute,
+                Reward reward,
+                Config config,
+                String reset,
+                String resetAll
+        ) {
+            public record Channel(String specific, String user) {
+            }
+
+            public record Dm(String enable, String disable) {
+            }
+
+            public record ServerBackground(String set, String reset, String failure) {
+            }
+
+            public record Mute(String enable, String disable) {
+            }
+
+            public record Reward(String add, String remove, String failure) {
+            }
+
+            public record Config(
+                    String channel,
+                    String modulus,
+                    String muted,
+                    String dms,
+                    String message,
+                    String background
+            ) {
+            }
+        }
+
+        public record RankCard(
+                String noRank,
+                Result background,
+                Result color,
+                Result accent,
+                String opacity,
+                String reset
+        ) {
+        }
+
+        public record Rank(String noRankSelf, String noRankOther, String accessFailure) {
+        }
+
+        public record Rewards(String reward, String title, String noRewards) {
+        }
+
+        public record Top(Guild guild, Leveling leveling, Economy economy, String footer) {
+            public record Guild(String name, String more, String title) {
+            }
+
+            public record Leveling(String name, String empty, String entry) {
+            }
+
+            public record Economy(String name, String empty, String entry) {
+            }
         }
     }
 }
