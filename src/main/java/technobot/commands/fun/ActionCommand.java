@@ -81,6 +81,7 @@ public class ActionCommand extends Command {
             case "tickle" -> get(s -> s.fun().action().tickle(), target);
             case "wave" -> get(s -> s.fun().action().wave(), target);
             case "wink" -> get(s -> s.fun().action().wink(), target);
+            default -> "";
         };
 
         // Asynchronous API call

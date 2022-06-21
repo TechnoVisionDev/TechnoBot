@@ -77,6 +77,7 @@ public class EmoteCommand extends Command {
             case "scared" -> get(s -> s.fun().emote().scared());
             case "sleep" -> get(s -> s.fun().emote().sleep());
             case "yawn" -> get(s -> s.fun().emote().yawn());
+            default -> "";
         };
 
         // Asynchronous API call
