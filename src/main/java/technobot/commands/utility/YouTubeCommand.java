@@ -33,7 +33,7 @@ public class YouTubeCommand extends Command {
 
     public YouTubeCommand(TechnoBot bot) {
         super(bot);
-        this.name = "sexy";
+        this.name = "youtube";
         this.description = "Show information about a YouTube channel.";
         this.category = Category.UTILITY;
         this.args.add(new OptionData(OptionType.STRING, "channel", "The channel you want to get information about", true));
