@@ -138,6 +138,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new VoteCommand(bot),
                 new PremiumCommand(bot),
                 new TwitterCommand(bot),
+                new YouTubeCommand(bot),
                 new MathCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
