@@ -208,6 +208,6 @@ public class CommandRegistry extends ListenerAdapter {
         // Get GuildData from database
         GuildData.get(event.getGuild());
         // Register slash commands
-        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue();
+        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue(succ -> {}, fail -> {});
     }
 }

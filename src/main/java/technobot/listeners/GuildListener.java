@@ -7,16 +7,18 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.discordbots.api.client.DiscordBotListAPI;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.CommandRegistry;
 import technobot.commands.automation.AutoRoleCommand;
 import technobot.data.GuildData;
 
+import java.io.IOException;
+
 /**
- * Listens for guild event
- * Only really used for guild command registration at the moment.
+ * Listens for guild events.
+ * Handles command registry, auto roles, and top.gg updates.
  *
  * @author TechnoVision
  */
@@ -49,13 +51,31 @@ public class GuildListener extends ListenerAdapter {
      */
     @Override
     public void onReady(@NotNull ReadyEvent event) {
+        // Get Top.GG bearer token from .env
         String TOPGG_TOKEN = bot.config.get("TOPGG_TOKEN");
-        if (TOPGG_TOKEN != null) {
-            DiscordBotListAPI api = new DiscordBotListAPI.Builder()
-                    .token(TOPGG_TOKEN)
-                    .botId(event.getJDA().getSelfUser().getId())
-                    .build();
-            api.setStats(event.getGuildTotalCount());
+        if (TOPGG_TOKEN == null) return;
+
+        // Build post request to update server count
+        RequestBody formBody = new FormBody.Builder()
+                .add("server_count", String.valueOf(event.getGuildTotalCount()))
+                .add("shard_count", String.valueOf(event.getJDA().getShardManager().getShardsTotal()))
+                .build();
+        String url = "https://top.gg/api/bots/" + event.getJDA().getSelfUser().getId() + "/stats";
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .addHeader("Authorization", "Bearer " + TOPGG_TOKEN)
+                .build();
+        Call call = bot.httpClient.newCall(request);
+
+        // Execute post request
+        try {
+            Response response = call.execute();
+            if (response.code() != 200) {
+                System.out.println("ERROR: Unable to update Top.GG statistics! [code="+response.code()+"]");
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR IOException: Unable to update Top.GG statistics!");
         }
     }
 
