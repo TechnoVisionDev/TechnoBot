@@ -32,7 +32,7 @@ public class TwitterCommand extends Command {
         super(bot);
         this.name = "twitter";
         this.description = "Show information about a twitter user.";
-        this.category = Category.FUN;
+        this.category = Category.UTILITY;
         this.args.add(new OptionData(OptionType.STRING, "user", "The user you want to get information about", true));
         TWITTER_TOKEN = bot.config.get("TWITTER_TOKEN");
     }
@@ -76,7 +76,7 @@ public class TwitterCommand extends Command {
 
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
-                        .setAuthor(name + "(@" + username + ")", null, avatar)
+                        .setAuthor(name + "(@" + username + ")", "https://twitter.com/"+username, avatar)
                         .setThumbnail(avatar)
                         .setFooter("Following: " + following + " | Followers: " + followers);
                 if (!location.isEmpty()) embed.appendDescription("\n:pushpin: "+location);
