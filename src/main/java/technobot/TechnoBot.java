@@ -61,7 +61,7 @@ public class TechnoBot {
         buttonListener = new ButtonListener();
         musicListener = new MusicListener();
         shardManager.addEventListener(
-                new GuildListener(),
+                new GuildListener(this),
                 buttonListener,
                 musicListener,
                 new StarboardListener(),

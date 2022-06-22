@@ -69,6 +69,12 @@
             <artifactId>javaluator</artifactId>
             <version>3.0.3</version>
         </dependency>
+        <!-- https://github.com/top-gg/java-sdk -->
+        <dependency>
+            <groupId>com.github.TechnoVisionDev</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>master</version>
+        </dependency>
     </dependencies>
 
     <build>

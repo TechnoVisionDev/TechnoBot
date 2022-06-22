@@ -3,10 +3,13 @@ package technobot.listeners;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.NotNull;
+import technobot.TechnoBot;
 import technobot.commands.CommandRegistry;
 import technobot.commands.automation.AutoRoleCommand;
 import technobot.data.GuildData;
@@ -18,6 +21,12 @@ import technobot.data.GuildData;
  * @author TechnoVision
  */
 public class GuildListener extends ListenerAdapter {
+
+    private final TechnoBot bot;
+
+    public GuildListener(TechnoBot bot) {
+        this.bot = bot;
+    }
 
     /**
      * Registers slash commands as guild commands to guilds that join after startup.
@@ -31,6 +40,23 @@ public class GuildListener extends ListenerAdapter {
         GuildData.get(event.getGuild());
         // Register slash commands
         event.getGuild().updateCommands().addCommands(CommandRegistry.unpackCommandData()).queue();
+    }
+
+    /**
+     * Updates <a href="https://top.gg">...</a> with the bot server count after startup.
+     *
+     * @param event executes after all guilds are loaded.
+     */
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+        String TOPGG_TOKEN = bot.config.get("TOPGG_TOKEN");
+        if (TOPGG_TOKEN != null) {
+            DiscordBotListAPI api = new DiscordBotListAPI.Builder()
+                    .token(TOPGG_TOKEN)
+                    .botId(event.getJDA().getSelfUser().getId())
+                    .build();
+            api.setStats(event.getGuildTotalCount());
+        }
     }
 
     /**
