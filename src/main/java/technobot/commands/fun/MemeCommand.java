@@ -9,7 +9,7 @@ import okhttp3.*;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.data.json.Post;
+import technobot.data.json.RedditPost;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
@@ -62,13 +62,13 @@ public class MemeCommand extends Command {
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 if (!response.isSuccessful()) throw new IOException();
-                Post entity = bot.gson.fromJson(response.body().string(), Post.class);
+                RedditPost entity = bot.gson.fromJson(response.body().string(), RedditPost.class);
 
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
                         .setTitle(entity.getTitle(), entity.getPostLink())
                         .setImage(entity.getImageUrl())
-                        .setFooter(""+entity.getUpvotes(), Post.UPVOTE_EMOJI);
+                        .setFooter(""+entity.getUpvotes(), RedditPost.UPVOTE_EMOJI);
                 event.getHook().sendMessageEmbeds(embed.build()).queue();
             }
         });
