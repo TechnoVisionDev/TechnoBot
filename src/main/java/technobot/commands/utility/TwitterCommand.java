@@ -17,6 +17,7 @@ import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 /**
  * Command that retrieves information about a Twitter account.
@@ -26,6 +27,7 @@ import java.io.IOException;
  */
 public class TwitterCommand extends Command {
 
+    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
     private final String TWITTER_TOKEN;
 
     public TwitterCommand(TechnoBot bot) {
@@ -67,8 +69,8 @@ public class TwitterCommand extends Command {
 
                 String name = twitterUser.get("name").getAsString();
                 String username = twitterUser.get("username").getAsString();
-                String following = publicMetrics.get("following_count").getAsString();
-                String followers = publicMetrics.get("followers_count").getAsString();
+                String following = FORMATTER.format(publicMetrics.get("following_count").getAsLong());
+                String followers = FORMATTER.format(publicMetrics.get("followers_count").getAsLong());
                 String avatar = twitterUser.get("profile_image_url").getAsString();
                 String location = twitterUser.has("location") ? twitterUser.get("location").getAsString() : "";
                 String bio = twitterUser.has("description") ? twitterUser.get("description").getAsString() : "";
