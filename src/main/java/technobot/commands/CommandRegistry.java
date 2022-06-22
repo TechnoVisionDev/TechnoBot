@@ -135,6 +135,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new RolesCommand(bot),
                 new PollCommand(bot),
                 new InviteCommand(bot),
+                new VoteCommand(bot),
                 new PremiumCommand(bot),
                 new TwitterCommand(bot),
                 new MathCommand(bot),
