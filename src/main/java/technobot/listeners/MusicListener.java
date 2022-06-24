@@ -1,5 +1,8 @@
 package technobot.listeners;
 
+import com.github.topislavalinkplugins.topissourcemanagers.applemusic.AppleMusicSourceManager;
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -9,7 +12,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -39,8 +41,20 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Setup audio player manager.
      */
-    public MusicListener() {
+    public MusicListener(String spotifyClientId, String spotifyClientSecret) {
         this.playerManager = new DefaultAudioPlayerManager();
+
+        // Add Spotify support
+        SpotifyConfig spotifyConfig = new SpotifyConfig();
+        spotifyConfig.setClientId(spotifyClientId);
+        spotifyConfig.setClientSecret(spotifyClientSecret);
+        spotifyConfig.setCountryCode("US");
+        this.playerManager.registerSourceManager(new SpotifySourceManager(null, spotifyConfig, playerManager));
+
+        // Add Apple Music support
+        playerManager.registerSourceManager(new AppleMusicSourceManager(null, "us", playerManager));
+
+        // Add audio player to source manager
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
 

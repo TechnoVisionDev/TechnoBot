@@ -12,7 +12,7 @@ import java.util.List;
 public class SecurityUtils {
 
     private static final List<String> ALLOWED_PROTOCOLS = List.of("http", "https");
-    private static final List<String> ALLOWED_DOMAINS = List.of("youtube", "soundcloud", "twitch");
+    private static final List<String> ALLOWED_DOMAINS = List.of("youtube", "soundcloud", "twitch", "spotify", "apple");
 
     /**
      * Check if the given url is a whitelisted domain and protocol.
