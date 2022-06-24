@@ -1,5 +1,6 @@
 package technobot.listeners;
 
+import com.github.topislavalinkplugins.topissourcemanagers.ISRCAudioTrack;
 import com.github.topislavalinkplugins.topissourcemanagers.applemusic.AppleMusicSourceManager;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
@@ -168,7 +169,7 @@ public class MusicListener extends ListenerAdapter {
                 // Create embed message
                 if (!music.getQueue().isEmpty()) {
                     String duration = formatTrackLength(audioTrack.getInfo().length);
-                    String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", audioTrack.getInfo().uri.substring(32));
+                    String thumb = MusicHandler.getThumbnail(audioTrack);
 
                     MessageEmbed embed = new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)

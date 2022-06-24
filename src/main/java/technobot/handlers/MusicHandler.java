@@ -1,5 +1,6 @@
 package technobot.handlers;
 
+import com.github.topislavalinkplugins.topissourcemanagers.ISRCAudioTrack;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import technobot.listeners.MusicListener;
+import technobot.util.SecurityUtils;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
@@ -239,7 +241,7 @@ public class MusicHandler implements AudioSendHandler {
         public void onTrackStart(AudioPlayer player, @NotNull AudioTrack track) {
             //Grab Track Info
             String duration = MusicListener.formatTrackLength(track.getInfo().length);
-            String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
+            String thumb = getThumbnail(track);
             String nextTrack = "Nothing";
             if (handler.queue.size() > 1) {
                 AudioTrackInfo info = handler.queue.get(1).getInfo();
@@ -289,5 +291,19 @@ public class MusicHandler implements AudioSendHandler {
             player.stopTrack();
             player.playTrack(handler.queue.getFirst());
         }
+    }
+
+    /**
+     * Creates a thumbnail URL with the track image.
+     * @param track the AudioTrack object from the music player.
+     *
+     * @return a URL to the song video thumbnail.
+     */
+    public static String getThumbnail(AudioTrack track) {
+        String domain = SecurityUtils.getDomain(track.getInfo().uri);
+        if (domain.equalsIgnoreCase("spotify") || domain.equalsIgnoreCase("apple")) {
+            return ((ISRCAudioTrack) track).getArtworkURL();
+        }
+        return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
     }
 }

@@ -36,7 +36,7 @@ public class SecurityUtils {
      * @param host The host url. Ex: www.youtube.com
      * @return The domain name without subdomains. Ex: youtube
      */
-    private static String getDomain(String host) {
+    public static String getDomain(String host) {
         String[] parts = host.split("(\\.|%2E)"); // Match dot or URL-Encoded dot
         int size = parts.length;
         if(size == 1) {
