@@ -72,7 +72,7 @@ public class GuildListener extends ListenerAdapter {
         try {
             Response response = call.execute();
             if (response.code() != 200) {
-                System.out.println("ERROR: Unable to update Top.GG statistics! [code="+response.code()+"]");
+                System.out.println("Warning: Unable to update Top.GG statistics! [code="+response.code()+"]");
             }
             response.close();
         } catch (IOException e) {
