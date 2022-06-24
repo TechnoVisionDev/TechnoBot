@@ -122,9 +122,9 @@ public class ModerationHandler {
      */
     public boolean canTargetMember(Member target) {
         // Check that target is not the owner of the guild
-        if (target.isOwner()) {
-            return false;
-        }
+        if (target == null) return true;
+        if (target.isOwner()) return false;
+
         // Check if bot has a higher role than user
         int botPos = guild.getBotRole().getPosition();
         for (Role role : target.getRoles()) {
