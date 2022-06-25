@@ -1,7 +1,6 @@
 package technobot.handlers.economy;
 
 import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.*;
 import com.mongodb.lang.Nullable;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,10 +13,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.StreamSupport;
 
 /**
  * Handles the server economy backend.
@@ -44,7 +41,7 @@ public class EconomyHandler {
         this.guild = guild;
         this.guildFilter = Filters.eq("guild", guild.getIdLong());
         this.timeouts = new HashMap<>();
-        this.currency = "\uD83E\uDE99";
+        this.currency = "\uD83E\uDE99"; //default :coin: emoji
     }
 
     /**
@@ -78,7 +75,8 @@ public class EconomyHandler {
         } else {
             // Crime failed
             amount = calculateFine(userID);
-            if (amount > 0) removeMoney(userID, calculateFine(userID));
+            System.out.println("Fine calculated: " + amount);
+            if (amount > 0) removeMoney(userID, amount);
             reply = responses.getCrimeFailResponse(amount, getCurrency());
         }
         setTimeout(userID, TIMEOUT_TYPE.CRIME);
@@ -279,6 +277,7 @@ public class EconomyHandler {
      * @param amount the amount of money to remove.
      */
     private void removeMoney(long userID, long amount) {
+        System.out.println("Actual amt removed: " + amount);
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         bot.database.economy.updateOne(filter, Updates.inc("balance", -1 * amount), UPSERT);
     }
