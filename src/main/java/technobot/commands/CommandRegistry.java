@@ -135,12 +135,13 @@ public class CommandRegistry extends ListenerAdapter {
                 new RollCommand(bot),
                 new RolesCommand(bot),
                 new PollCommand(bot),
-                new InviteCommand(bot),
-                new VoteCommand(bot),
-                new PremiumCommand(bot),
                 new TwitterCommand(bot),
                 new YouTubeCommand(bot),
                 new MathCommand(bot),
+                new VoteCommand(bot),
+                new PremiumCommand(bot),
+                new InviteCommand(bot),
+                new SupportCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
     }
