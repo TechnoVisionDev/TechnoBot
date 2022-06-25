@@ -94,7 +94,7 @@ public class YouTubeCommand extends Command {
                         String views = FORMATTER.format(stats.get("viewCount").getAsLong());
                         String subs = FORMATTER.format(stats.get("subscriberCount").getAsLong());
                         String videos = FORMATTER.format(stats.get("videoCount").getAsLong());
-                        String link = "https://www.youtube.com/"+channel.toLowerCase();
+                        String link = "https://www.youtube.com/channel/"+channelID;
 
                         // Build nice embed displaying all info
                         EmbedBuilder embed = new EmbedBuilder()
@@ -102,8 +102,7 @@ public class YouTubeCommand extends Command {
                                 .setAuthor(title + " | YouTube Channel", link, avatar)
                                 .setThumbnail(avatar)
                                 .setDescription(desc)
-                                .addField("Statistics", "**Subscribers:** "+subs+"\n**Views:** "+views+"\n**Videos:** "+videos, false)
-                                .setFooter(link);
+                                .addField("Statistics", "**Subscribers:** "+subs+"\n**Views:** "+views+"\n**Videos:** "+videos, false);
                         event.getHook().sendMessageEmbeds(embed.build()).queue();
                     }
                 });
