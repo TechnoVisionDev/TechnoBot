@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.api.entities.AudioChannel;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -235,18 +236,19 @@ public class MusicHandler implements AudioSendHandler {
             //Grab Track Info
             String duration = MusicListener.formatTrackLength(track.getInfo().length);
             String thumb = getThumbnail(track);
-            String nextTrack = "Nothing";
-            if (handler.queue.size() > 1) {
-                AudioTrackInfo info = handler.queue.get(1).getInfo();
-                nextTrack = "[" + info.title + "](" + info.uri + ")";
-            }
+            String repeat = (handler.isLoop()) ? "Enabled" : "Disabled";
+
             //Create Embed Message
             handler.logChannel.sendMessageEmbeds(
                     new EmbedBuilder()
                             .setTitle("Now Playing")
                             .setDescription("[" + track.getInfo().title + "](" + track.getInfo().uri + ")")
-                            .addField("Song Duration", duration, true)
-                            .addField("Up Next", nextTrack, true)
+                            .addField("Duration", "`"+duration+"`", true)
+                            .addField("Queue", "`"+(handler.queue.size()-1)+"`", true)
+                            .addField("Volume", "`"+handler.audioPlayer.getVolume()+"%`", true)
+                            .addField("Requester", "<@!979590525428580363>", true)
+                            .addField("Link", "[`Click Here`]("+track.getInfo().uri+")", true)
+                            .addField("Repeat", "`"+repeat+"`", true)
                             .setColor(EmbedColor.DEFAULT.color)
                             .setThumbnail(thumb)
                             .build()

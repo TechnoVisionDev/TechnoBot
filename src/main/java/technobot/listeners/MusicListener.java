@@ -120,17 +120,18 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Joins a voice channel.
      *
-     * @param channel    The Voice Channel
+     * @para guildData    The GuilData instance for this guild.
+     * @param channel    The Voice Channel.
      * @param logChannel A log channel to notify users.
      */
-    public void joinChannel(@NotNull GuildData settings, @NotNull AudioChannel channel, TextChannel logChannel) {
+    public void joinChannel(@NotNull GuildData guildData, @NotNull AudioChannel channel, TextChannel logChannel) {
         AudioManager manager = channel.getGuild().getAudioManager();
-        if (settings.musicHandler == null) {
-            settings.musicHandler = new MusicHandler(playerManager.createPlayer());
+        if (guildData.musicHandler == null) {
+            guildData.musicHandler = new MusicHandler(playerManager.createPlayer());
         }
-        manager.setSendingHandler(settings.musicHandler);
-        Objects.requireNonNull(settings.musicHandler).setLogChannel(logChannel);
-        settings.musicHandler.setPlayChannel(channel);
+        manager.setSendingHandler(guildData.musicHandler);
+        Objects.requireNonNull(guildData.musicHandler).setLogChannel(logChannel);
+        guildData.musicHandler.setPlayChannel(channel);
         manager.openAudioConnection(channel);
     }
 
@@ -166,23 +167,7 @@ public class MusicListener extends ListenerAdapter {
 
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
-                // Create embed message
-                if (!music.getQueue().isEmpty()) {
-                    String duration = formatTrackLength(audioTrack.getInfo().length);
-                    String thumb = MusicHandler.getThumbnail(audioTrack);
-
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setColor(EmbedColor.DEFAULT.color)
-                            .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
-                            .addField("Song Duration", duration, true)
-                            .addField("Position in Queue", String.valueOf(music.getQueue().size()), true)
-                            .setFooter("Added by " + event.getUser().getAsTag(), event.getUser().getEffectiveAvatarUrl())
-                            .setThumbnail(thumb)
-                            .build();
-                    event.getHook().sendMessage(EmbedUtils.BLUE_TICK + " **" + audioTrack.getInfo().title + "** successfully added!").addEmbeds(embed).queue();
-                } else {
-                    event.getHook().sendMessage(EmbedUtils.BLUE_TICK + " **" + audioTrack.getInfo().title + "** successfully added!").queue();
-                }
+                event.getHook().sendMessage(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
                 music.enqueue(audioTrack);
             }
 
@@ -197,8 +182,7 @@ public class MusicListener extends ListenerAdapter {
                 // Otherwise load first 100 tracks from playlist
                 int total = audioPlaylist.getTracks().size();
                 if (total > 100) total = 100;
-                String msg = ":ballot_box_with_check: Added " + total + " tracks from playlist `" + audioPlaylist.getName() + "`";
-                event.getHook().sendMessage(msg).queue();
+                event.getHook().sendMessage(":notes: | Added **"+audioPlaylist.getName()+"** with `"+total+"` songs to the queue.").queue();
 
                 total = music.getQueue().size();
                 for (AudioTrack track : audioPlaylist.getTracks()) {
