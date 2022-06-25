@@ -105,6 +105,7 @@ public class EconomyHandler {
 
         // Calculate mount stolen (success probability * their cash)
         long amountStolen = (long) ((1 - failChance) * targetCash);
+        if (amountStolen < 0) amountStolen = 0;
 
         // Attempt robbery
         setTimeout(userID, TIMEOUT_TYPE.ROB);
