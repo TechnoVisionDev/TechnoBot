@@ -25,7 +25,7 @@ public class StopCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         MusicHandler musicHandler = GuildData.get(event.getGuild()).musicHandler;
-        if (musicHandler == null || musicHandler.getQueue().isEmpty()) {
+        if (musicHandler == null) {
             String text = "The music player is already stopped!";
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         } else {
