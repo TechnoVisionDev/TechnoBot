@@ -93,13 +93,6 @@ public class MusicHandler implements AudioSendHandler {
      */
     public void disconnect() {
         playChannel = null;
-        stop();
-    }
-
-    /**
-     * Removes all tracks from the audio player queue and stops playing the current track.
-     */
-    public void stop() {
         queue.clear();
         audioPlayer.stopTrack();
     }

@@ -29,7 +29,8 @@ public class StopCommand extends Command {
             String text = "The music player is already stopped!";
             event.replyEmbeds(EmbedUtils.createError(text)).queue();
         } else {
-            musicHandler.stop();
+            musicHandler.disconnect();
+            event.getGuild().getAudioManager().closeAudioConnection();
             String text = EmbedUtils.BLUE_TICK + " Stopped the music player!";
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }

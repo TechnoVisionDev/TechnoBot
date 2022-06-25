@@ -238,7 +238,7 @@ public class MusicListener extends ListenerAdapter {
         if (event.getJDA().getSelfUser().getIdLong() == event.getMember().getIdLong()) {
             GuildData data = GuildData.get(event.getGuild());
             if (data.musicHandler != null) {
-                data.musicHandler.stop();
+                data.musicHandler.disconnect();
             }
         }
     }
