@@ -43,7 +43,7 @@ public class YouTubeCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
-        String channel = event.getOption("channel").getAsString();
+        String channel = event.getOption("channel").getAsString().replace(" ", "+");
         String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q="+channel+"&key="+YOUTUBE_TOKEN;
 
         // Asynchronous API call
