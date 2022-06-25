@@ -70,7 +70,8 @@ public class TechnoBot {
                 musicListener,
                 new StarboardListener(),
                 new LevelingListener(this),
-                new GreetingListener());
+                new GreetingListener(),
+                new AfkListener());
     }
 
     /**
