@@ -49,7 +49,18 @@
     "You sold your old shoes for {amount}.",
     "You found a rare rock and sold it for {amount}.",
     "You developed a new and *highly* secure encryption algorithm. arire tbaan tvir lbh hc, naljnl unir {amount} noq unir n avpr qnl!",
-    "You dug a very deep hole in the Earth and made it on the news! You earned {amount}."
+    "You dug a very deep hole in the Earth and made it on the news! You earned {amount}.",
+    "You run a local fish store and your most expensive fish just gave birth to 50 babies! You sell half of them for {amount}.",
+    "You lead an open source project developing a discord bot and receive {amount} in donations through Patreon.",
+    "You discover a new, rare bug species. The Smithsonian Museum offers you {amount} to add it to their collection.",
+    "After years of work, you finally solve the hardest math equation in the world. Nobody really cares so you only received {amount} in compensation.",
+    "You sell flowers on the side of the road in the hot sun, making {amount} for your family.",
+    "Your TikTok went viral! You earned {amount} in ad revenue from ByteDance.",
+    "You sell your old clothes on Craigslist and make {amount}. Does anybody even use Craigslist anymore?",
+    "You work as a humble farmer growing hot potatoes for {amount}.",
+    "You got out of bed. Have {amount}.",
+    "You had a fruitful day at the office today and earned {amount}!",
+    "You are digging in your backyard when you strike gold! It was a small piece worth {amount}."
   ],
   "crimeSuccess": [
     "You work for the Juarez cartel as a brick-presser and earn {amount}! They'll probably kill you and your family tomorrow. Just saying.",
@@ -68,7 +79,9 @@
     "You stole a wallet and found {amount}, along with a coupon to the local smoothie shop!",
     "You don't remember what you did, but you know it was highly illegal. Oh, and there is a mysterious gift card worth {amount} on your table... how strange.",
     "You stole a zebra from the zoo and sold it on the black market for {amount}.",
-    "You somehow managed to steal a piece of the moon and sold it for {amount}."
+    "You somehow managed to steal a piece of the moon and sold it for {amount}.",
+    "You run a farm-to-table business drug business, distributing *special* mushrooms across the country and making {amount} in profit.",
+    "You raise exotic betta fish and charge teenagers {amount} to watch them fight to the death.",
   ],
   "crimeFail": [
     "You break into the house next door only to find the whole family eating dinner together. Your bail cost {amount}.",
@@ -85,6 +98,15 @@
     "You must have been pretty darn stupid for thinking you wouldn't get caught while trying to steal a chair from the White House. You got caught and were fined {amount}.",
     "You tried to steal a statue from a museum in Singapore. You didn't know it's illegal to chew bubble gum in Singapore, so you got fined {amount} without even stealing anything.",
     "You tried to rob a bank in Copenhagen, but found out that it is illegal to wear masks in public in Denmark. You got fined {amount}, but at least didn't get arrested.",
-    "You stole a wallet on a beach in Spain. You decided to hide the wallet on a sandcastle you found. You shouldn't have done that. You got fined {amount} because it's illegal to build sandcastles in Spain."
+    "You stole a wallet on a beach in Spain. You decided to hide the wallet on a sandcastle you found. You shouldn't have done that. You got fined {amount} because it's illegal to build sandcastles in Spain.",
+    "You tried griefing someone's house, but they placed a trap of TNT under it so you died. You have to pay {amount} for damages.",
+    "You were robbing a mansion in Beverly Hills, when suddenly the exotic piranhas in their fish tank jump out of the water, biting your arm off. You pay {amount} in medical bills.",
+    "You were running from the police, but you tried on your untied shoelace and broke your nose. The plastic surgery cost you {amount}... but you'll never look the same.",
+    "You wrecked the car you borrowed from the High Rollers in the race. You owe them {amount} in damages.",
+    "You commit credit card fraud only to realize that it was YOUR credit card you spent {amount} on. Good luck paying that back.",
+    "While performing a drive by, one of the bullets ricochets off a a steel door and hits you right in the eye. The medical bills were {amount}.",
+    "You make a Minecraft server to scam little kids but get a DMCA takedown from Mojang. You pay a lawyer {amount} to refute but lose the court case anyway.",
+    "You got caught stealing cheese wheels are were fined {amount}.",
+    "You kick an employee for fun while they're wearing a spring lock suit. This causes a spring lock failure and the employee dies. You get sued {amount}. Great job."
   ]
 }
