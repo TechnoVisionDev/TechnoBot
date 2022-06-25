@@ -23,17 +23,16 @@ public class RepeatCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         music.loop();
         String text;
         if (music.isLoop()) {
-            text = ":repeat_one: Loop Enabled!";
+            text = ":repeat: Repeat has been enabled.";
         } else {
-            text = ":repeat_one: Loop Disabled!";
+            text = ":repeat: Repeat has been disabled.";
         }
-        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

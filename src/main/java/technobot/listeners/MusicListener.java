@@ -91,7 +91,7 @@ public class MusicListener extends ListenerAdapter {
         // Check if user is in voice channel
         if (!inChannel(Objects.requireNonNull(event.getMember()))) {
             String text = "Please connect to a voice channel first!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return null;
         }
         // Bot should join voice channel if not already in one.
@@ -104,13 +104,13 @@ public class MusicListener extends ListenerAdapter {
         if (!skipQueueCheck) {
             if (settings.musicHandler == null || settings.musicHandler.getQueue().isEmpty()) {
                 String text = ":sound: There are no songs in the queue!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+                event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
                 return null;
             }
             // Check if member is in the right voice channel
             if (settings.musicHandler.getPlayChannel() != channel) {
                 String text = "You are not in the same voice channel as TechnoBot!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 return null;
             }
         }
@@ -167,7 +167,7 @@ public class MusicListener extends ListenerAdapter {
 
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
-                event.getHook().sendMessage(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
+                event.reply(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
                 music.enqueue(audioTrack);
             }
 
@@ -182,7 +182,7 @@ public class MusicListener extends ListenerAdapter {
                 // Otherwise load first 100 tracks from playlist
                 int total = audioPlaylist.getTracks().size();
                 if (total > 100) total = 100;
-                event.getHook().sendMessage(":notes: | Added **"+audioPlaylist.getName()+"** with `"+total+"` songs to the queue.").queue();
+                event.reply(":notes: | Added **"+audioPlaylist.getName()+"** with `"+total+"` songs to the queue.").queue();
 
                 total = music.getQueue().size();
                 for (AudioTrack track : audioPlaylist.getTracks()) {
@@ -196,13 +196,13 @@ public class MusicListener extends ListenerAdapter {
             @Override
             public void noMatches() {
                 String msg = "That is not a valid song!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
+                event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
                 String msg = "That is not a valid link!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
+                event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
         });
     }

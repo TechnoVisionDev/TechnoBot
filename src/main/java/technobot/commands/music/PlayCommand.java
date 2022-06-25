@@ -29,9 +29,7 @@ public class PlayCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         String song = event.getOption("song").getAsString();
-
         MusicHandler music = bot.musicListener.getMusic(event, true);
         if (music == null) return;
 
@@ -39,14 +37,14 @@ public class PlayCommand extends Command {
         AudioChannel channel = event.getMember().getVoiceState().getChannel();
         if (music.getPlayChannel() != channel) {
             String text = "You are not in the same voice channel as TechnoBot!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
         // Cannot have more than 100 songs in the queue
         if (music.getQueue().size() >= 100) {
             String text = "You cannot queue more than 100 songs!";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
@@ -73,7 +71,7 @@ public class PlayCommand extends Command {
             bot.musicListener.addTrack(event, url);
         } catch (IndexOutOfBoundsException e) {
             String text = "Please specify a song a to play.";
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         }
     }
 }

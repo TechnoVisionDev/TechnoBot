@@ -27,11 +27,11 @@ public class StopCommand extends Command {
         MusicHandler musicHandler = GuildData.get(event.getGuild()).musicHandler;
         if (musicHandler == null || musicHandler.getQueue().isEmpty()) {
             String text = "The music player is already stopped!";
-            event.replyEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         } else {
             musicHandler.disconnect();
             event.getGuild().getAudioManager().closeAudioConnection();
-            String text = EmbedUtils.BLUE_TICK + " Stopped the music player!";
+            String text = ":stop_button: Stopped the music player.";
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }
     }
