@@ -6,12 +6,11 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.api.entities.AudioChannel;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -233,26 +232,7 @@ public class MusicHandler implements AudioSendHandler {
          */
         @Override
         public void onTrackStart(AudioPlayer player, @NotNull AudioTrack track) {
-            //Grab Track Info
-            String duration = MusicListener.formatTrackLength(track.getInfo().length);
-            String thumb = getThumbnail(track);
-            String repeat = (handler.isLoop()) ? "Enabled" : "Disabled";
-
-            //Create Embed Message
-            handler.logChannel.sendMessageEmbeds(
-                    new EmbedBuilder()
-                            .setTitle("Now Playing")
-                            .setDescription("[" + track.getInfo().title + "](" + track.getInfo().uri + ")")
-                            .addField("Duration", "`"+duration+"`", true)
-                            .addField("Queue", "`"+(handler.queue.size()-1)+"`", true)
-                            .addField("Volume", "`"+handler.audioPlayer.getVolume()+"%`", true)
-                            .addField("Requester", "<@!979590525428580363>", true)
-                            .addField("Link", "[`Click Here`]("+track.getInfo().uri+")", true)
-                            .addField("Repeat", "`"+repeat+"`", true)
-                            .setColor(EmbedColor.DEFAULT.color)
-                            .setThumbnail(thumb)
-                            .build()
-            ).queue();
+            handler.logChannel.sendMessageEmbeds(displayTrack(track, handler)).queue();
         }
 
         @Override
@@ -294,11 +274,36 @@ public class MusicHandler implements AudioSendHandler {
      *
      * @return a URL to the song video thumbnail.
      */
-    public static String getThumbnail(AudioTrack track) {
+    private static String getThumbnail(AudioTrack track) {
         String domain = SecurityUtils.getDomain(track.getInfo().uri);
         if (domain.equalsIgnoreCase("spotify") || domain.equalsIgnoreCase("apple")) {
             return ((ISRCAudioTrack) track).getArtworkURL();
         }
         return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
+    }
+
+    /**
+     * Creates an embed displaying details about a track.
+     *
+     * @param track the track to display details about.
+     * @param handler the music handler instance.
+     * @return a MessageEmbed displaying track details.
+     */
+    public static MessageEmbed displayTrack(AudioTrack track, MusicHandler handler) {
+        String duration = MusicListener.formatTrackLength(track.getInfo().length);
+        String repeat = (handler.isLoop()) ? "Enabled" : "Disabled";
+        String userMention = "<@!"+track.getUserData(String.class)+">";
+        return new EmbedBuilder()
+                .setTitle("Now Playing")
+                .setDescription("[" + track.getInfo().title + "](" + track.getInfo().uri + ")")
+                .addField("Duration", "`"+duration+"`", true)
+                .addField("Queue", "`"+(handler.queue.size()-1)+"`", true)
+                .addField("Volume", "`"+handler.audioPlayer.getVolume()+"%`", true)
+                .addField("Requester", userMention, true)
+                .addField("Link", "[`Click Here`]("+track.getInfo().uri+")", true)
+                .addField("Repeat", "`"+repeat+"`", true)
+                .setColor(EmbedColor.DEFAULT.color)
+                .setThumbnail(getThumbnail(track))
+                .build();
     }
 }

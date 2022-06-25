@@ -151,8 +151,9 @@ public class MusicListener extends ListenerAdapter {
      *
      * @param event  A slash command event.
      * @param url    The track URL.
+     * @param user   The ID of the user that added this track.
      */
-    public void addTrack(SlashCommandInteractionEvent event, String url) {
+    public void addTrack(SlashCommandInteractionEvent event, String url, String userID) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) return;
 
@@ -167,8 +168,9 @@ public class MusicListener extends ListenerAdapter {
 
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
-                event.reply(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
+                audioTrack.setUserData(userID);
                 music.enqueue(audioTrack);
+                event.reply(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
             }
 
             @Override

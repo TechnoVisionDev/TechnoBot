@@ -49,6 +49,7 @@ public class PlayCommand extends Command {
         }
 
         // Find working URL
+        String userID = event.getUser().getId();
         try {
             String url;
             try {
@@ -58,7 +59,7 @@ public class PlayCommand extends Command {
                 // Else search youtube using args
                 url = "ytsearch:" + song;
                 music.setLogChannel(event.getTextChannel());
-                bot.musicListener.addTrack(event, url);
+                bot.musicListener.addTrack(event, url, userID);
                 return;
             }
             // Search youtube if using a soundcloud link
@@ -68,7 +69,7 @@ public class PlayCommand extends Command {
             }
             // Otherwise add real URL to queue
             music.setLogChannel(event.getTextChannel());
-            bot.musicListener.addTrack(event, url);
+            bot.musicListener.addTrack(event, url, userID);
         } catch (IndexOutOfBoundsException e) {
             String text = "Please specify a song a to play.";
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
