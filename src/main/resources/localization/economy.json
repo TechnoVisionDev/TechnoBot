@@ -81,7 +81,7 @@
     "You stole a zebra from the zoo and sold it on the black market for {amount}.",
     "You somehow managed to steal a piece of the moon and sold it for {amount}.",
     "You run a farm-to-table business drug business, distributing *special* mushrooms across the country and making {amount} in profit.",
-    "You raise exotic betta fish and charge teenagers {amount} to watch them fight to the death.",
+    "You raise exotic betta fish and charge teenagers {amount} to watch them fight to the death."
   ],
   "crimeFail": [
     "You break into the house next door only to find the whole family eating dinner together. Your bail cost {amount}.",
