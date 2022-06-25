@@ -151,7 +151,7 @@ public class MusicListener extends ListenerAdapter {
      *
      * @param event  A slash command event.
      * @param url    The track URL.
-     * @param user   The ID of the user that added this track.
+     * @param userID   The ID of the user that added this track.
      */
     public void addTrack(SlashCommandInteractionEvent event, String url, String userID) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
