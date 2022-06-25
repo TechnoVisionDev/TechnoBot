@@ -1,7 +1,6 @@
 package technobot.commands.utility;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -33,18 +32,18 @@ public class UserCommand extends Command {
         // Get user
         OptionMapping userOption = event.getOption("user");
         User user = userOption != null ? userOption.getAsUser() : event.getUser();
-        Member member = event.getGuild().getMember(user);
-
-        // Create and send embed
-        String joinedDiscord = TimeFormat.RELATIVE.format(member.getTimeCreated().toInstant().toEpochMilli());
-        String joinedServer = TimeFormat.RELATIVE.format(member.getTimeJoined().toInstant().toEpochMilli());
-        EmbedBuilder embed = new EmbedBuilder()
-                .setColor(EmbedColor.DEFAULT.color)
-                .addField("Joined Discord", joinedDiscord, true)
-                .addField("Joined Server", joinedServer, true)
-                .addField("Discord ID", user.getId(), false)
-                .setThumbnail(user.getEffectiveAvatarUrl())
-                .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
-        event.replyEmbeds(embed.build()).queue();
+        event.getGuild().retrieveMember(user).queue(member -> {
+            // Create and send embed
+            String joinedDiscord = TimeFormat.RELATIVE.format(member.getTimeCreated().toInstant().toEpochMilli());
+            String joinedServer = TimeFormat.RELATIVE.format(member.getTimeJoined().toInstant().toEpochMilli());
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(EmbedColor.DEFAULT.color)
+                    .addField("Joined Discord", joinedDiscord, true)
+                    .addField("Joined Server", joinedServer, true)
+                    .addField("Discord ID", user.getId(), false)
+                    .setThumbnail(user.getEffectiveAvatarUrl())
+                    .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
+            event.replyEmbeds(embed.build()).queue();
+        });
     }
 }
