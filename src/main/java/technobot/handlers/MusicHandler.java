@@ -279,7 +279,7 @@ public class MusicHandler implements AudioSendHandler {
         if (domain.equalsIgnoreCase("spotify") || domain.equalsIgnoreCase("apple")) {
             return ((ISRCAudioTrack) track).getArtworkURL();
         }
-        return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getInfo().uri.substring(32));
+        return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getIdentifier());
     }
 
     /**
