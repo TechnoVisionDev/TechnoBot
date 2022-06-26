@@ -55,8 +55,7 @@ public class TechnoBot {
         builder.setActivity(Activity.playing("/help | technobot.app"));
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.GUILD_PRESENCES);
+                GatewayIntent.GUILD_MESSAGE_REACTIONS);
         builder.addEventListeners(new CommandRegistry(this));
         shardManager = builder.build();
         GuildData.init(this);
