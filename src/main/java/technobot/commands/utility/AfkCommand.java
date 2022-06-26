@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.internal.utils.tuple.Pair;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -30,7 +29,7 @@ public class AfkCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         OptionMapping option = event.getOption("message");
         String message = option != null ? option.getAsString() : "";
-        AfkListener.AFK_MESSAGES.put(event.getUser(), Pair.of(message, new Date().toInstant()));
-        event.reply(":wave: | See you later!").queue();
+        AfkListener.AFK_MESSAGES.put(event.getMember(), new AfkListener.AfkStatus(message, new Date().toInstant()));
+        event.reply(":wave: | **"+event.getMember().getEffectiveName()+"** has gone AFK. See you later!").queue();
     }
 }
