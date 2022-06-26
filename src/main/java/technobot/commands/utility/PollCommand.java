@@ -1,5 +1,6 @@
 package technobot.commands.utility;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -70,9 +71,7 @@ public class PollCommand extends Command {
                 try {
                     msg.addReaction("\uD83D\uDC4D").queue();
                     msg.addReaction("\uD83D\uDC4E").queue();
-                } catch (InsufficientPermissionException e) {
-                    msg.editMessage(" ").setEmbeds(EmbedUtils.createError("I don't have permissions to add reaction in this channel!")).queue();
-                }
+                } catch (InsufficientPermissionException ignored) { }
             });
         }
     }
