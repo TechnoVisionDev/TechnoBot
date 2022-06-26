@@ -81,6 +81,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new GoogleCommand(bot),
                 new RedditCommand(bot),
                 new InspireCommand(bot),
+                new WouldYouRatherCommand(bot),
                 new SurpriseCommand(bot),
 
                 //Leveling commands
