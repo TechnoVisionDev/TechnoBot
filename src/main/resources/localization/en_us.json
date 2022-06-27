@@ -286,6 +286,18 @@
     }
   },
   "music": {
+    "listener": {
+      "connect": "Please connect to a voice channel first!",
+      "queueEmpty": ":sound: There are no songs in the queue!",
+      "differentChannel": "You are not in the same voice channel as TechnoBot!",
+      "songDuration": "Song Duration",
+      "position": "Position in Queue",
+      "addedBy": "Added By {}",
+      "addSong": "{blue_tick} **{}** successfully added!",
+      "addPlaylist": ":ballot_box_with_check: Added {} tracks from playlist `{}`",
+      "invalidSong": "That is not a valid song!",
+      "invalidLink": "That is not a valid link!"
+    },
     "nowPlaying": {
       "notPlaying": ":sound: Not currently playing any music!",
       "title": "Now Playing :musical_note:",

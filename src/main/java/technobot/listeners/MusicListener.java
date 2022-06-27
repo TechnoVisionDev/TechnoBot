@@ -8,8 +8,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.entities.AudioChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -26,6 +28,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.net.MalformedURLException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static technobot.util.Localization.get;
 
 /**
  * Module for music player backend and voice channel events.
@@ -75,7 +79,7 @@ public class MusicListener extends ListenerAdapter {
         GuildData settings = GuildData.get(event.getGuild());
         // Check if user is in voice channel
         if (!inChannel(Objects.requireNonNull(event.getMember()))) {
-            String text = "Please connect to a voice channel first!";
+            String text = get(s -> s.music.listener.connect);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             return null;
         }
@@ -88,13 +92,13 @@ public class MusicListener extends ListenerAdapter {
         // Check if music is playing in this guild
         if (!skipQueueCheck) {
             if (settings.musicHandler == null || settings.musicHandler.getQueue().isEmpty()) {
-                String text = ":sound: There are no songs in the queue!";
+                String text = get(s -> s.music.listener.queueEmpty);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
                 return null;
             }
             // Check if member is in the right voice channel
             if (settings.musicHandler.getPlayChannel() != channel) {
-                String text = "You are not in the same voice channel as TechnoBot!";
+                String text = get(s -> s.music.listener.differentChannel);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                 return null;
             }
@@ -133,8 +137,8 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Add a track to the specified guild.
      *
-     * @param event  A slash command event.
-     * @param url    The track URL.
+     * @param event A slash command event.
+     * @param url   The track URL.
      */
     public void addTrack(SlashCommandInteractionEvent event, String url) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
@@ -143,10 +147,11 @@ public class MusicListener extends ListenerAdapter {
         // Check for SSRF vulnerability with whitelist
         try {
             boolean isWhitelisted = SecurityUtils.isUrlWhitelisted(url);
-            if(!isWhitelisted) {
+            if (!isWhitelisted) {
                 url = "";
             }
-        } catch(MalformedURLException ignored) {}
+        } catch (MalformedURLException ignored) {
+        }
         playerManager.loadItem(url, new AudioLoadResultHandler() {
 
             @Override
@@ -159,14 +164,23 @@ public class MusicListener extends ListenerAdapter {
                     MessageEmbed embed = new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)
                             .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
-                            .addField("Song Duration", duration, true)
-                            .addField("Position in Queue", String.valueOf(music.getQueue().size()), true)
-                            .setFooter("Added by " + event.getUser().getAsTag(), event.getUser().getEffectiveAvatarUrl())
+                            .addField(get(s -> s.music.listener.songDuration), duration, true)
+                            .addField(get(s -> s.music.listener.position), String.valueOf(music.getQueue().size()), true)
+                            .setFooter(
+                                    get(s -> s.music.listener.addedBy, event.getUser().getAsTag()),
+                                    event.getUser().getEffectiveAvatarUrl()
+                            )
                             .setThumbnail(thumb)
                             .build();
-                    event.getHook().sendMessage(EmbedUtils.BLUE_TICK + " **" + audioTrack.getInfo().title + "** successfully added!").addEmbeds(embed).queue();
+                    event.getHook().sendMessage(get(
+                            s -> s.music.listener.addSong,
+                            audioTrack.getInfo().title
+                    ) + "").addEmbeds(embed).queue();
                 } else {
-                    event.getHook().sendMessage(EmbedUtils.BLUE_TICK + " **" + audioTrack.getInfo().title + "** successfully added!").queue();
+                    event.getHook().sendMessage(get(
+                            s -> s.music.listener.addSong,
+                            audioTrack.getInfo().title
+                    ) + "").queue();
                 }
                 music.enqueue(audioTrack);
             }
@@ -182,7 +196,10 @@ public class MusicListener extends ListenerAdapter {
                 // Otherwise load first 100 tracks from playlist
                 int total = audioPlaylist.getTracks().size();
                 if (total > 100) total = 100;
-                String msg = ":ballot_box_with_check: Added " + total + " tracks from playlist `" + audioPlaylist.getName() + "`";
+                String msg = get(
+                        s -> s.music.listener.addPlaylist,
+                        total, audioPlaylist.getName()
+                );
                 event.getHook().sendMessage(msg).queue();
 
                 total = music.getQueue().size();
