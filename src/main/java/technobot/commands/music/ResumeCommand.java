@@ -7,6 +7,8 @@ import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that un-pauses music player.
  *
@@ -29,10 +31,10 @@ public class ResumeCommand extends Command {
 
         if (music.isPaused()) {
             music.unpause();
-            String text = ":play_pause: Resuming the music player!";
+            String text = get(s -> s.music.resume.success);
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
         } else {
-            String text = "The player is not paused!";
+            String text = get(s -> s.music.resume.failure);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         }
     }

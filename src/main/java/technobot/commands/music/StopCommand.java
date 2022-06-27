@@ -8,6 +8,8 @@ import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that clears the music queue and stops music
  *
@@ -26,11 +28,11 @@ public class StopCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         MusicHandler musicHandler = GuildData.get(event.getGuild()).musicHandler;
         if (musicHandler == null || musicHandler.getQueue().isEmpty()) {
-            String text = "The music player is already stopped!";
+            String text = get(s -> s.music.stop.failure);
             event.replyEmbeds(EmbedUtils.createError(text)).queue();
         } else {
             musicHandler.stop();
-            String text = EmbedUtils.BLUE_TICK + " Stopped the music player!";
+            String text = get(s -> s.music.stop.success);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }
     }

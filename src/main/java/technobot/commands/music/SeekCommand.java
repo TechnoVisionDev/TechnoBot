@@ -10,6 +10,8 @@ import technobot.handlers.MusicHandler;
 import technobot.listeners.MusicListener;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that jumps to a specified position in the current track.
  *
@@ -51,19 +53,22 @@ public class SeekCommand extends Command {
 
             // Make sure pos is not longer than track
             if (pos >= music.getQueue().getFirst().getDuration()) {
-                String text = "Time cannot be longer than the song!";
+                String text = get(s -> s.music.seek.tooLong);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                 return;
             }
 
             // Set position and send message
             music.seek(pos);
-            String text = ":fast_forward: Set position to `" + MusicListener.formatTrackLength(pos) + "`";
+            String text = get(
+                    s -> s.music.seek.success,
+                    MusicListener.formatTrackLength(pos)
+            );
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
 
         } catch ( NumberFormatException | ArrayIndexOutOfBoundsException e) {
             // Invalid timestamps
-            String text = "That is not a valid timestamp!";
+            String text = get(s -> s.music.seek.invalidTimestamp);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         }
     }

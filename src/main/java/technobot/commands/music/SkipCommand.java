@@ -9,6 +9,8 @@ import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that skips the current song.
  *
@@ -29,9 +31,13 @@ public class SkipCommand extends Command {
         if (music == null) return;
 
         music.skipTrack();
-        WebhookMessageAction<Message> action = event.getHook().sendMessage(":fast_forward: Skipping...");
+        WebhookMessageAction<Message> action = event.getHook().sendMessage(
+                get(s -> s.music.skip.skipping) + ""
+        );
         if (music.getQueue().size() == 1) {
-            action = action.addEmbeds(EmbedUtils.createDefault(":sound: The music queue is now empty!"));
+            action = action.addEmbeds(EmbedUtils.createDefault(
+                    get(s -> s.music.skip.queueEmpty)
+            ));
         }
         action.queue();
     }

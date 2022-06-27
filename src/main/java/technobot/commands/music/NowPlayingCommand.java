@@ -12,6 +12,8 @@ import technobot.listeners.MusicListener;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays the currently playing song.
  *
@@ -32,7 +34,7 @@ public class NowPlayingCommand extends Command {
 
         // Verify the Music Manager isn't null.
         if (music == null) {
-            String text = ":sound: Not currently playing any music!";
+            String text = get(s -> s.music.nowPlaying.notPlaying);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
@@ -40,7 +42,7 @@ public class NowPlayingCommand extends Command {
         // Get currently playing track
         AudioTrack nowPlaying = music.getQueue().size() > 0 ? music.getQueue().getFirst() : null;
         if (nowPlaying == null) {
-            String text = ":sound: Not currently playing any music!";
+            String text = get(s -> s.music.nowPlaying.notPlaying);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
@@ -62,10 +64,14 @@ public class NowPlayingCommand extends Command {
         event.replyEmbeds(
                 new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
-                        .setTitle("Now Playing :musical_note: ")
+                        .setTitle(get(s -> s.music.nowPlaying.title))
                         .setDescription("[" + nowPlaying.getInfo().title + "](" + nowPlaying.getInfo().uri + ")")
-                        .addField("Position", progressBar, false)
-                        .addField("Progress", "%s / %s".formatted(trackStart, trackEnd), false)
+                        .addField(get(s -> s.music.nowPlaying.positionTitle), progressBar, false)
+                        .addField(
+                                get(s -> s.music.nowPlaying.progressTitle),
+                                get(s -> s.music.nowPlaying.progress, trackStart, trackEnd),
+                                false
+                        )
                         .build()
         ).queue();
     }

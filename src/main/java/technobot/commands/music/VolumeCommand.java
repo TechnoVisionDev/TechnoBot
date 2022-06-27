@@ -10,6 +10,8 @@ import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that changes volume of the music player.
  *
@@ -39,12 +41,12 @@ public class VolumeCommand extends Command {
                 throw new NumberFormatException();
             }
             music.setVolume(volume);
-            String text = String.format(":loud_sound: Set volume to %s%%", volume);
+            String text = get(s -> s.music.volume.success, volume);
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         } catch (@NotNull NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}
 
-        String text = "You must specify a volume between 0-100";
+        String text = get(s -> s.music.volume.failure);
         event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
     }
 }

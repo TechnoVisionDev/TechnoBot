@@ -7,6 +7,8 @@ import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that toggles repeat mode for music queue.
  *
@@ -30,9 +32,9 @@ public class RepeatCommand extends Command {
         music.loop();
         String text;
         if (music.isLoop()) {
-            text = ":repeat_one: Loop Enabled!";
+            text = get(s -> s.music.repeat.enabled);
         } else {
-            text = ":repeat_one: Loop Disabled!";
+            text = get(s -> s.music.repeat.disabled);
         }
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays an embed to showcases the music queue.
  *
@@ -43,7 +45,7 @@ public class QueueCommand extends Command {
 
         // Check if queue is null or empty
         if (music == null || music.getQueue().isEmpty()) {
-            String text = ":sound: There are no songs in the queue!";
+            String text = get(s -> s.music.queue.empty);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
@@ -70,7 +72,7 @@ public class QueueCommand extends Command {
         List<MessageEmbed> embeds = new ArrayList<>();
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setTitle("Music Queue :musical_note:");
+                .setTitle(get(s -> s.music.queue.title));
 
         // Calculate total playlist length
         long queueTime = 0;
@@ -78,20 +80,25 @@ public class QueueCommand extends Command {
             queueTime += track.getInfo().length;
         }
         String total = MusicListener.formatTrackLength(queueTime);
-        String song = "Song";
-        if (queueSize >= 3) { song += "s";}
-        String footer = queueSize > 1 ? String.format("**%s %s in Queue | %s Total Length**", queueSize - 1, song, total) : "";
+        String song = queueSize < 3
+                ? get(s -> s.music.queue.song)
+                : get(s -> s.music.queue.songPlural);
+
+        String footer = queueSize > 1 ? get(
+                s -> s.music.queue.footer,
+                queueSize - 1, song, total
+        ) : "";
 
         for (AudioTrack track : queue) {
             AudioTrackInfo trackInfo = track.getInfo();
             if (count == 0) { //Current playing track
-                description.append("__Now Playing:__\n");
+                description.append(get(s -> s.music.queue.nowPlaying) + "\n");
                 description.append(String.format("[%s](%s) | ", trackInfo.title, trackInfo.uri));
                 description.append(String.format("`%s`\n\n", MusicListener.formatTrackLength(trackInfo.length)));
                 count++;
                 continue;
             } else if (count == 1) { //Header for queue
-                description.append("__Up Next:__\n");
+                description.append(get(s -> s.music.queue.upNext) + "\n");
             }
             //Rest of the queue
             description.append(String.format("`%s.` [%s](%s) | ", count, trackInfo.title, trackInfo.uri));
