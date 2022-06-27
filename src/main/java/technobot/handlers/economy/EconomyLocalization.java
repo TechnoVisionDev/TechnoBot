@@ -51,8 +51,7 @@ public class EconomyLocalization {
 
         return new EconomyReply(
                 format(crimeSuccess.get(index), amount),
-                index + 1,
-                true
+                index + 1
         );
     }
 
