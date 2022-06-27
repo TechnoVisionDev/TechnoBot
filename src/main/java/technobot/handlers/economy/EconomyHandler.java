@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.GuildData;
 import technobot.data.cache.Economy;
+import technobot.handlers.ConfigHandler;
 import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
@@ -23,6 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EconomyHandler {
 
+    public static final String DEFAULT_CURRENCY = "\uD83E\uDE99";
     public static final long WORK_TIMEOUT = 14400000;
     public static final long ROB_TIMEOUT = 86400000;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
@@ -36,12 +39,17 @@ public class EconomyHandler {
     private final Map<Long, UserTimeout> timeouts;
     private String currency;
 
-    public EconomyHandler(TechnoBot bot, Guild guild) {
+    public EconomyHandler(TechnoBot bot, Guild guild, ConfigHandler configHandler) {
         this.bot = bot;
         this.guild = guild;
         this.guildFilter = Filters.eq("guild", guild.getIdLong());
         this.timeouts = new HashMap<>();
-        this.currency = "\uD83E\uDE99"; //default :coin: emoji
+
+        // Set currency symbol
+        this.currency = configHandler.getConfig().getCurrency();
+        if (currency == null) {
+            this.currency = DEFAULT_CURRENCY;
+        }
     }
 
     /**
@@ -344,6 +352,24 @@ public class EconomyHandler {
         Long timeout = getTimeout(userID, type);
         if (timeout == null) return null;
         return TimeFormat.RELATIVE.format(timeout);
+    }
+
+    /**
+     * Sets the currency symbol to a custom emoji or string.
+     *
+     * @param symbol the string or emoji symbol.
+     */
+    public void setCurrency(String symbol) {
+        bot.database.config.updateOne(guildFilter, Updates.set("currency", symbol));
+        this.currency = symbol;
+    }
+
+    /**
+     * Resets the currency symbol to the default emoji.
+     */
+    public void resetCurrency() {
+        bot.database.config.updateOne(guildFilter, Updates.unset("currency"));
+        this.currency = DEFAULT_CURRENCY;
     }
 
     /**

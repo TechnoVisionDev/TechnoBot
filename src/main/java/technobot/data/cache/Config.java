@@ -41,6 +41,8 @@ public class Config {
     @BsonProperty("auto_roles")
     private Set<Long> autoRoles;
 
+    private String currency;
+
     public Config() {
         autoRoles = new HashSet<>();
     }
@@ -149,4 +151,12 @@ public class Config {
     }
 
     public void removeAutoRole(long roleID) { this.autoRoles.remove(roleID); }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

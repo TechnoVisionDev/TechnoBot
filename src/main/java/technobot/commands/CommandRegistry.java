@@ -63,6 +63,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new DepositCommand(bot),
                 new WithdrawCommand(bot),
                 new PayCommand(bot),
+                new EconomyCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),
