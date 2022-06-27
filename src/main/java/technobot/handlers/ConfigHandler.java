@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Config;
+import technobot.data.cache.Item;
 
 import java.util.Set;
 
@@ -71,9 +72,50 @@ public class ConfigHandler {
         bot.database.config.updateOne(filter, Updates.pull("auto_roles", roleID));
     }
 
+    /**
+     * Removes all auto roles from the server.
+     */
     public void clearAutoRoles() {
         config.getAutoRoles().clear();
         bot.database.config.updateOne(filter, Updates.unset("auto_roles"));
+    }
+
+    /**
+     * Creates a new blank economy shop item.
+     * Adds it to local cache and database config file.
+     *
+     * @param name the name of the item to create.
+     */
+    public Item createItem(String name) {
+        Item item = new Item(name);
+        config.addItem(item);
+        bot.database.config.updateOne(filter, Updates.set("shop."+name.toLowerCase(), item));
+        return item;
+    }
+
+    /**
+     * Checks if the guild shop contains an item with the same name.
+     * All item keys are stored as lowercase, even if the actual name is not.
+     *
+     * @param name the name of the item to search for.
+     * @return true if item name exists, otherwise false.
+     */
+    public boolean containsItem(String name) {
+        try {
+            return config.getShop().containsKey(name.toLowerCase());
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves a shop item by name from the local cache.
+     *
+     * @param name the name of the item to retrieve.
+     * @return an Item object.
+     */
+    public Item getItem(String name) {
+        return config.getShop().get(name);
     }
 
     /**

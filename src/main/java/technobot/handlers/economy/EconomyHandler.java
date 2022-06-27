@@ -9,6 +9,7 @@ import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
 import technobot.data.cache.Economy;
+import technobot.data.cache.Item;
 import technobot.handlers.ConfigHandler;
 import technobot.util.embeds.EmbedUtils;
 
@@ -83,7 +84,6 @@ public class EconomyHandler {
         } else {
             // Crime failed
             amount = calculateFine(userID);
-            System.out.println("Fine calculated: " + amount);
             if (amount > 0) removeMoney(userID, amount);
             reply = responses.getCrimeFailResponse(amount, getCurrency());
         }
@@ -285,7 +285,6 @@ public class EconomyHandler {
      * @param amount the amount of money to remove.
      */
     private void removeMoney(long userID, long amount) {
-        System.out.println("Actual amt removed: " + amount);
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         bot.database.economy.updateOne(filter, Updates.inc("balance", -1 * amount), UPSERT);
     }

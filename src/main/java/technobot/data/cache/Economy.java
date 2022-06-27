@@ -1,5 +1,8 @@
 package technobot.data.cache;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * POJO object that stores server economy data for a user.
  *
@@ -11,6 +14,8 @@ public class Economy {
     private Long user;
     private Long balance;
     private Long bank;
+
+    private Set<String> inventory;
 
     public Economy() { }
 
@@ -48,5 +53,13 @@ public class Economy {
 
     public void setBank(Long bank) {
         this.bank = bank;
+    }
+
+    public Set<String> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Set<String> inventory) {
+        this.inventory = inventory;
     }
 }

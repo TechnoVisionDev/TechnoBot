@@ -43,8 +43,11 @@ public class Config {
 
     private String currency;
 
+    private Map<String, Item> shop;
+
     public Config() {
         autoRoles = new HashSet<>();
+        shop = new HashMap<>();
     }
 
     public Config(long guild) {
@@ -158,5 +161,17 @@ public class Config {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Map<String, Item> getShop() {
+        return shop;
+    }
+
+    public void setShop(Map<String, Item> shop) {
+        this.shop = shop;
+    }
+
+    public void addItem(Item item) {
+        this.shop.put(item.getName().toLowerCase(), item);
     }
 }
