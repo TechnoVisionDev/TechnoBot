@@ -15,7 +15,7 @@ import technobot.util.embeds.EmbedUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that displays leveling rewards.
@@ -45,7 +45,7 @@ public class RewardsCommand extends Command {
             if (event.getGuild().getRoleById(reward.getKey()) != null) {
                 //noinspection StringConcatenationInsideStringBufferAppend
                 content.append(get(
-                        s -> s.levels().rewards().reward(),
+                        s -> s.levels.rewards.reward,
                         reward.getValue(), reward.getKey()
                 ) + "").append("\n");
             } else {
@@ -58,11 +58,11 @@ public class RewardsCommand extends Command {
         if (!content.isEmpty()) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .setTitle(get(s -> s.levels().rewards().title()))
+                    .setTitle(get(s -> s.levels.rewards.title))
                     .setDescription(content);
             event.getHook().sendMessageEmbeds(embed.build()).queue();
             return;
         }
-        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(get(s -> s.levels().rewards().noRewards()))).queue();
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(get(s -> s.levels.rewards.noRewards))).queue();
     }
 }

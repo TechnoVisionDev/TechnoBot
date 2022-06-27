@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that allows you to customize your rank card.
@@ -76,9 +76,9 @@ public class RankcardCommand extends Command {
                     BufferedImage test = ImageIO.read(url);
                     test.getWidth();
                     update = Updates.set("background", urlOption);
-                    text = get(s -> s.levels().rankCard().background().success());
+                    text = get(s -> s.levels.rankCard.background.success);
                 } catch (IOException | NullPointerException | OutOfMemoryError e2) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels().rankCard().background().failure()))).queue();
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels.rankCard.background.failure))).queue();
                     return;
                 }
             }
@@ -90,9 +90,9 @@ public class RankcardCommand extends Command {
                     }
                     Color.decode(color);
                     update = Updates.set("color", color);
-                    text = get(s -> s.levels().rankCard().color().success(), color);
+                    text = get(s -> s.levels.rankCard.color.success, color);
                 } catch (NumberFormatException e) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels().rankCard().color().failure())
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels.rankCard.color.failure)
                     )).queue();
                     return;
                 }
@@ -105,16 +105,16 @@ public class RankcardCommand extends Command {
                     }
                     Color.decode(accent);
                     update = Updates.set("accent", accent);
-                    text = get(s -> s.levels().rankCard().accent().success(), accent);
+                    text = get(s -> s.levels.rankCard.accent.success, accent);
                 } catch (NumberFormatException e) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels().rankCard().accent().failure()))).queue();
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels.rankCard.accent.failure))).queue();
                     return;
                 }
             }
             case "opacity" -> {
                 int opacity = event.getOption("percent").getAsInt();
                 update = Updates.set("opacity", opacity);
-                text = get(s -> s.levels().rankCard().opacity(), opacity);
+                text = get(s -> s.levels.rankCard.opacity, opacity);
             }
             case "reset" -> {
                 List<Bson> updates = new ArrayList<>();
@@ -123,7 +123,7 @@ public class RankcardCommand extends Command {
                 updates.add(Updates.set("accent", "#FFFFFF"));
                 updates.add(Updates.set("background", ""));
                 bot.database.leveling.updateOne(filter, updates);
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(get(s -> s.levels().rankCard().reset()))).queue();
+                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(get(s -> s.levels.rankCard.reset))).queue();
                 return;
             }
         }

@@ -11,7 +11,7 @@ import technobot.util.embeds.EmbedUtils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that googles something for the user.
@@ -33,7 +33,7 @@ public class GoogleCommand extends Command {
         String question = event.getOption("question").getAsString();
         if (question.length() > 250) {
             event.replyEmbeds(EmbedUtils.createError(
-                    get(s -> s.fun().google().tooLong())
+                    get(s -> s.fun.google)
             )).queue();
             return;
         }

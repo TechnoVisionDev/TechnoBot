@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Handles the server economy backend.
@@ -110,7 +110,7 @@ public class EconomyHandler {
             // Rob successful
             pay(targetID, userID, amountStolen);
             String response = get(
-                    s -> s.economy().rob().success(),
+                    s -> s.economy.rob.success,
                     EconomyHandler.FORMATTER.format(amountStolen),
                     targetID
             );
@@ -120,7 +120,7 @@ public class EconomyHandler {
         long fine = calculateFine(userID);
         removeMoney(userID, fine);
         String response = get(
-                s -> s.economy().rob().failure(),
+                s -> s.economy.rob.failure,
                 EconomyHandler.FORMATTER.format(fine),
                 targetID
         );

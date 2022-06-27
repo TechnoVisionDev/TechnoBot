@@ -86,11 +86,36 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://github.com/pwall567/json-kotlin-maven -->
+            <plugin>
+                <groupId>org.jsonschema2pojo</groupId>
+                <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                <version>1.1.2</version>
+                <configuration>
+                    <sourceDirectory>src/main/resources/localization/en_us.json</sourceDirectory>
+                    <targetPackage>technobot.util.localization</targetPackage>
+                    <includeAdditionalProperties>false</includeAdditionalProperties>
+                    <includeConstructors>true</includeConstructors>
+                    <includeGetters>false</includeGetters>
+                    <includeSetters>false</includeSetters>
+                    <annotationStyle>gson</annotationStyle>
+                    <sourceType>json</sourceType>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

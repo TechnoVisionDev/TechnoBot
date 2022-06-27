@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that renders and displays a user's rank card.
@@ -69,9 +69,9 @@ public class RankCommand extends Command {
         if (profile == null) {
             String text;
             if (user.getIdLong() == event.getUser().getIdLong()) {
-                text = get(s -> s.levels().rank().noRankSelf());
+                text = get(s -> s.levels.rank.noRankSelf);
             } else {
-                text = get(s -> s.levels().rank().noRankOther());
+                text = get(s -> s.levels.rank.noRankOther);
             }
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             return;
@@ -187,7 +187,7 @@ public class RankCommand extends Command {
 
             event.getHook().sendFile(bytes, "card.png").queue();
         } catch (IOException e) {
-            String text = get(s -> s.levels().rank().accessFailure());
+            String text = get(s -> s.levels.rank.accessFailure);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             e.printStackTrace();
         }

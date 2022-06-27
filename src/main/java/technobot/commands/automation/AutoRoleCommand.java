@@ -17,7 +17,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.Set;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that sets roles to be given on user join.
@@ -51,34 +51,34 @@ public class AutoRoleCommand extends Command {
                 Role role = event.getOption("role").getAsRole();
                 if (role.isManaged() || role.isPublicRole() || role.getPosition() >= event.getGuild().getBotRole().getPosition()) {
                     event.replyEmbeds(EmbedUtils.createError(
-                            get(s -> s.automation().autoRole().add().higherLevel())
+                            get(s -> s.automation.autoRole.add.higherLevel)
                     )).setEphemeral(true).queue();
                     return;
                 }
                 if (configHandler.getConfig().getAutoRoles().size() >= 1 && !configHandler.isPremium()) {
                     event.replyEmbeds(EmbedUtils.createError(
-                            get(s -> s.automation().autoRole().add().premium())
+                            get(s -> s.automation.autoRole.add.premium)
                     )).setEphemeral(true).queue();
                     return;
                 }
                 if (configHandler.getConfig().getAutoRoles().size() == MAX_AUTO_ROLES) {
                     event.replyEmbeds(EmbedUtils.createError(
-                            get(s -> s.automation().autoRole().add().maxRolesReached())
+                            get(s -> s.automation.autoRole.add.maxRolesReached)
                     )).setEphemeral(true).queue();
                     return;
                 }
-                embed = EmbedUtils.createDefault(get(s -> s.automation().autoRole().add().roleAdded(), role.getId()));
+                embed = EmbedUtils.createDefault(get(s -> s.automation.autoRole.add.roleAdded, role.getId()));
                 configHandler.addAutoRole(role.getIdLong());
             }
             case "remove" -> {
                 Role role = event.getOption("role").getAsRole();
                 if (!configHandler.getConfig().getAutoRoles().contains(role.getIdLong())) {
                     event.replyEmbeds(EmbedUtils.createError(
-                            get(s -> s.automation().autoRole().remove().failure(), role.getId())
+                            get(s -> s.automation.autoRole.remove.failure, role.getId())
                     )).setEphemeral(true).queue();
                     return;
                 }
-                embed = EmbedUtils.createDefault(get(s -> s.automation().autoRole().remove().success(), role.getId()));
+                embed = EmbedUtils.createDefault(get(s -> s.automation.autoRole.remove.success, role.getId()));
                 if (!configHandler.isPremium()) {
                     configHandler.clearAutoRoles();
                 } else {
@@ -89,19 +89,19 @@ public class AutoRoleCommand extends Command {
                 EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Auto Roles").setColor(EmbedColor.DEFAULT.color);
                 Set<Long> roles = configHandler.getConfig().getAutoRoles();
                 if (roles == null || roles.isEmpty()) {
-                    embedBuilder.setDescription(get(s -> s.automation().autoRole().list().noAutoRoles()));
+                    embedBuilder.setDescription(get(s -> s.automation.autoRole.list.noAutoRoles));
                 } else {
                     int max = configHandler.isPremium() ? MAX_AUTO_ROLES : 1;
                     if (max == 1) {
-                        embedBuilder.appendDescription(get(s -> s.automation().autoRole().list().premium()) + "\n");
+                        embedBuilder.appendDescription(get(s -> s.automation.autoRole.list.premium) + "\n");
                     } else {
-                        embedBuilder.appendDescription(get(s -> s.automation().autoRole().list().roleCount(), roles.size()) + "\n");
+                        embedBuilder.appendDescription(get(s -> s.automation.autoRole.list.roleCount, roles.size()) + "\n");
                     }
                     int count = 0;
                     for (long roleID : roles) {
                         if (event.getGuild().getRoleById(roleID) != null) {
                             count++;
-                            embedBuilder.appendDescription("\n" + get(s -> s.automation().autoRole().list().role(), count, roleID));
+                            embedBuilder.appendDescription("\n" + get(s -> s.automation.autoRole.list.role, count, roleID));
                             if (count == max) break;
                         }
                     }

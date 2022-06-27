@@ -23,9 +23,11 @@ import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that displays various leaderboards.
@@ -69,8 +71,8 @@ public class TopCommand extends Command {
                 if (embeds.isEmpty()) {
                     event.getHook().sendMessageEmbeds(new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)
-                            .setAuthor(get(s -> s.levels().top().leveling().name()), null, LEVELING_ICON)
-                            .setDescription(get(s -> s.levels().top().leveling().empty()))
+                            .setAuthor(get(s -> s.levels.top.leveling.name), null, LEVELING_ICON)
+                            .setDescription(get(s -> s.levels.top.leveling.empty))
                             .build()
                     ).queue();
                     return;
@@ -82,8 +84,8 @@ public class TopCommand extends Command {
                 if (embeds.isEmpty()) {
                     event.getHook().sendMessageEmbeds(new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)
-                            .setAuthor(get(s -> s.levels().top().economy().name()), null, ECONOMY_ICON)
-                            .setDescription(get(s -> s.levels().top().economy().empty()))
+                            .setAuthor(get(s -> s.levels.top.economy.name), null, ECONOMY_ICON)
+                            .setDescription(get(s -> s.levels.top.economy.empty))
                             .build()
                     ).queue();
                     return;
@@ -103,7 +105,7 @@ public class TopCommand extends Command {
 
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .setAuthor(get(s -> s.levels().top().guild().name()), null, LEADERBOARD_ICON)
+                    .setAuthor(get(s -> s.levels.top.guild.name), null, LEADERBOARD_ICON)
                     .setTimestamp(new Date().toInstant());
 
             int counter = 1;
@@ -112,7 +114,7 @@ public class TopCommand extends Command {
                 if (counter == 6) break;
                 if (counter == 1) levelDesc.append("**");
                 levelDesc.append(get(
-                                s -> s.levels().top().leveling().entry(),
+                                s -> s.levels.top.leveling.entry,
                                 counter,
                                 profile.getUser(),
                                 FORMATTER.format(profile.getTotalXP())
@@ -121,9 +123,9 @@ public class TopCommand extends Command {
                 if (counter == 1) levelDesc.append("**");
                 counter++;
             }
-            levelDesc.append(get(s -> s.levels().top().guild().more(), "leveling") + "");
+            levelDesc.append(get(s -> s.levels.top.guild.more, "leveling") + "");
             embed.addField(
-                    get(s -> s.levels().top().guild().title(), "LEVELING", ":chart_with_upwards_trend:"),
+                    get(s -> s.levels.top.guild.title, "LEVELING", ":chart_with_upwards_trend:"),
                     levelDesc.toString(),
                     true
             );
@@ -135,7 +137,7 @@ public class TopCommand extends Command {
                 if (counter == 1) econDesc.append("**");
                 long netWorth = calculateNetWorth(profile.getBalance(), profile.getBank());
                 econDesc.append(get(
-                                s -> s.levels().top().economy().entry(),
+                                s -> s.levels.top.economy.entry,
                                 counter,
                                 profile.getUser(),
                                 FORMATTER.format(netWorth)
@@ -144,9 +146,9 @@ public class TopCommand extends Command {
                 if (counter == 1) econDesc.append("**");
                 counter++;
             }
-            econDesc.append(get(s -> s.levels().top().guild().more(), "economy") + "");
+            econDesc.append(get(s -> s.levels.top.guild.more, "economy") + "");
             embed.addField(
-                    get(s -> s.levels().top().guild().title(),
+                    get(s -> s.levels.top.guild.title,
                             "ECONOMY",
                             "moneybag"), econDesc.toString(), true
             );
@@ -180,7 +182,7 @@ public class TopCommand extends Command {
             long netWorth = calculateNetWorth(profile.getBalance(), profile.getBank());
             if (counter == 0 && page == 1) description.append("**");
             description.append(get(
-                            s -> s.levels().top().economy().entry(),
+                            s -> s.levels.top.economy.entry,
                             currRank,
                             profile.getUser(),
                             FORMATTER.format(netWorth)
@@ -230,7 +232,7 @@ public class TopCommand extends Command {
         for (Leveling profile : leaderboard) {
             if (counter == 0 && page == 1) description.append("**");
             description.append(get(
-                            s -> s.levels().top().leveling().entry(),
+                            s -> s.levels.top.leveling.entry,
                             currRank,
                             profile.getUser(),
                             FORMATTER.format(profile.getTotalXP())
@@ -241,7 +243,12 @@ public class TopCommand extends Command {
             currRank++;
             if (counter % USERS_PER_PAGE == 0) {
                 embed.setDescription(description);
-                embed.setFooter("Page " + page + "/" + maxPages + "  •  Your rank: " + currRank);
+                embed.setFooter(get(
+                        s -> s.levels.top.footer,
+                        page,
+                        maxPages,
+                        currRank
+                ));
                 embeds.add(embed.build());
                 description = new StringBuilder();
                 counter = 0;
@@ -250,7 +257,12 @@ public class TopCommand extends Command {
         }
         if (counter != 0) {
             embed.setDescription(description);
-            embed.setFooter("Page " + page + "/" + maxPages + "  •  Your rank: " + currRank);
+            embed.setFooter(get(
+                    s -> s.levels.top.footer,
+                    page,
+                    maxPages,
+                    currRank
+            ));
             embeds.add(embed.build());
         }
         return embeds;

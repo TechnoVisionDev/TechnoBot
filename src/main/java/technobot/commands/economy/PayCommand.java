@@ -11,9 +11,8 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
-import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that transfer cash from one user to another.
@@ -38,14 +37,14 @@ public class PayCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (user.getIdLong() == target.getIdLong()) {
             // Check for invalid target
-            embed.setDescription(get(s -> s.economy().pay().paySelf()));
+            embed.setDescription(get(s -> s.economy.pay.paySelf));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
-            embed.setDescription(get(s -> s.economy().pay().payBots()));
+            embed.setDescription(get(s -> s.economy.pay.payBots));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -58,7 +57,7 @@ public class PayCommand extends Command {
         long balance = economyHandler.getBalance(user.getIdLong());
         if (amount > balance) {
             embed.setDescription(get(
-                    s -> s.economy().pay().notEnough(),
+                    s -> s.economy.pay.notEnough,
                     EconomyHandler.FORMATTER.format(balance)
             ));
             embed.setColor(EmbedColor.ERROR.color);
@@ -71,7 +70,7 @@ public class PayCommand extends Command {
 
         // Send embed message
         embed.setDescription(get(
-                s -> s.economy().pay().success(),
+                s -> s.economy.pay.success,
                 target.getId(),
                 EconomyHandler.FORMATTER.format(amount)
         ));

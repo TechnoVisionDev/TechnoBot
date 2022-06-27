@@ -12,9 +12,8 @@ import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
-import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that steals money from another user.
@@ -37,14 +36,14 @@ public class RobCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (user.getIdLong() == target.getIdLong()) {
             // Check for invalid target
-            embed.setDescription(get(s -> s.economy().rob().robSelf()));
+            embed.setDescription(get(s -> s.economy.rob.robSelf));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
         }
         if (target.isBot()) {
             // Check if target is a bot
-            embed.setDescription(get(s -> s.economy().rob().robBots()));
+            embed.setDescription(get(s -> s.economy.rob.robBots));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -56,7 +55,7 @@ public class RobCommand extends Command {
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.formatTimeout(timeout);
-            embed.setDescription(get(s -> s.economy().rob().timeout(), timestamp));
+            embed.setDescription(get(s -> s.economy.rob.timeout, timestamp));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {

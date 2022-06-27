@@ -10,11 +10,9 @@ import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates a cute picture from reddit.
@@ -36,18 +34,18 @@ public class EightBallCommand extends Command {
         String question = event.getOption("question").getAsString();
         if (question.length() > 250) {
             event.replyEmbeds(EmbedUtils.createError(
-                    get(s -> s.fun().eightBall().tooLong())
+                    get(s -> s.fun.eightBall.tooLong)
             )).queue();
             return;
         }
 
-        String[] responses = get(s -> s.fun().eightBall().responses());
+        var responses = get(s -> s.fun.eightBall.responses);
 
-        int index = ThreadLocalRandom.current().nextInt(responses.length);
+        int index = ThreadLocalRandom.current().nextInt(responses.size());
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
                 .setTitle(question)
-                .setDescription(":8ball: " + responses[index]);
+                .setDescription(":8ball: " + responses.get(index));
         event.replyEmbeds(embed.build()).queue();
     }
 }

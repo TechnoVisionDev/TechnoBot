@@ -17,7 +17,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates a post from various subreddits.
@@ -49,7 +49,7 @@ public class RedditCommand extends Command {
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                String text = get(s -> s.fun().reddit().failure());
+                String text = get(s -> s.fun.reddit);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             }
 

@@ -1,11 +1,11 @@
 package technobot.handlers.economy;
 
-import technobot.util.localization.Localization;
-import technobot.util.localization.LocalizationSchema;
+import technobot.util.Localization;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static technobot.util.localization.Localization.format;
+import static technobot.util.Localization.format;
 
 /**
  * Handles localized responses to economy commands.
@@ -14,18 +14,18 @@ import static technobot.util.localization.Localization.format;
  */
 public class EconomyLocalization {
 
-    private final String[] work;
-    private final String[] crimeSuccess;
-    private final String[] crimeFailure;
+    private final List<String> work;
+    private final List<String> crimeSuccess;
+    private final List<String> crimeFailure;
 
     /**
      * Reads economy responses into local memory
      */
     public EconomyLocalization() {
-        LocalizationSchema.Economy responses = Localization.get(LocalizationSchema::economy);
-        work = responses.work().success();
-        crimeSuccess = responses.crime().success();
-        crimeFailure = responses.crime().failure();
+        var responses = Localization.get(s -> s.economy);
+        work = responses.work.success;
+        crimeSuccess = responses.crime.success;
+        crimeFailure = responses.crime.failure;
     }
 
     /**
@@ -35,9 +35,9 @@ public class EconomyLocalization {
      * @return an EconomyReply object with response and ID number.
      */
     public EconomyReply getWorkResponse(long amount) {
-        int index = ThreadLocalRandom.current().nextInt(work.length);
+        int index = ThreadLocalRandom.current().nextInt(work.size());
 
-        return new EconomyReply(format(work[index], amount), index + 1);
+        return new EconomyReply(format(work.get(index), amount), index + 1);
     }
 
     /**
@@ -47,10 +47,10 @@ public class EconomyLocalization {
      * @return an EconomyReply object with response and ID number.
      */
     public EconomyReply getCrimeSuccessResponse(long amount) {
-        int index = ThreadLocalRandom.current().nextInt(crimeSuccess.length);
+        int index = ThreadLocalRandom.current().nextInt(crimeSuccess.size());
 
         return new EconomyReply(
-                format(crimeSuccess[index], amount),
+                format(crimeSuccess.get(index), amount),
                 index + 1,
                 true
         );
@@ -63,10 +63,10 @@ public class EconomyLocalization {
      * @return an EconomyReply object with response and ID number.
      */
     public EconomyReply getCrimeFailResponse(long amount) {
-        int index = ThreadLocalRandom.current().nextInt(crimeFailure.length);
+        int index = ThreadLocalRandom.current().nextInt(crimeFailure.size());
 
         return new EconomyReply(
-                format(crimeFailure[index], amount),
+                format(crimeFailure.get(index), amount),
                 index + 1,
                 false
         );

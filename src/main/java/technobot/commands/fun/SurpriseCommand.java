@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates a link from uselessweb.
@@ -41,7 +41,7 @@ public class SurpriseCommand extends Command {
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                String text = get(s -> s.fun().surprise().failure());
+                String text = get(s -> s.fun.surprise);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             }
 

@@ -13,7 +13,7 @@ import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that withdraws cash from the user's bank.
@@ -38,7 +38,7 @@ public class WithdrawCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (bank <= 0) {
             // Bank is at 0
-            embed.setDescription(get(s -> s.economy().withdraw().noMoney()));
+            embed.setDescription(get(s -> s.economy.withdraw.noMoney));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -50,7 +50,7 @@ public class WithdrawCommand extends Command {
             amount = amountOption.getAsLong();
             if (amount > bank) {
                 // Amount is higher than balance
-                embed.setDescription(get(s -> s.economy().withdraw().tooMuch(), bank));
+                embed.setDescription(get(s -> s.economy.withdraw.tooMuch, bank));
                 embed.setColor(EmbedColor.ERROR.color);
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 return;
@@ -61,7 +61,7 @@ public class WithdrawCommand extends Command {
         economyHandler.withdraw(user.getIdLong(), amount);
 
         // Send embed message
-        embed.setDescription(get(s -> s.economy().withdraw().success(), amount));
+        embed.setDescription(get(s -> s.economy.withdraw.success, amount));
         embed.setColor(EmbedColor.SUCCESS.color);
         event.replyEmbeds(embed.build()).queue();
     }

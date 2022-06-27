@@ -12,9 +12,8 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
-import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that deposits cash into user's bank.
@@ -40,7 +39,7 @@ public class DepositCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (balance <= 0) {
             // Balance is at 0
-            embed.setDescription(get(s -> s.economy().deposit().noMoney()));
+            embed.setDescription(get(s -> s.economy.deposit.noMoney));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -53,7 +52,7 @@ public class DepositCommand extends Command {
             if (amount > balance) {
                 // Amount is higher than balance
                 embed.setDescription(get(
-                        s -> s.economy().deposit().notEnough(),
+                        s -> s.economy.deposit.notEnough,
                         EconomyHandler.FORMATTER.format(balance)
                 ));
                 embed.setColor(EmbedColor.ERROR.color);
@@ -67,7 +66,7 @@ public class DepositCommand extends Command {
 
         // Send embed message
         embed.setDescription(get(
-                s -> s.economy().deposit().success(),
+                s -> s.economy.deposit.success,
                 EconomyHandler.FORMATTER.format(amount)
         ));
         embed.setColor(EmbedColor.SUCCESS.color);

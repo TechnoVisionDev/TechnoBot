@@ -12,7 +12,7 @@ import technobot.data.GuildData;
 import technobot.handlers.GreetingHandler;
 import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that configures auto farewells.
@@ -39,14 +39,14 @@ public class FarewellCommand extends Command {
         // Remove farewell message
         if (farewellOption == null) {
             greetingHandler.removeFarewell();
-            String text = get(s -> s.greeting().farewell().reset());
+            String text = get(s -> s.greeting.farewell.reset);
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
         greetingHandler.setFarewell(farewellOption.getAsString());
-        String text = get(s -> s.greeting().farewell().set());
+        String text = get(s -> s.greeting.farewell.set);
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

@@ -10,7 +10,7 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that adds money to your balance.
@@ -36,7 +36,7 @@ public class WorkCommand extends Command {
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.formatTimeout(timeout);
-            embed.setDescription(get(s -> s.economy().work().timeout(), timestamp));
+            embed.setDescription(get(s -> s.economy.work.timeout, timestamp));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {
@@ -44,7 +44,7 @@ public class WorkCommand extends Command {
             EconomyReply reply = economyHandler.work(user);
             embed.setDescription(reply.getResponse());
             embed.setColor(EmbedColor.SUCCESS.color);
-            embed.setFooter(get(s -> s.economy().replyId(), reply.getId()));
+            embed.setFooter(get(s -> s.economy.replyId, reply.getId()));
             event.replyEmbeds(embed.build()).queue();
         }
     }

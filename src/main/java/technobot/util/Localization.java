@@ -1,15 +1,13 @@
-package technobot.util.localization;
+package technobot.util;
 
 import com.google.gson.Gson;
-import kotlin.text.Regex;
-import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.EnUs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -29,12 +27,12 @@ public class Localization {
      * @return The localization value.
      * @throws NullPointerException If no localization file is found for the locale.
      */
-    public static <T> T get(Function<LocalizationSchema, T> query, Locale locale, Object... args) throws NullPointerException {
+    public static <T> T get(Function<EnUs, T> query, Locale locale, Object... args) throws NullPointerException {
         try (var inputStream = Localization.class.getClassLoader().getResourceAsStream("localization/" + locale.locale + ".json")) {
             if (inputStream == null) throw new IOException();
 
             var reader = new BufferedReader(new InputStreamReader(inputStream));
-            var schema = new Gson().fromJson(reader, LocalizationSchema.class);
+            var schema = new Gson().fromJson(reader, EnUs.class);
 
             final var value = query.apply(schema);
             if (args.length > 0 && value instanceof String template) {
@@ -55,7 +53,7 @@ public class Localization {
      * @return The localization value.
      * @throws NullPointerException If no localization file is found for the locale.
      */
-    public static <T> T get(Function<LocalizationSchema, T> query, Object... args) throws NullPointerException {
+    public static <T> T get(Function<EnUs, T> query, Object... args) throws NullPointerException {
         return get(query, currentLocale, args);
     }
 
@@ -77,9 +75,9 @@ public class Localization {
         switch (Integer.compare(argsList.size(), templateArgsCount)) {
             case -1 -> {
                 System.err.printf("""
-                Too few arguments (%d) provided for template: %s
-                All unused template slots will not be filled.
-                """, argsList.size(), template);
+                        Too few arguments (%d) provided for template: %s
+                        All unused template slots will not be filled.
+                        """, argsList.size(), template);
                 for (final var arg : argsList) {
                     template = template.replace("{}", arg);
                 }

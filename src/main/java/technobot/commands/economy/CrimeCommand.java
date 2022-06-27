@@ -10,7 +10,7 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that risks losing money for a greater potential reward.
@@ -36,7 +36,7 @@ public class CrimeCommand extends Command {
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.formatTimeout(timeout);
-            embed.setDescription(get(s -> s.economy().crime().timeout(), timestamp));
+            embed.setDescription(get(s -> s.economy.crime.timeout, timestamp));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {
@@ -45,7 +45,7 @@ public class CrimeCommand extends Command {
             int color = reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color;
             embed.setDescription(reply.getResponse());
             embed.setColor(color);
-            embed.setFooter(get(s -> s.economy().replyId(), reply.getId()));
+            embed.setFooter(get(s -> s.economy.replyId, reply.getId()));
             event.replyEmbeds(embed.build()).queue();
         }
     }

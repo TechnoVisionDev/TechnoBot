@@ -17,7 +17,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates an image to match an emotion with another user
@@ -62,25 +62,25 @@ public class ActionCommand extends Command {
 
         String target = event.getOption("user").getAsUser().getName();
         String text = event.getUser().getName() + " " + switch (emote) {
-            case "bite" -> get(s -> s.fun().action().bite(), target);
-            case "brofist" -> get(s -> s.fun().action().brofist(), target);
-            case "cuddle" -> get(s -> s.fun().action().cuddle(), target);
-            case "handhold" -> get(s -> s.fun().action().handhold(), target);
-            case "hug" -> get(s -> s.fun().action().hug(), target);
-            case "kiss" -> get(s -> s.fun().action().kiss(), target);
-            case "lick" -> get(s -> s.fun().action().lick(), target);
-            case "pat" -> get(s -> s.fun().action().pat(), target);
-            case "pinch" -> get(s -> s.fun().action().pinch(), target);
-            case "poke" -> get(s -> s.fun().action().poke(), target);
-            case "punch" -> get(s -> s.fun().action().punch(), target);
-            case "slap" -> get(s -> s.fun().action().slap(), target);
-            case "smack" -> get(s -> s.fun().action().smack(), target);
-            case "sorry" -> get(s -> s.fun().action().sorry(), target);
-            case "stare" -> get(s -> s.fun().action().stare(), target);
-            case "thumbsup" -> get(s -> s.fun().action().thumbsup(), target);
-            case "tickle" -> get(s -> s.fun().action().tickle(), target);
-            case "wave" -> get(s -> s.fun().action().wave(), target);
-            case "wink" -> get(s -> s.fun().action().wink(), target);
+            case "bite" -> get(s -> s.fun.action.bite, target);
+            case "brofist" -> get(s -> s.fun.action.brofist, target);
+            case "cuddle" -> get(s -> s.fun.action.cuddle, target);
+            case "handhold" -> get(s -> s.fun.action.handhold, target);
+            case "hug" -> get(s -> s.fun.action.hug, target);
+            case "kiss" -> get(s -> s.fun.action.kiss, target);
+            case "lick" -> get(s -> s.fun.action.lick, target);
+            case "pat" -> get(s -> s.fun.action.pat, target);
+            case "pinch" -> get(s -> s.fun.action.pinch, target);
+            case "poke" -> get(s -> s.fun.action.poke, target);
+            case "punch" -> get(s -> s.fun.action.punch, target);
+            case "slap" -> get(s -> s.fun.action.slap, target);
+            case "smack" -> get(s -> s.fun.action.smack, target);
+            case "sorry" -> get(s -> s.fun.action.sorry, target);
+            case "stare" -> get(s -> s.fun.action.stare, target);
+            case "thumbsup" -> get(s -> s.fun.action.thumbsup, target);
+            case "tickle" -> get(s -> s.fun.action.tickle, target);
+            case "wave" -> get(s -> s.fun.action.wave, target);
+            case "wink" -> get(s -> s.fun.action.wink, target);
             default -> "";
         };
 
@@ -90,7 +90,7 @@ public class ActionCommand extends Command {
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                String text = get(s -> s.fun().action().failure());
+                String text = get(s -> s.fun.action.failure);
                 event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             }
 

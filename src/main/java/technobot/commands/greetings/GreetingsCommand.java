@@ -18,7 +18,7 @@ import technobot.handlers.GreetingHandler;
 import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.localization.Localization.get;
+import static technobot.util.Localization.get;
 
 /**
  * Command that displays and modifies greetings config.
@@ -52,12 +52,12 @@ public class GreetingsCommand extends Command {
                 if (channelOption == null) {
                     // Remove welcome channel if not specified
                     greetingHandler.removeChannel();
-                    text = get(s -> s.greeting().greetings().removed());
+                    text = get(s -> s.greeting.greetings.removed);
                 } else {
                     // Set welcome channel
                     Long channelID = channelOption.getAsGuildChannel().getIdLong();
                     greetingHandler.setChannel(channelID);
-                    text = get(s -> s.greeting().greetings().set(), channelID);
+                    text = get(s -> s.greeting.greetings.set, channelID);
                 }
             }
             case "config" -> {
@@ -66,7 +66,7 @@ public class GreetingsCommand extends Command {
                 return;
             }
             case "reset" -> {
-                text = get(s -> s.greeting().greetings().reset());
+                text = get(s -> s.greeting.greetings.reset);
                 WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
                 ButtonListener.sendResetMenu(event.getUser().getId(), "Greeting", action);
                 return;
@@ -83,16 +83,16 @@ public class GreetingsCommand extends Command {
      */
     private String configToString(Greetings greetings) {
         String text = "";
-        text += get(s -> s.greeting().greetings().welcomeConfig(),
+        text += get(s -> s.greeting.greetings.welcomeConfig,
                 greetings.getWelcomeChannel() == null ? "none" : "<#" + greetings.getWelcomeChannel() + ">") + "\n";
 
-        text += get(s -> s.greeting().greetings().greetingConfig(),
+        text += get(s -> s.greeting.greetings.greetingConfig,
                 greetings.getGreeting() == null ? "none" : greetings.getGreeting()) + "\n";
 
-        text += get(s -> s.greeting().greetings().farewellConfig(),
+        text += get(s -> s.greeting.greetings.farewellConfig,
                 greetings.getFarewell() == null ? "none" : greetings.getFarewell()) + "\n";
 
-        text += get(s -> s.greeting().greetings().joinDmConfig(),
+        text += get(s -> s.greeting.greetings.joinDmConfig,
                 greetings.getJoinDM() == null ? "none" : greetings.getJoinDM()) + "\n";
 
         return text;
