@@ -98,7 +98,7 @@ public class ConfigHandler {
      * Adds an existing item to the economy shop.
      * Adds it to local cache and database config file.
      *
-     * @param name the name of the item to create.
+     * @param item the item object to be added.
      */
     public Item addItem(Item item) {
         config.addItem(item);
