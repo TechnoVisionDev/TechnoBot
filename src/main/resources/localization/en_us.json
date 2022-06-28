@@ -542,7 +542,7 @@
       "config": {
         "channel": "**Channel:** {channel_or_none}",
         "dm": "**Reponse DMs:** {boolean}",
-        "anonymous": "**Anonymous Suggestions:** {booolean}"
+        "anonymous": "**Anonymous Suggestions:** {boolean}"
       },
       "reset": "Would you like to reset the suggestions system?\nThis will delete **ALL** data!"
     }
