@@ -1,6 +1,6 @@
 package technobot.commands.staff;
 
-import net.dv8tion.jda.api.Permission;;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Role;
@@ -19,6 +19,10 @@ import technobot.util.embeds.EmbedUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static technobot.util.Localization.get;
+
+;
 
 /**
  * Command that sets/creates the mute role to give on /mute.
@@ -48,7 +52,9 @@ public class MuteRoleCommand extends Command {
         // Check for admin permissions
         Role botRole = event.getGuild().getBotRole();
         if (!botRole.hasPermission(Permission.ADMINISTRATOR)) {
-            event.replyEmbeds(EmbedUtils.createError("I am unable to create roles. Please check my permissions and role position.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.muteRole.noPerm)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -58,11 +64,13 @@ public class MuteRoleCommand extends Command {
                 // Set existing role as the mute role
                 Role role = event.getOption("role").getAsRole();
                 if (role.isManaged() || role.isPublicRole()) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("I cannot set bot/managed roles as the mute role!")).setEphemeral(true).queue();
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(
+                            get(s -> s.staff.muteRole.botManagedRole)
+                    )).setEphemeral(true).queue();
                     return;
                 }
                 data.moderationHandler.setMuteRole(role.getIdLong());
-                String text = EmbedUtils.BLUE_TICK + " The "+role.getAsMention()+" role will be used for the `mute` command.";
+                String text = get(s -> s.staff.muteRole.success, role.getAsMention());
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             }
             case "create" -> {
@@ -87,7 +95,7 @@ public class MuteRoleCommand extends Command {
                         channel.getPermissionContainer().getManager().putRolePermissionOverride(roleID, null, denyPerms).queue();
                     }
                     data.moderationHandler.setMuteRole(roleID);
-                    String text = EmbedUtils.BLUE_TICK + " The "+role.getAsMention()+" role will be used for the `mute` command.";
+                    String text = get(s -> s.staff.muteRole.success, role.getAsMention());
                     event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
                 });
             }

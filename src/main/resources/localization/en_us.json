@@ -348,5 +348,118 @@
       "success": ":loud_sound: Set volume to {}%",
       "failure": "You must specify a volume between 0 and 100!"
     }
+  },
+  "staff": {
+    "cases": {
+      "actions": {
+        "ban": "Ban",
+        "kick": "Kick",
+        "warn": "Warn"
+      },
+      "server": "**Server:** {}",
+      "actionedBy": "**Actioned By:** {mention}",
+      "action": "**Action:** {}",
+      "duration": "**Duration:** {}",
+      "reason": "**Reason:** {}"
+    },
+    "ban": {
+      "banBot": "Did you seriously expect me to ban myself?",
+      "tooHighRole": "This member cannot be banned. I need my role moved higher than theirs.",
+      "duration": "{} Days",
+      "message": "{} has been banned{}"
+    },
+    "clear": {
+      "success": ":ballot_box_with_check: I have deleted `{} messages!`",
+      "failure": "You cannot clear messages older than 2 weeks!"
+    },
+    "kick": {
+      "kickForeign": "That user is not in this server!",
+      "kickBot": "Did you seriously expect me to kick myself?",
+      "tooHighRole": "This member cannot be kicked. I need my role moved higher than theirs.",
+      "message": "{} has been kicked"
+    },
+    "lock": {
+      "success": ":lock: {channel} has been locked.",
+      "failure": "That is not a valid channel!"
+    },
+    "mute": {
+      "muteForeign": "That user is not in this server!",
+      "muteBot": "Did you seriously expect me to mute myself?",
+      "tooHighRole": "This member cannot be muted. I need my role moved higher than theirs.",
+      "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
+      "alreadyMuted": "This user is already muted!",
+      "message": "{} has been muted"
+    },
+    "muteRole": {
+      "noPerm": "I am unable to create roles. Please check my permissions and role position.",
+      "botManagedRole": "I cannot set bot/managed roles as the mute role!",
+      "success": "{blue_tick} The {mention} role will be user for the `/mute` command."
+    },
+    "removeWarn": {
+      "successId": "{green_tick} Warning #{} has been removed.",
+      "failureId": "Unable to find a warning with that ID!",
+      "successUser": "{green_tick} {} warnings have been removed for {mention}.",
+      "failureUser": "That user has no warnings!",
+      "failure": "You must specify a user or a warning ID!"
+    },
+    "role": {
+      "roleForeign": "That user is not in this server!",
+      "botManagedRole": "I cannot give/remove bot/managed roles!",
+      "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs.",
+      "message": "{green_tick} Changed roles for {}, "
+    },
+    "setNick": {
+      "nickForeign": "That user is not in this server!",
+      "set": "{green_tick} **{}**'s nickname has been changed to **{}**.",
+      "reset": "{green_tick} **{}**'s nickname has been reset.",
+      "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs."
+    },
+    "slowMode": {
+      "failureThread": "You cannot set slow mode on threads!",
+      "disable": ":stopwatch: Slow mode has been disabled in this channel.",
+      "tooHigh": "Time should be less than or equal to **6 hours**.",
+      "set": ":stopwatch: This channel slow mode delay has been set to **{}**.",
+      "display": ":stopwatch: This channel slow mode delay is **{}**.",
+      "format": {
+        "hours": "{} hours",
+        "minutes": "{} minutes",
+        "seconds": "{} seconds"
+      }
+    },
+    "unban": {
+      "unbanSelf": "Ah yes, let me just unban myself...",
+      "success": "{} has been unbanned",
+      "noUser": "That user does not exist!",
+      "invalidUser": "That is not a valid user ID!"
+    },
+    "unlock": {
+      "invalidChannel": "That is not a valid channel!",
+      "noPerms": "I am lacking some permissions require to unlock channels.",
+      "success": ":unlock: {channel} has been unlocked."
+    },
+    "unmute": {
+      "unmuteForeign": "That user is not in this server!",
+      "unmuteBot": "Do you seriously expect me to unmute myself?",
+      "tooHighRole": "This member cannot be unmuted. I need my role moved higher than theirs.",
+      "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
+      "notMuted": "This user is not muted!",
+      "message": "{} has been unmuted"
+    },
+    "warn": {
+      "warnForeign": "That user is not in this server!",
+      "warnBot": "Why would I warn myself... silly human!",
+      "warnSelf": "You cannot warn yourself!",
+      "message": "{} has been warned"
+    },
+    "warnings": {
+      "noWarnings": "{} has no infractions!",
+      "title": "{}'s Infractions",
+      "lastDay": "Last 24 hours",
+      "lastWeek": "Last 7 days",
+      "total": "Total",
+      "last10": "[ID] Last 10 Warnings",
+      "message": "{} warnings"
+    },
+    "reasonUnspecified": "Unspecified"
   }
 }

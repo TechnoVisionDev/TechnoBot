@@ -13,6 +13,8 @@ import technobot.data.GuildData;
 import technobot.handlers.ModerationHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that gives or removes a role from user.
  *
@@ -40,22 +42,28 @@ public class RoleCommand extends Command {
         Member member = event.getOption("user").getAsMember();
         Role role = event.getOption("role").getAsRole();
         if (member == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.role.roleForeign)
+            )).setEphemeral(true).queue();
             return;
         }
         if (role.isManaged() || role.isPublicRole()) {
-            event.replyEmbeds(EmbedUtils.createError("I cannot give/remove bot or managed roles!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.role.botManagedRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Check target role position
         ModerationHandler moderationHandler = GuildData.get(event.getGuild()).moderationHandler;
         if (!moderationHandler.canTargetMember(member)) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be updated. I need my role moved higher than theirs.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.role.tooHighRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
-        String text = EmbedUtils.GREEN_TICK + " Changed roles for " + member.getEffectiveName() + ", ";
+        String text = get(s -> s.staff.role.message, member.getEffectiveName());
         switch (event.getSubcommandName()) {
             case "give" -> {
                 text += "**+" + role.getName() + "**";

@@ -13,6 +13,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that removes lock from a specified channel.
  *
@@ -40,16 +42,21 @@ public class UnlockCommand extends Command {
         else { channel = event.getTextChannel(); }
 
         if (channel == null) {
-            event.replyEmbeds(EmbedUtils.createError("That is not a valid channel!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unlock.invalidChannel)
+            )).setEphemeral(true).queue();
             return;
         }
 
         try {
             channel.upsertPermissionOverride(event.getGuild().getPublicRole()).clear(Permission.MESSAGE_SEND).queue();
-            String channelString = "<#" + channel.getId() + ">";
-            event.replyEmbeds(EmbedUtils.createDefault(":unlock: " + channelString + " has been unlocked.")).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(
+                    get(s -> s.staff.unlock.success, channel.getId())
+            )).queue();
         } catch (InsufficientPermissionException e) {
-            event.replyEmbeds(EmbedUtils.createError("I am lacking some permissions required to unlock channels.")).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unlock.noPerms)
+            )).queue();
         }
     }
 }

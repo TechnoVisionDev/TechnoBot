@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static technobot.util.Localization.get;
+
 /**
  * Handles moderation and warnings. Interfaces with POJO objects.
  *
@@ -106,11 +108,13 @@ public class ModerationHandler {
      * Creates the actual embed for createCaseMessage(), ignoring null values.
      */
     private MessageEmbed caseMessageHelper(long moderatorID, String action, String reason, String duration, int color) {
-        String text = "**Server:** " + guild.getName();
-        text += "\n**Actioned by:** <@!" + moderatorID + ">";
-        text += "\n**Action:** " + action;
-        if (duration != null) text += "\n**Duration:** " + duration;
-        if (reason != null) text += "\n**Reason:** " + reason;
+        String text = get(s -> s.staff.cases.server, guild.getName());
+        text += "\n" + get(s -> s.staff.cases.actionedBy, moderatorID);
+        text += "\n" + get(s -> s.staff.cases.action, action);
+        if (duration != null)
+            text += "\n" + get(s -> s.staff.cases.duration, duration);
+        if (reason != null)
+            text += "\n" + get(s -> s.staff.cases.reason, reason);
         return new EmbedBuilder().setColor(color).setDescription(text).setTimestamp(new Date().toInstant()).build();
     }
 

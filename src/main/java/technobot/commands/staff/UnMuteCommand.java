@@ -17,6 +17,8 @@ import technobot.handlers.ModerationHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that removes a muted role from a user in the guild.
  *
@@ -40,35 +42,43 @@ public class UnMuteCommand extends Command {
         User user = event.getOption("user").getAsUser();
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in this server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unmute.unmuteForeign)
+            )).setEphemeral(true).queue();
             return;
         } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            event.replyEmbeds(EmbedUtils.createError("Do you seriously expect me to unmute myself?")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unmute.unmuteBot)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Check target role position
         ModerationHandler moderationHandler = GuildData.get(event.getGuild()).moderationHandler;
         if (!moderationHandler.canTargetMember(target)) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be unmuted. I need my role moved higher than theirs.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unmute.tooHighRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Check that muted role is valid and user has it
         Role muteRole = GuildData.get(event.getGuild()).moderationHandler.getMuteRole();
         if (muteRole == null) {
-            String text = "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.";
+            String text = get(s -> s.staff.unmute.noRole);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
         if (!target.getRoles().contains(muteRole)) {
-            String text = "That user is not muted!";
+            String text = get(s -> s.staff.unmute.notMuted);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
         int botPos = event.getGuild().getBotRole().getPosition();
         if (muteRole.getPosition() >= botPos) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be unmuted. I need my role moved higher than the mute role.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.unmute.tooHighRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -83,7 +93,7 @@ public class UnMuteCommand extends Command {
 
         // Send confirmation message
         event.replyEmbeds(new EmbedBuilder()
-                .setAuthor(user.getAsTag() + " has been unmuted", null, user.getEffectiveAvatarUrl())
+                .setAuthor(get(s -> s.staff.unmute.message, user.getAsTag()), null, user.getEffectiveAvatarUrl())
                 .setColor(EmbedColor.DEFAULT.color)
                 .build()
         ).queue();

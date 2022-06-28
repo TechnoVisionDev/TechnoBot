@@ -17,6 +17,8 @@ import technobot.util.embeds.EmbedColor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that shows the warnings for a specified user.
  *
@@ -35,13 +37,7 @@ public class WarningsCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildData data = GuildData.get(event.getGuild());
-        OptionMapping option = event.getOption("user");
-        User target;
-        if (option != null) {
-            target = option.getAsUser();
-        } else {
-            target = event.getUser();
-        }
+        User target = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
 
         // Create embed template
         EmbedBuilder embed = new EmbedBuilder();
@@ -50,17 +46,17 @@ public class WarningsCommand extends Command {
         // Check if user has no warnings
         List<Warning> warnings = data.moderationHandler.getWarnings(target.getId());
         if (warnings == null || warnings.isEmpty()) {
-            embed.setAuthor(target.getAsTag()+" has no infractions", null, target.getEffectiveAvatarUrl());
+            embed.setAuthor(get(s -> s.staff.warnings.noWarnings, target.getAsTag()), null, target.getEffectiveAvatarUrl());
             event.replyEmbeds(embed.build()).queue();
             return;
         }
 
         // Display warnings in an embed
-        int lastSevenDays = 0;
+        int lastWeek = 0;
         int lastDay = 0;
         StringBuilder content = new StringBuilder();
         int counter = 0;
-        for (int i = warnings.size()-1; i >= 0; i--) {
+        for (int i = warnings.size() - 1; i >= 0; i--) {
             Warning w = warnings.get(i);
             String time = TimeFormat.RELATIVE.format(w.getTimestamp());
             if (counter < 10) {
@@ -70,15 +66,27 @@ public class WarningsCommand extends Command {
                 lastDay++;
             }
             if (w.getTimestamp() >= System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7)) {
-                lastSevenDays++;
+                lastWeek++;
             }
             counter++;
         }
-        embed.setAuthor(target.getAsTag()+"'s Infractions", null, target.getEffectiveAvatarUrl());
-        embed.addField("Last 24 Hours", lastDay+" warnings", true);
-        embed.addField("Last 7 Days", lastSevenDays+" warnings", true);
-        embed.addField("Total", warnings.size()+" warnings", true);
-        embed.addField("[ID] Last 10 Warnings", content.toString(), false);
+        embed.setAuthor(get(s -> s.staff.warnings.title, target.getAsTag()), null, target.getEffectiveAvatarUrl());
+        embed.addField(
+                get(s -> s.staff.warnings.lastDay),
+                get(s -> s.staff.warnings.message, lastDay), true
+        );
+        embed.addField(
+                get(s -> s.staff.warnings.lastWeek),
+                get(s -> s.staff.warnings.message, lastWeek), true
+        );
+        embed.addField(
+                get(s -> s.staff.warnings.total),
+                get(s -> s.staff.warnings.message, warnings.size()), true
+        );
+        embed.addField(
+                get(s -> s.staff.warnings.last10),
+                content.toString(), false
+        );
         event.replyEmbeds(embed.build()).queue();
     }
 }

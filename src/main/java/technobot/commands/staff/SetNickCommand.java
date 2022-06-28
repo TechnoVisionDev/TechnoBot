@@ -12,6 +12,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that changes or resets a user's nickname.
  *
@@ -34,7 +36,9 @@ public class SetNickCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in your server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.setNick.nickForeign)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -45,15 +49,17 @@ public class SetNickCommand extends Command {
                 String originalName = target.getUser().getName();
                 String name = nickOption.getAsString();
                 target.modifyNickname(name).queue();
-                content = EmbedUtils.GREEN_TICK + " **" + originalName + "**'s nick has been changed to **" + name + "**.";
+                content = get(s -> s.staff.setNick.set, originalName, name);
             } else {
                 String name = target.getUser().getName();
                 target.modifyNickname(name).queue();
-                content = EmbedUtils.GREEN_TICK + " **" + name + "**'s nick has been reset.";
+                content = get(s -> s.staff.setNick.reset, name);
             }
             event.replyEmbeds(EmbedUtils.createDefault(content)).queue();
         } catch (HierarchyException e) {
-            event.replyEmbeds(EmbedUtils.createError(" This member cannot be updated. I need my role moved higher than theirs.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.setNick.tooHighRole)
+            )).setEphemeral(true).queue();
         }
     }
 }
