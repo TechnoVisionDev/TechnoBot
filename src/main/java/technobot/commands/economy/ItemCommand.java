@@ -32,28 +32,28 @@ public class ItemCommand extends Command {
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("create", "Create an item for your store.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to create", true),
-                            new OptionData(OptionType.STRING, "description", "Set the description for this item"),
-                            new OptionData(OptionType.INTEGER, "price", "Set the price for this item").setMinValue(0),
-                            new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
-                            new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
-                            new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
-                            new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
-                            new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
-                            new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
-                            new OptionData(OptionType.INTEGER, "required_balance", "Set a balance amount required to purchased this item").setMinValue(0),
-                            new OptionData(OptionType.STRING, "reply", "Set a message to be sent when this item is used")));
+                        new OptionData(OptionType.STRING, "description", "Set the description for this item"),
+                        new OptionData(OptionType.INTEGER, "price", "Set the price for this item").setMinValue(0),
+                        new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
+                        new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
+                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
+                        new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
+                        new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
+                        new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
+                        new OptionData(OptionType.INTEGER, "required_balance", "Set a balance amount required to purchased this item").setMinValue(0),
+                        new OptionData(OptionType.STRING, "reply", "Set a message to be sent when this item is used")));
         this.subCommands.add(new SubcommandData("edit", "Edit an existing item in the store.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to edit", true),
-                            new OptionData(OptionType.STRING, "description", "Set a new description for this item"),
-                            new OptionData(OptionType.INTEGER, "price", "Set a new price for this item").setMinValue(0),
-                            new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
-                            new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
-                            new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
-                            new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
-                            new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
-                            new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
-                            new OptionData(OptionType.INTEGER, "required_balance", "Set a balance amount required to purchased this item").setMinValue(0),
-                            new OptionData(OptionType.STRING, "reply", "Set a message to be sent when this item is used")));
+                        new OptionData(OptionType.STRING, "description", "Set a new description for this item"),
+                        new OptionData(OptionType.INTEGER, "price", "Set a new price for this item").setMinValue(0),
+                        new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
+                        new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
+                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
+                        new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
+                        new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
+                        new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
+                        new OptionData(OptionType.INTEGER, "required_balance", "Set a balance amount required to purchased this item").setMinValue(0),
+                        new OptionData(OptionType.STRING, "reply", "Set a message to be sent when this item is used")));
         this.subCommands.add(new SubcommandData("remove", "Removes an item from your store.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to remove", true)));
         this.subCommands.add(new SubcommandData("info", "Display details about an item.")

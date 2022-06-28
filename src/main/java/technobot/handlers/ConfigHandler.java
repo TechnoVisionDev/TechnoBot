@@ -148,7 +148,7 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItem(String name) {
-        return config.getShop().get(name);
+        return config.getShop().get(name.toLowerCase());
     }
 
     /**
