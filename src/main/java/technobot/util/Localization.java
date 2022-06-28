@@ -63,14 +63,14 @@ public class Localization {
                 .replaceAll("\\{green_tick\\}", EmbedUtils.GREEN_TICK)
                 .replaceAll("\\{blue_x\\}", EmbedUtils.BLUE_X)
                 .replaceAll("\\{blue_tick\\}", EmbedUtils.BLUE_TICK)
-                .replaceAll("\\{mention\\}", "<@{}>")
-                .replaceAll("\\{user\\}", "<@!{}>")
-                .replaceAll("\\{role\\}", "<@&{}>")
-                .replaceAll("\\{channel\\}", "<#{}>")
+                .replaceAll("\\{mention\\}", "<@{mention}>")
+                .replaceAll("\\{user\\}", "<@!{user}>")
+                .replaceAll("\\{role\\}", "<@&{role}>")
+                .replaceAll("\\{channel\\}", "<#{channel}>")
                 .replaceAll("\\{currency\\}", "\uD83E\uDE99");
 
         var argsList = Arrays.stream(args).map(Object::toString).toList();
-        var templateArgsCount = Pattern.compile("\\{\\}").matcher(template).groupCount();
+        var templateArgsCount = Pattern.compile("\\{\\w+\\}").matcher(template).groupCount();
 
         switch (Integer.compare(argsList.size(), templateArgsCount)) {
             case -1 -> {

@@ -11,6 +11,8 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.SuggestionHandler;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that responds to suggestions on the suggestion board.
  *
@@ -41,9 +43,26 @@ public class RespondCommand extends Command {
         String responseString = event.getOption("response").getAsString();
         SuggestionHandler.SuggestionResponse response = SuggestionHandler.SuggestionResponse.valueOf(responseString);
 
-        int id = event.getOption("number").getAsInt() - 1;
-        OptionMapping reason = event.getOption("reason");
+        String responseMessage = switch (response) {
+            case APPROVE -> get(s -> s.suggestions.respond.responses.approved);
+            case DENY -> get(s -> s.suggestions.respond.responses.denied);
+            case CONSIDER -> get(s -> s.suggestions.respond.responses.considered);
+            case IMPLEMENT -> get(s -> s.suggestions.respond.responses.implemented);
+        };
 
-        GuildData.get(event.getGuild()).suggestionHandler.respond(event, id, reason, response);
+        int id = event.getOption("number").getAsInt() - 1;
+        String reason = event.getOption(
+                "reason",
+                get(s -> s.suggestions.respond.noReason) + "",
+                OptionMapping::getAsString
+        );
+
+        GuildData.get(event.getGuild()).suggestionHandler.respond(
+                event,
+                id,
+                reason,
+                responseMessage,
+                response.color
+        );
     }
 }

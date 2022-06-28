@@ -501,5 +501,50 @@
       "locked": "**Locked:** {}",
       "blacklistedChannels": "**Blacklisted Channels:** {}"
     }
+  },
+  "suggestions": {
+    "respond": {
+      "responses": {
+        "approved": "Approved",
+        "denied": "Denied",
+        "considered": "Considered",
+        "implemented": "Implemented"
+      },
+      "noReason": "No reason given",
+      "title": "Suggestion #{id} • {response}",
+      "reason": "Reason from {userTag}",
+      "message": "Suggestion #{id} has been {response}!",
+      "dmText": "Your suggestion has been {response} by {userTag}",
+      "noSuggestion": "Could not find a suggestion with that ID.",
+      "noMessage": "Could not find that message, was the channel deleted or changed?"
+    },
+    "suggest": {
+      "noChannel": "The suggestion channel has not been set!",
+      "title": "Suggestion #{id}",
+      "anonymousAuthor": "Anonymous",
+      "channelDeleted": "The suggestion channel has been deleted, please set a new one!",
+      "message": "{blue_tick} Your suggestion has been added to {channel}!"
+    },
+    "suggestions": {
+      "create": {
+        "create": "{blue_tick} Created a new suggestion channel!",
+        "set": "{blue_tick} Set the suggestion channel to {channel}!",
+        "failure": "You can only set a text channel as the suggestion board!"
+      },
+      "dm": {
+        "enable": "{blue_tick} Suggestion response DMs have been **enabled**!",
+        "disable": "{blue_x} Suggestion response DMs have been **disabled**!"
+      },
+      "anonymous": {
+        "enable": "{blue_tick} Anonymous suggestions have been **enabled**!",
+        "disable": "{blue_x} Anonymous suggestions have been **disabled**!"
+      },
+      "config": {
+        "channel": "**Channel:** {}",
+        "dm": "**Reponse DMs:** {}",
+        "anonymous": "**Anonymous Suggestions:** {}"
+      },
+      "reset": "Would you like to reset the suggestions system?\nThis will delete **ALL** data!"
+    }
   }
 }

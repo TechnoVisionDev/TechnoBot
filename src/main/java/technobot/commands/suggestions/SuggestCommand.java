@@ -14,6 +14,8 @@ import technobot.handlers.SuggestionHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that allows a user to make a suggestion on the suggestion board.
  *
@@ -33,10 +35,10 @@ public class SuggestCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
 
-        // Check if suggestion board has been setup
+        // Check if suggestion board has been set up
         SuggestionHandler suggestionHandler = GuildData.get(event.getGuild()).suggestionHandler;
         if (!suggestionHandler.isSetup()) {
-            String text = "The suggestion channel has not been set!";
+            String text = get(s -> s.suggestions.suggest.noChannel);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             return;
         }
@@ -45,12 +47,12 @@ public class SuggestCommand extends Command {
         String content = event.getOption("suggestion").getAsString();
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setTitle("Suggestion #" + suggestionHandler.getNumber())
+                .setTitle(get(s -> s.suggestions.suggest.title, suggestionHandler.getNumber()))
                 .setDescription(content);
 
         // Add author to embed if anonymous mode is turned off
         if (suggestionHandler.isAnonymous()) {
-            embed.setAuthor("Anonymous", null, "https://cdn.discordapp.com/embed/avatars/0.png");
+            embed.setAuthor(get(s -> s.suggestions.suggest.anonymousAuthor), null, "https://cdn.discordapp.com/embed/avatars/0.png");
         } else {
             embed.setAuthor(event.getUser().getAsTag(), null, event.getUser().getEffectiveAvatarUrl());
         }
@@ -58,7 +60,7 @@ public class SuggestCommand extends Command {
         // Make sure channel is valid
         TextChannel channel = event.getGuild().getTextChannelById(suggestionHandler.getChannel());
         if (channel == null) {
-            String text = "The suggestion channel has been deleted, please set a new one!";
+            String text = get(s -> s.suggestions.suggest.channelDeleted);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             return;
         }
@@ -69,11 +71,12 @@ public class SuggestCommand extends Command {
             try {
                 suggestion.addReaction("⬆").queue();
                 suggestion.addReaction("⬇").queue();
-            } catch (InsufficientPermissionException ignored) { }
+            } catch (InsufficientPermissionException ignored) {
+            }
         });
 
         // Send a response message
-        String text = EmbedUtils.BLUE_TICK + "Your suggestion has been added to <#" + suggestionHandler.getChannel() + ">!";
+        String text = get(s -> s.suggestions.suggest.message, suggestionHandler.getChannel());
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }
