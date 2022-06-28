@@ -14,6 +14,10 @@ import technobot.data.GuildData;
 import technobot.handlers.StarboardHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import java.util.stream.Collectors;
+
+import static technobot.util.Localization.get;
+
 /**
  * Admin command that sets up and modifies the starboard.
  *
@@ -52,80 +56,85 @@ public class StarboardCommand extends Command {
         StarboardHandler starboardHandler = GuildData.get(event.getGuild()).starboardHandler;
 
         String text = null;
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "create" -> {
                 // Set starboard channel
                 long channel = channelOption.getAsGuildChannel().getIdLong();
                 starboardHandler.setChannel(channel);
-                text = EmbedUtils.BLUE_TICK + " Set the starboard channel to <#" + channel + ">";
+                text = get(s -> s.starboard.create, channel);
             }
             case "limit" -> {
                 OptionMapping limitOption = event.getOption("stars");
                 if (limitOption != null) {
                     int limit = limitOption.getAsInt();
                     starboardHandler.setStarLimit(limit);
-                    text = EmbedUtils.BLUE_TICK + " Messages now require " + limit + " stars to show up on the starboard!";
+                    text = get(s -> s.starboard.limit.set, limit);
                 } else {
                     starboardHandler.setStarLimit(3);
-                    text = EmbedUtils.BLUE_TICK + " Reset the star limit to default!";
+                    text = get(s -> s.starboard.limit.reset);
                 }
             }
             case "blacklist" -> {
                 if (channelOption != null) {
                     long channel = channelOption.getAsGuildChannel().getIdLong();
                     starboardHandler.blacklistChannel(channel);
-                    text = EmbedUtils.BLUE_TICK + " Starboard will now ignore reactions from <#" + channel + ">";
+                    text = get(s -> s.starboard.blacklist.add, channel);
                 } else {
                     starboardHandler.clearBlacklist();
-                    text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
+                    text = get(s -> s.starboard.blacklist.reset);
                 }
             }
             case "unblacklist" -> {
                 if (channelOption != null) {
                     long channel = channelOption.getAsGuildChannel().getIdLong();
                     starboardHandler.unBlacklistChannel(channel);
-                    text = EmbedUtils.BLUE_X + " Removed <#" + channel + "> from the Starboard blacklist!";
+                    text = get(s -> s.starboard.unblacklist.remove, channel);
                 } else {
                     starboardHandler.clearBlacklist();
-                    text = EmbedUtils.BLUE_TICK + " Reset the starboard blacklist!";
+                    text = get(s -> s.starboard.unblacklist.reset);
                 }
             }
             case "lock" -> {
                 boolean isLocked = starboardHandler.toggleLock();
-                if (isLocked) text = EmbedUtils.BLUE_TICK + " Locked the starboard!";
-                else text = EmbedUtils.BLUE_X + " Unlocked the starboard!";
+                if (isLocked) text = get(s -> s.starboard.lock.lock);
+                else text = get(s -> s.starboard.lock.unlock);
             }
             case "jump" -> {
                 boolean hasJumpLink = starboardHandler.toggleJump();
-                if (hasJumpLink) text = EmbedUtils.BLUE_TICK + " Enabled jump links on Starboard posts!";
-                else text = EmbedUtils.BLUE_X + " Disabled jump links on Starboard posts!";
+                if (hasJumpLink) text = get(s -> s.starboard.jump.enable);
+                else text = get(s -> s.starboard.jump.disable);
             }
             case "nsfw" -> {
                 boolean isNSFW = starboardHandler.toggleNSFW();
-                if (isNSFW) text = EmbedUtils.BLUE_TICK + " Users can now star messages in NSFW channels!";
-                else text = EmbedUtils.BLUE_X + " Users can no longer star messages in NSFW channels!";
+                if (isNSFW) text = get(s -> s.starboard.nsfw.enable);
+                else text = get(s -> s.starboard.nsfw.disable);
             }
             case "self" -> {
                 boolean canSelfStar = starboardHandler.toggleSelfStar();
-                if (canSelfStar) text = EmbedUtils.BLUE_TICK + " Users can now star their own messages!";
-                else text = EmbedUtils.BLUE_X + " Users can no longer star their own messages!";
+                if (canSelfStar) text = get(s -> s.starboard.self.enable);
+                else text = get(s -> s.starboard.self.disable);
             }
             case "config" -> {
                 text = "";
-                text += "**Threshold:** " + starboardHandler.getStarLimit();
-                if (starboardHandler.getChannel() != null) {
-                    text += "\n**Channel:** <#" + starboardHandler.getChannel() + ">";
-                } else {
-                    text += "\n**Channel:** none";
-                }
-                text += "\n**Allow NSFW:** " + starboardHandler.isNSFW();
-                text += "\n**Count Self Stars:** " + starboardHandler.canSelfStar();
-                text += "\n**Show Jump URL:** " + starboardHandler.hasJumpLink();
-                text += "\n**Locked:** " + starboardHandler.isLocked();
-                text += "\n**Blacklisted Channels:** ";
-                for (Long channel : starboardHandler.getBlacklist()) {
-                    text += "<#" + channel + "> ";
-                }
+                text += get(s -> s.starboard.config.threshold, starboardHandler.getStarLimit());
+                text += "\n" + get(
+                        s -> s.starboard.config.channel,
+                        starboardHandler.getChannel() != null
+                                ? "<#" + starboardHandler.getChannel() + ">"
+                                : "none"
+                );
+                text += "\n" + get(s -> s.starboard.config.allowNsfw, starboardHandler.isNSFW());
+                text += "\n" + get(s -> s.starboard.config.allowSelf, starboardHandler.canSelfStar());
+                text += "\n" + get(s -> s.starboard.config.showJumpLinks, starboardHandler.hasJumpLink());
+                text += "\n" + get(s -> s.starboard.config.locked, starboardHandler.isLocked());
+
+                text += "\n" + get(
+                        s -> s.starboard.config.blacklistedChannels,
+                        starboardHandler.getBlacklist().stream()
+                                .map(channel -> "<#" + channel + "> ")
+                                .collect(Collectors.joining(" "))
+                );
+
                 event.getHook().sendMessage(text).queue();
                 return;
             }

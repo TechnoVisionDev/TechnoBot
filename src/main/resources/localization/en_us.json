@@ -461,5 +461,45 @@
       "message": "{} warnings"
     },
     "reasonUnspecified": "Unspecified"
+  },
+  "starboard": {
+    "create": "{blue_tick} Set the starboard channel to {channel}",
+    "limit": {
+      "set": "{blue_tick} Messages now require {} stars to show up on the starboard.",
+      "reset": "{blue_tick} Reset the star limit to default."
+    },
+    "blacklist": {
+      "add": "{blue_tick} Starboard will now ignore reactions from {channel}",
+      "reset": "{blue_tick} Reset the starboard blacklist!"
+    },
+    "unblacklist": {
+      "remove": "{blue_x} Removed {channel} from the starboard blacklist!",
+      "reset": "{blue_tick} Reset the starboard blacklist!"
+    },
+    "lock": {
+      "lock": "{blue_tick} Locked the starboard!",
+      "unlock": "{blue_x} Unlocked the starboard!"
+    },
+    "jump": {
+      "enable": "{blue_tick} Enabled jump links on starboard posts!",
+      "disable": "{blue_x} Disabled jump links on starboard posts!"
+    },
+    "nsfw": {
+      "enable": "{blue_tick} Users can now star messages in NSFW channels!",
+      "disable": "{blue_x} Users can no longer star messages in NSFW channels!"
+    },
+    "self": {
+      "enable": "{blue_tick} Users can now star their own messages!",
+      "disable": "{blue_x} Users can no longer star their own messages!"
+    },
+    "config": {
+      "threshold": "**Threshold:** {}",
+      "channel": "**Channel:** {}",
+      "allowNsfw": "**Allow NSFW:** {}",
+      "allowSelf": "**Allow Self Stars:** {}",
+      "showJumpLinks": "**Show Jump Links:** {}",
+      "locked": "**Locked:** {}",
+      "blacklistedChannels": "**Blacklisted Channels:** {}"
+    }
   }
 }
