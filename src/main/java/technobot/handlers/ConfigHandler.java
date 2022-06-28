@@ -95,6 +95,18 @@ public class ConfigHandler {
     }
 
     /**
+     * Adds an existing item to the economy shop.
+     * Adds it to local cache and database config file.
+     *
+     * @param name the name of the item to create.
+     */
+    public Item addItem(Item item) {
+        config.addItem(item);
+        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
+        return item;
+    }
+
+    /**
      * Checks if the guild shop contains an item with the same name.
      * All item keys are stored as lowercase, even if the actual name is not.
      *
