@@ -11,6 +11,8 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.Random;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command to roll a die for random number generation.
  *
@@ -30,10 +32,11 @@ public class RollCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        OptionMapping option = event.getOption("dice");
-        int bound = option != null ? option.getAsInt() : 6;
+        int bound = event.getOption("dice", 6, OptionMapping::getAsInt);
         if (bound == 0) bound = 1;
         int result = random.nextInt(bound) + 1;
-        event.replyEmbeds(EmbedUtils.createDefault(":game_die: You rolled a "+bound+"-sided dice and got: **"+result+"**")).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(
+                get(s -> s.utility.roll, bound, result)
+        )).queue();
     }
 }

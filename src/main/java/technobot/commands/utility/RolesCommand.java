@@ -8,6 +8,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays all server roles.
  *
@@ -34,7 +36,7 @@ public class RolesCommand extends Command {
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setTitle("All Roles")
+                .setTitle(get(s -> s.utility.roles))
                 .setDescription(content);
         event.replyEmbeds(embed.build()).queue();
     }

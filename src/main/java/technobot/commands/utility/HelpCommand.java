@@ -16,7 +16,12 @@ import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import static technobot.util.Localization.get;
 
 public class HelpCommand extends Command {
 
@@ -48,8 +53,8 @@ public class HelpCommand extends Command {
         }
 
         OptionMapping option = event.getOption("category");
-        OptionMapping option2 = event.getOption("command");
-        if (option != null && option2 != null) {
+        OptionMapping commandOption = event.getOption("command");
+        if (option != null && commandOption != null) {
             event.replyEmbeds(EmbedUtils.createError("Please only give one optional argument and try again.")).queue();
         } else if (option != null) {
             // Display category commands menu
@@ -58,8 +63,11 @@ public class HelpCommand extends Command {
             if (embeds.isEmpty()) {
                 // No commands for this category
                 EmbedBuilder embed = new EmbedBuilder()
-                        .setTitle(category.emoji + "  **%s Commands**".formatted(category.name))
-                        .setDescription("Coming soon...")
+                        .setTitle(get(
+                                s -> s.utility.help.categoryTitle,
+                                category.emoji, category.name
+                        ))
+                        .setDescription(get(s -> s.utility.help.comingSoon))
                         .setColor(EmbedColor.DEFAULT.color);
                 event.replyEmbeds(embed.build()).queue();
                 return;
@@ -71,11 +79,11 @@ public class HelpCommand extends Command {
                 return;
             }
             action.queue();
-        } else if (option2 != null) {
+        } else if (commandOption != null) {
             // Display command details menu
-            Command cmd = CommandRegistry.commandsMap.get(option2.getAsString());
+            Command cmd = CommandRegistry.commandsMap.get(commandOption.getAsString());
             if (cmd != null) {
-                builder.setTitle("Command: " + cmd.name);
+                builder.setTitle(get(s -> s.utility.help.commandTitle, cmd.name));
                 builder.setDescription(cmd.description);
                 StringBuilder usages = new StringBuilder();
                 if (cmd.subCommands.isEmpty()) {
@@ -85,16 +93,16 @@ public class HelpCommand extends Command {
                         usages.append("`").append(getUsage(sub, cmd.name)).append("`\n");
                     }
                 }
-                builder.addField("Usage:", usages.toString(), false);
-                builder.addField("Permission:", getPermissions(cmd), false);
+                builder.addField(get(s -> s.utility.help.commandUsage), usages.toString(), false);
+                builder.addField(get(s -> s.utility.help.commandPerms), getPermissions(cmd), false);
                 event.replyEmbeds(builder.build()).queue();
             } else {
                 // Command specified doesn't exist.
-                event.replyEmbeds(EmbedUtils.createError("No command called \"" + option2.getAsString() + "\" found.")).queue();
+                event.replyEmbeds(EmbedUtils.createError(get(s -> s.utility.help.noCommand, commandOption.getAsString()))).queue();
             }
         } else {
             // Display default menu
-            builder.setTitle("TechnoBot Commands");
+            builder.setTitle(get(s -> s.utility.help.defaultTitle));
             categories.forEach((category, commands) -> {
                 String categoryName = category.name().toLowerCase();
                 String value = "`/help " + categoryName + "`";
@@ -114,7 +122,11 @@ public class HelpCommand extends Command {
     public List<MessageEmbed> buildCategoryMenu(Category category, List<Command> commands) {
         List<MessageEmbed> embeds = new ArrayList<>();
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(category.emoji + "  **%s Commands**".formatted(category.name));
+
+        embed.setTitle(get(
+                s -> s.utility.help.categoryTitle,
+                category.emoji, category.name
+        ));
         embed.setColor(EmbedColor.DEFAULT.color);
 
         int counter = 0;
@@ -154,11 +166,9 @@ public class HelpCommand extends Command {
         if (cmd.args.isEmpty()) return usage.toString();
         for (int i = 0; i < cmd.args.size(); i++) {
             boolean isRequired = cmd.args.get(i).isRequired();
-            if (isRequired) { usage.append(" <"); }
-            else { usage.append(" ["); }
+            usage.append(isRequired ? " <" : " [");
             usage.append(cmd.args.get(i).getName());
-            if (isRequired) { usage.append(">"); }
-            else { usage.append("]"); }
+            usage.append(isRequired ? ">" : "]");
         }
         return usage.toString();
     }
@@ -174,17 +184,9 @@ public class HelpCommand extends Command {
         if (cmd.getOptions().isEmpty()) return usage.toString();
         for (OptionData arg : cmd.getOptions()) {
             boolean isRequired = arg.isRequired();
-            if (isRequired) {
-                usage.append(" <");
-            } else {
-                usage.append(" [");
-            }
+            usage.append(isRequired ? " <" : " [");
             usage.append(arg.getName());
-            if (isRequired) {
-                usage.append(">");
-            } else {
-                usage.append("]");
-            }
+            usage.append(isRequired ? ">" : "]");
         }
         return usage.toString();
     }
@@ -197,7 +199,7 @@ public class HelpCommand extends Command {
      */
     private String getPermissions(Command cmd) {
         if (cmd.permission == null) {
-            return "None";
+            return get(s -> s.utility.help.noPermissions);
         }
         return cmd.permission.getName();
     }

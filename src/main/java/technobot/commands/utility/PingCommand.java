@@ -7,6 +7,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Ping command to check latency with Discord API.
  *
@@ -24,12 +26,20 @@ public class PingCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         long time = System.currentTimeMillis();
-        event.getHook().sendMessage(":signal_strength: Ping").queue(m -> {
+        event.getHook().sendMessage(get(s -> s.utility.ping.ping) + "").queue(m -> {
             long latency = System.currentTimeMillis() - time;
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle(":ping_pong: Pong!");
-            embed.addField("Latency", latency + "ms", false);
-            embed.addField("Discord API", event.getJDA().getGatewayPing() + "ms", false);
+            embed.setTitle(get(s -> s.utility.ping.pong));
+            embed.addField(
+                    get(s -> s.utility.ping.latency),
+                    get(s -> s.utility.ping.value, latency),
+                    false
+            );
+            embed.addField(
+                    get(s -> s.utility.ping.discordApi),
+                    get(s -> s.utility.ping.value, event.getJDA().getGatewayPing()),
+                    false
+            );
             embed.setColor(EmbedColor.DEFAULT.color);
             m.editMessageEmbeds(embed.build()).override(true).queue();
         });

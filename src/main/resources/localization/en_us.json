@@ -546,5 +546,78 @@
       },
       "reset": "Would you like to reset the suggestions system?\nThis will delete **ALL** data!"
     }
+  },
+  "utility": {
+    "avatar": "Avatar Link",
+    "help": {
+      "categories": {
+        "automation": "Automation",
+        "economy": "Economy",
+        "fun": "Fun",
+        "greetings": "Greetings",
+        "levels": "Levels",
+        "music": "Music",
+        "staff": "Staff",
+        "starboard": "Starboard",
+        "suggestions": "Suggestions",
+        "utility": "Utility",
+        "casino": "Casino",
+        "pets": "Pets"
+      },
+      "categoryTitle": "{emoji} **{category} Commands**",
+      "noPermissions": "None",
+      "oneArgument": "Please only give one optional argument and try again",
+      "comingSoon": "Coming soon...",
+      "commandTitle": "Command: {cmdName}",
+      "commandUsage": "Usage:",
+      "commandPerms": "Permission:",
+      "noCommand": "No command called {cmdName} found.",
+      "defaultTitle": "TechnoBot Commands"
+    },
+    "invite": ":robot: Click the button below to invite TechnoBot to your servers!",
+    "math": {
+      "expression": "Expression",
+      "result": "Result",
+      "failure": "That is not a valid math expression! Example: `{example}`"
+    },
+    "ping": {
+      "ping": ":signal_strength: Ping!",
+      "pong": ":ping_pong: Pong!",
+      "latency": "Latency",
+      "discordApi": "DiscordAPI",
+      "value": "{latency}ms"
+    },
+    "poll": {
+      "tooManyChoices": "You cannot have more than 10 choices!",
+      "noPerms": "I don't have permissions to add reactions in this channel!"
+    },
+    "premium": {
+      "title": "TechnoBot Premium",
+      "description1": "Premium features are coming soon! But in the meantime, feel free to donate [HERE](https://www.patreon.com/TechnoVision)!",
+      "description2": "TechnoBot is developed by one guy who pays for server costs out of pocket! I appreciate any support :heart:",
+      "features": "Premium Features",
+      "list": "⦁ Add up to 10 auto-roles\n⦁ More coming soon...",
+      "button": "Buy Premium"
+    },
+    "roles": "All Roles",
+    "roll": ":game_die: You rolled a {sides}-sided die and got: **{result}**",
+    "server": {
+      "id": ":id: Server ID:",
+      "createdOn": ":calendar: Created on:",
+      "owner": ":crown: Owner:",
+      "boosts": "**{boosts}** Boosts :sparkles:",
+      "members": ":busts_in_silhouette: Members ({count})",
+      "channels": ":speech_balloon: Channels ({count})",
+      "channelTypes": "**{text}** Text\n**{voice}** Voice",
+      "verification": "**Verification Level:** {level}",
+      "other": ":earth_africa: Other:",
+      "roles": ":closed_lock_with_key: Roles ({count})",
+      "rolesList": "To see a list with all roles use **`/roles`**."
+    },
+    "user": {
+      "joinedDiscord": ":calendar: Joined Discord:",
+      "joinedServer": ":calendar: Joined Server:",
+      "discordId": ":id: Discord ID:"
+    }
   }
 }

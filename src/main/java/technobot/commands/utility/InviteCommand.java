@@ -7,6 +7,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Creates button links to invite bot and join the support server.
  *
@@ -23,10 +25,12 @@ public class InviteCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        Button b1 = Button.link("https://discord.com/oauth2/authorize?client_id=979590525428580363&permissions=2088234238&scope=applications.commands%20bot", "Invite TechnoBot");
-        Button b2 = Button.link("https://discord.gg/2TKJqfUQas", "Support Server");
-        Button b3 = Button.link("https://technobot.app", "Dashboard");
-        event.replyEmbeds(EmbedUtils.createDefault(":robot: Click the button below to invite TechnoBot to your servers!"))
-                .addActionRow(b1, b2, b3).queue();
+        Button botInvite = Button.link("https://discord.com/oauth2/authorize?client_id=979590525428580363&permissions=2088234238&scope=applications.commands%20bot", "Invite TechnoBot");
+        Button supportServerInvite = Button.link("https://discord.gg/2TKJqfUQas", "Support Server");
+        Button dashboardLink = Button.link("https://technobot.app", "Dashboard");
+        event.replyEmbeds(EmbedUtils.createDefault(
+                        get(s -> s.utility.invite)
+                ))
+                .addActionRow(botInvite, supportServerInvite, dashboardLink).queue();
     }
 }
