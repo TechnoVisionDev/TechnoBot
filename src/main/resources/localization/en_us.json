@@ -14,116 +14,116 @@
       "list": {
         "noAutoRoles": "Use `/auto-role add <role>` to set your first auto role!",
         "premium": "Add additional roles with `/premium`",
-        "roleCount": "There are {} auto roles given to new members:",
-        "role": "**{}**. {role}"
+        "roleCount": "There are {count} auto roles given to new members:",
+        "role": "**{num}**. {role}"
       }
     }
   },
   "economy": {
-    "replyId": "Reply #{}",
+    "replyId": "Reply #{num}",
     "balance": {
-      "leaderboardRank": "Leaderboard Rank: #{}",
+      "leaderboardRank": "Leaderboard Rank: #{rank}",
       "cash": "Cash:",
       "bank": "Bank:",
       "total": "Total:"
     },
     "crime": {
-      "timeout": ":stopwatch: You can next commit a crime {}.",
+      "timeout": ":stopwatch: You can next commit a crime {timestamp}.",
       "success": [
-        "You work for the Juarez cartel as a brick-presser and earn {currency} {}! They'll probably kill you and your family tomorrow. Just saying.",
-        "You rob an orphanage for {currency} {}.",
-        "You break into the house next door and sell their gaming PC on E-Bay for {currency} {}.",
-        "You work as a scam seller on Amazon selling fake airpods for {currency} {}.",
-        "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {currency} {}.",
-        "You are a high school chemistry teacher diagnosed with lung cancer & turn to selling meth for {currency} {} to secure your family's future.",
-        "You punched some random person and they gave you {currency} {} to stop.",
-        "You smashed a kid's piggy bank and got {currency} {} from it.",
-        "What you did was too horrible to speak of. I can't believe you would do that. Was the {currency} {} even worth it for those horrible crimes you did? No.",
-        "You were hired as an assassin and you succeeded, earning {currency} {}.",
-        "You need some extra cash for your drug habit. You break into the local dirty video store and rob them of {currency} {}! You also take a few \"items\" for yourself..."
+        "You work for the Juarez cartel as a brick-presser and earn {currency} {amount}! They'll probably kill you and your family tomorrow. Just saying.",
+        "You rob an orphanage for {currency} {amount}.",
+        "You break into the house next door and sell their gaming PC on E-Bay for {currency} {amount}.",
+        "You work as a scam seller on Amazon selling fake airpods for {currency} {amount}.",
+        "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {currency} {amount}.",
+        "You are a high school chemistry teacher diagnosed with lung cancer & turn to selling meth for {currency} {amount} to secure your family's future.",
+        "You punched some random person and they gave you {currency} {amount} to stop.",
+        "You smashed a kid's piggy bank and got {currency} {amount} from it.",
+        "What you did was too horrible to speak of. I can't believe you would do that. Was the {currency} {amount} even worth it for those horrible crimes you did? No.",
+        "You were hired as an assassin and you succeeded, earning {currency} {amount}.",
+        "You need some extra cash for your drug habit. You break into the local dirty video store and rob them of {currency} {amount}! You also take a few \"items\" for yourself..."
       ],
       "failure": [
-        "You break into the house next door only to find the whole family eating dinner together. Your bail cost {currency} {}.",
-        "You got shot trying to smuggle drugs across the border. The medical bills cost you a whopping {currency} {}.",
-        "You get caught shoplifting by the local mall cop, who fines you for {currency} {}.",
-        "You tried to do a prank call but called the police instead and were fined {currency} {}.",
-        "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {currency} {} from you.",
-        "You tried to rob someone but they just mugged you instead. You lost {currency} {}.",
-        "You attempted to steal a bar of chocolate from a local store but were caught and had to pay {currency} {}. It was bad chocolate.",
-        "You tried to jump the old lady walking down the street. Turns out she had a gun, and robbed you blind of {currency} {}.",
-        "You attempted to cook up some drugs to sell on the black market, but the chemicals exploded in your face, costing you {currency} {} in medical bills."
+        "You break into the house next door only to find the whole family eating dinner together. Your bail cost {currency} {amount}.",
+        "You got shot trying to smuggle drugs across the border. The medical bills cost you a whopping {currency} {amount}.",
+        "You get caught shoplifting by the local mall cop, who fines you for {currency} {amount}.",
+        "You tried to do a prank call but called the police instead and were fined {currency} {amount}.",
+        "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {currency} {amount} from you.",
+        "You tried to rob someone but they just mugged you instead. You lost {currency} {amount}.",
+        "You attempted to steal a bar of chocolate from a local store but were caught and had to pay {currency} {amount}. It was bad chocolate.",
+        "You tried to jump the old lady walking down the street. Turns out she had a gun, and robbed you blind of {currency} {amount}.",
+        "You attempted to cook up some drugs to sell on the black market, but the chemicals exploded in your face, costing you {currency} {amount} in medical bills."
       ]
     },
     "deposit": {
       "noMoney": "{red_x} You don't have any money to deposit!",
-      "notEnough": "{red_x} You cannot deposit more than {currency} {}!",
-      "success": "{green_tick} Deposited {currency} {} to your bank!"
+      "notEnough": "{red_x} You cannot deposit more than {currency} {amount}!",
+      "success": "{green_tick} Deposited {currency} {amount} to your bank!"
     },
     "pay": {
       "paySelf": "{red_x} You cannot pay yourself!",
       "payBots": "{red_x} You cannot pay bots!",
-      "notEnough": "{red_x} You don't have that much money to give. You currently have {currency} {} on hand.",
-      "success": "{green_tick} {mention} has received your {currency} {}."
+      "notEnough": "{red_x} You don't have that much money to give. You currently have {currency} {amount} on hand.",
+      "success": "{green_tick} {mention} has received your {currency} {amount}."
     },
     "rob": {
       "robSelf": "{red_x} You cannot rob yourself!",
       "robBots": "{red_x} You cannot rob bots, they are too powerful for you!",
-      "timeout": ":stopwatch: You can attempt to rob another member {}.",
-      "failure": "You were caught attempting to rob {mention}, and have been fined {currency} {}.",
-      "success": "{green_tick} You robbed {currency} {} from {mention}!"
+      "timeout": ":stopwatch: You can attempt to rob another member {timestamp}.",
+      "failure": "You were caught attempting to rob {mention}, and have been fined {currency} {amount}.",
+      "success": "{green_tick} You robbed {currency} {amount} from {mention}!"
     },
     "withdraw": {
       "noMoney": "{red_x} You don't have any money in your bank to withdraw!",
-      "tooMuch": "{red_x} You cannot withdraw more than {currency} {}!",
-      "success": "{green_tick} Withdrew {currency} {} from your bank!"
+      "tooMuch": "{red_x} You cannot withdraw more than {currency} {amount}!",
+      "success": "{green_tick} Withdrew {currency} {amount} from your bank!"
     },
     "work": {
-      "timeout": ":stopwatch: You can next work {}.",
+      "timeout": ":stopwatch: You can next work {timestamp}.",
       "success": [
-        "You suggest something good and get rewarded {currency} {}.",
-        "You drove the school bus today and were only 5 minutes late, but you still got {currency} {} for your efforts!",
-        "You dig up some buried treasure on an island and find {currency} {} worth of gold jewelry!",
-        "You work as a teacher and earn {currency} {} for inspiring young minds.",
-        "Your boring nine-to-five office job pays you {currency} {}.",
-        "You've worked on a farm cultivating wheat from dawn to dusk. The land lord pays you {currency} {} for your struggles.",
-        "You discover a cure for a rare disease and earn {currency} {} in grant money!",
-        "Your recent novel becomes a hit, earning you {currency} {} in royalties.",
-        "You find a rare fossil on the beach and sell it to the museum for {currency} {}.",
-        "You invested in the right stocks a the right time, earning {currency} {}.",
-        "Your NFT collection surges in price, so you sell them for {currency} {}.",
-        "You finished digging in the mines for the day. It's hard work, but they paid you {currency} {}.",
-        "Dogecoin went to the moon! Your patient waiting got you {currency} {}.",
-        "The lemonade sold well. Your efforts gathered you {currency} {}.",
-        "Your dog dug up some cash. Finders keepers! {currency} {}",
-        "You decided to buy a lottery ticket. You won {currency} {}.",
-        "You made a viral video on the internet and got {currency} {} from ad revenue.",
-        "You found a lost cat and were given {currency} {} as a thanks.",
-        "You decided to become a web developer (why). Anyway you earned {currency} {}."
+        "You suggest something good and get rewarded {currency} {amount}.",
+        "You drove the school bus today and were only 5 minutes late, but you still got {currency} {amount} for your efforts!",
+        "You dig up some buried treasure on an island and find {currency} {amount} worth of gold jewelry!",
+        "You work as a teacher and earn {currency} {amount} for inspiring young minds.",
+        "Your boring nine-to-five office job pays you {currency} {amount}.",
+        "You've worked on a farm cultivating wheat from dawn to dusk. The land lord pays you {currency} {amount} for your struggles.",
+        "You discover a cure for a rare disease and earn {currency} {amount} in grant money!",
+        "Your recent novel becomes a hit, earning you {currency} {amount} in royalties.",
+        "You find a rare fossil on the beach and sell it to the museum for {currency} {amount}.",
+        "You invested in the right stocks a the right time, earning {currency} {amount}.",
+        "Your NFT collection surges in price, so you sell them for {currency} {amount}.",
+        "You finished digging in the mines for the day. It's hard work, but they paid you {currency} {amount}.",
+        "Dogecoin went to the moon! Your patient waiting got you {currency} {amount}.",
+        "The lemonade sold well. Your efforts gathered you {currency} {amount}.",
+        "Your dog dug up some cash. Finders keepers! {currency} {amount}",
+        "You decided to buy a lottery ticket. You won {currency} {amount}.",
+        "You made a viral video on the internet and got {currency} {amount} from ad revenue.",
+        "You found a lost cat and were given {currency} {amount} as a thanks.",
+        "You decided to become a web developer (why). Anyway you earned {currency} {amount}."
       ]
     }
   },
   "fun": {
     "action": {
       "failure": "I was unable to fetch that emote!",
-      "bite": "takes a bit out of {}.",
-      "brofist": "and {} brofist!",
-      "cuddle": "cuddles with {}.",
-      "handhold": "and {} hold hands. How sweet <3",
-      "hug": "gives {} a big hug!",
-      "kiss": "kisses {}.",
-      "lick": "licks {}... gross!",
-      "pat": "gives {} a little pat on the head",
-      "pinch": "pinches {}. Ouch!",
-      "poke": "gives {} a little poke.",
-      "punch": "punches {} right in the face!",
-      "slap": "slaps {}. They deserved it!",
-      "smack": "gives {} a smack they will remember.",
-      "sorry": "apologizes to {}.",
-      "stare": "won't stop staring at {}...",
-      "thumbsup": "gives {} two thumbs up!",
-      "tickle": "tickles {}.",
-      "wave": "waves at {}. ",
-      "wink": "winks at {}."
+      "bite": "takes a bit out of {target}.",
+      "brofist": "and {target} brofist!",
+      "cuddle": "cuddles with {target}.",
+      "handhold": "and {target} hold hands. How sweet <3",
+      "hug": "gives {target} a big hug!",
+      "kiss": "kisses {target}.",
+      "lick": "licks {target}... gross!",
+      "pat": "gives {target} a little pat on the head",
+      "pinch": "pinches {target}. Ouch!",
+      "poke": "gives {target} a little poke.",
+      "punch": "punches {target} right in the face!",
+      "slap": "slaps {target}. They deserved it!",
+      "smack": "gives {target} a smack they will remember.",
+      "sorry": "apologizes to {target}.",
+      "stare": "won't stop staring at {target}...",
+      "thumbsup": "gives {target} two thumbs up!",
+      "tickle": "tickles {target}.",
+      "wave": "waves at {target}. ",
+      "wink": "winks at {target}."
     },
     "cute": "I was unable to fetch any cute pictures!",
     "eightBall": {
@@ -186,10 +186,10 @@
       "removed": "{blue_x} Welcome channel successfully removed!",
       "set": "{blue_x} Welcome channel set to {channel}",
       "reset": "Would you like to reset the greeting system?\nThis will delete **ALL** data!",
-      "welcomeConfig": "**Welcome Channel:** {}",
-      "greetingConfig": "**Greeting:** {}",
-      "farewellConfig": "**Farewell:** {}",
-      "joinDmConfig": "**Join DM:** {}"
+      "welcomeConfig": "**Welcome Channel:** {channel_or_none}",
+      "greetingConfig": "**Greeting:** {message}",
+      "farewellConfig": "**Farewell:** {message}",
+      "joinDmConfig": "**Join DM:** {message}"
     },
     "joinDm": {
       "reset": "{blue_x} Join DM message successfully removed!",
@@ -211,7 +211,7 @@
         "disable": "{blue_tick} Level-up messages will no longer be sent through DMs."
       },
       "mod": {
-        "set": "{blue_tick} Leveling messages will now only display every **{}** levels.",
+        "set": "{blue_tick} Leveling messages will now only display every **{modulus}** levels.",
         "reset": "{blue_tick} Leveling messages have been reset to display every level."
       },
       "serverBackground": {
@@ -224,19 +224,19 @@
         "disable": "{blue_tick} Leveling messages will now be displayed!"
       },
       "reward": {
-        "add": "{blue_tick} Users will now receive the {role} role at level **{}**.",
+        "add": "{blue_tick} Users will now receive the {role} role at level **{level}**.",
         "remove": "{blue_tick Successfully removed the {role} reward role.",
         "failure": "I cannot reward that role! Please check my permissions and role position."
       },
       "config": {
-        "channel": "**Level-up Channel:** {}",
-        "modulus": "**Leveling Modulus:** {}",
-        "muted": "**Is Muted:** {}",
-        "dms": "**Level-Up DMs:** {}",
-        "message": "**Custom Message:** {}",
-        "background": "**Custom Background:** {}"
+        "channel": "**Level-up Channel:** {channel_or_none}",
+        "modulus": "**Leveling Modulus:** {modulus}",
+        "muted": "**Is Muted:** {boolean}",
+        "dms": "**Level-Up DMs:** {boolean}",
+        "message": "**Custom Message:** {message}",
+        "background": "**Custom Background:** {url}"
       },
-      "reset": "{blue_tick} All leveling data was reset for **{}**.",
+      "reset": "{blue_tick} All leveling data was reset for **{username}**.",
       "resetAll": "Would you like to reset the leveling system?\nThis will delete **ALL** data!"
     },
     "rankCard": {
@@ -246,14 +246,14 @@
         "failure": "Unable to set that URL as your background!"
       },
       "color": {
-        "success": "Successfully updated your color to **{}**",
+        "success": "Successfully updated your color to **{color}**",
         "failure": "That is not a valid hex code, please use a valid color."
       },
       "accent": {
-        "success": "Successfully updated your accent color to **{}**",
+        "success": "Successfully updated your accent color to **{color}**",
         "failure": "That is not a valid hex code, please use a valid color."
       },
-      "opacity": "Successfully updated your opacity to **{}%**",
+      "opacity": "Successfully updated your opacity to **{opacity}%**",
       "reset": "Successfully reset your rank card to default settings!"
     },
     "rank": {
@@ -262,27 +262,27 @@
       "accessFailure": "An error occurred while trying to access that rank card!"
     },
     "rewards": {
-      "reward": "Level {} ----> {role}",
+      "reward": "Level {level} ----> {role}",
       "title": ":crown: Leveling Rewards",
       "noRewards": "{blue_x} No leveling rewards have been set for this server!"
     },
     "top": {
       "guild": {
         "name": "Guild Leaderboards",
-        "more": ":sparkles: **More?** `/top {}`",
-        "title": "TOP 5 {} {}"
+        "more": ":sparkles: **More?** `/top {type}`",
+        "title": "TOP 5 {type} {emote}"
       },
       "leveling": {
         "name": "Leveling Leaderboard",
         "empty": "Nobody has earned any XP or levels yet!\nSend some messages in chat and use `/rank` to get started!",
-        "entry": "#{} | {user} XP: `{}`"
+        "entry": "#{rank} | {user} XP: `{xp}`"
       },
       "economy": {
         "name": "Economy Leaderboard",
         "empty": "Nobody has earned any money yet!\nUse `/work` and `/balance` to get started!",
-        "entry": "#{} | {user} {currency} {}"
+        "entry": "#{rank} | {user} {currency} {amount}"
       },
-      "footer": "Page {}/{}  •  Your rank: #{}"
+      "footer": "Page {current}/{max}  •  Your rank: #{rank}"
     }
   },
   "music": {
@@ -292,9 +292,9 @@
       "differentChannel": "You are not in the same voice channel as TechnoBot!",
       "songDuration": "Song Duration",
       "position": "Position in Queue",
-      "addedBy": "Added By {}",
-      "addSong": "{blue_tick} **{}** successfully added!",
-      "addPlaylist": ":ballot_box_with_check: Added {} tracks from playlist `{}`",
+      "addedBy": "Added By {username}",
+      "addSong": "{blue_tick} **{song}** successfully added!",
+      "addPlaylist": ":ballot_box_with_check: Added {amount} tracks from playlist `{name}`",
       "invalidSong": "That is not a valid song!",
       "invalidLink": "That is not a valid link!"
     },
@@ -303,7 +303,7 @@
       "title": "Now Playing :musical_note:",
       "positionTitle": "Position",
       "progressTitle": "Progress",
-      "progress": "{} / {}"
+      "progress": "{current} / {max}"
     },
     "pause": {
       "success": ":pause_button: Paused the music player!",
@@ -319,7 +319,7 @@
       "title": "Music Queue :musical_note:",
       "song": "Song",
       "songPlural": "Songs",
-      "footer": "**{} {} in Queue | {} Total Length**",
+      "footer": "**{count} {songs} in Queue | {time} Total Length**",
       "nowPlaying": "__Now Playing:__",
       "upNext": "__Up Next:__"
     },
@@ -332,7 +332,7 @@
       "failure": "The player is not paused!"
     },
     "seek": {
-      "success": ":fast_forward: Set position to `{}`",
+      "success": ":fast_forward: Set position to `{time}`",
       "tooLong": "Time cannot be longer than the song!",
       "invalidTimestamp": "That is not a valid timestamp!"
     },
@@ -345,7 +345,7 @@
       "failure": "The music player is already stopped!"
     },
     "volume": {
-      "success": ":loud_sound: Set volume to {}%",
+      "success": ":loud_sound: Set volume to {volume}%",
       "failure": "You must specify a volume between 0 and 100!"
     }
   },
@@ -356,27 +356,27 @@
         "kick": "Kick",
         "warn": "Warn"
       },
-      "server": "**Server:** {}",
+      "server": "**Server:** {name}",
       "actionedBy": "**Actioned By:** {mention}",
-      "action": "**Action:** {}",
-      "duration": "**Duration:** {}",
-      "reason": "**Reason:** {}"
+      "action": "**Action:** {action}",
+      "duration": "**Duration:** {time}",
+      "reason": "**Reason:** {reason}"
     },
     "ban": {
       "banBot": "Did you seriously expect me to ban myself?",
       "tooHighRole": "This member cannot be banned. I need my role moved higher than theirs.",
-      "duration": "{} Days",
-      "message": "{} has been banned{}"
+      "duration": "{amount} Days",
+      "message": "{name} has been banned{time}"
     },
     "clear": {
-      "success": ":ballot_box_with_check: I have deleted `{} messages!`",
+      "success": ":ballot_box_with_check: I have deleted `{count} messages!`",
       "failure": "You cannot clear messages older than 2 weeks!"
     },
     "kick": {
       "kickForeign": "That user is not in this server!",
       "kickBot": "Did you seriously expect me to kick myself?",
       "tooHighRole": "This member cannot be kicked. I need my role moved higher than theirs.",
-      "message": "{} has been kicked"
+      "message": "{name} has been kicked"
     },
     "lock": {
       "success": ":lock: {channel} has been locked.",
@@ -388,7 +388,7 @@
       "tooHighRole": "This member cannot be muted. I need my role moved higher than theirs.",
       "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
       "alreadyMuted": "This user is already muted!",
-      "message": "{} has been muted"
+      "message": "{name} has been muted"
     },
     "muteRole": {
       "noPerm": "I am unable to create roles. Please check my permissions and role position.",
@@ -396,9 +396,9 @@
       "success": "{blue_tick} The {mention} role will be user for the `/mute` command."
     },
     "removeWarn": {
-      "successId": "{green_tick} Warning #{} has been removed.",
+      "successId": "{green_tick} Warning #{id} has been removed.",
       "failureId": "Unable to find a warning with that ID!",
-      "successUser": "{green_tick} {} warnings have been removed for {mention}.",
+      "successUser": "{green_tick} {count} warnings have been removed for {mention}.",
       "failureUser": "That user has no warnings!",
       "failure": "You must specify a user or a warning ID!"
     },
@@ -406,29 +406,29 @@
       "roleForeign": "That user is not in this server!",
       "botManagedRole": "I cannot give/remove bot/managed roles!",
       "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs.",
-      "message": "{green_tick} Changed roles for {}, "
+      "message": "{green_tick} Changed roles for {name}, "
     },
     "setNick": {
       "nickForeign": "That user is not in this server!",
-      "set": "{green_tick} **{}**'s nickname has been changed to **{}**.",
-      "reset": "{green_tick} **{}**'s nickname has been reset.",
+      "set": "{green_tick} **{name}**'s nickname has been changed to **{nickname}**.",
+      "reset": "{green_tick} **{name}**'s nickname has been reset.",
       "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs."
     },
     "slowMode": {
       "failureThread": "You cannot set slow mode on threads!",
       "disable": ":stopwatch: Slow mode has been disabled in this channel.",
       "tooHigh": "Time should be less than or equal to **6 hours**.",
-      "set": ":stopwatch: This channel slow mode delay has been set to **{}**.",
-      "display": ":stopwatch: This channel slow mode delay is **{}**.",
+      "set": ":stopwatch: This channel slow mode delay has been set to **{amount}**.",
+      "display": ":stopwatch: This channel slow mode delay is **{amount}**.",
       "format": {
-        "hours": "{} hours",
-        "minutes": "{} minutes",
-        "seconds": "{} seconds"
+        "hours": "{amount} hours",
+        "minutes": "{amount} minutes",
+        "seconds": "{amount} seconds"
       }
     },
     "unban": {
       "unbanSelf": "Ah yes, let me just unban myself...",
-      "success": "{} has been unbanned",
+      "success": "{name} has been unbanned",
       "noUser": "That user does not exist!",
       "invalidUser": "That is not a valid user ID!"
     },
@@ -443,29 +443,29 @@
       "tooHighRole": "This member cannot be unmuted. I need my role moved higher than theirs.",
       "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
       "notMuted": "This user is not muted!",
-      "message": "{} has been unmuted"
+      "message": "{name} has been unmuted"
     },
     "warn": {
       "warnForeign": "That user is not in this server!",
       "warnBot": "Why would I warn myself... silly human!",
       "warnSelf": "You cannot warn yourself!",
-      "message": "{} has been warned"
+      "message": "{name} has been warned"
     },
     "warnings": {
-      "noWarnings": "{} has no infractions!",
-      "title": "{}'s Infractions",
+      "noWarnings": "{name} has no infractions!",
+      "title": "{name}'s Infractions",
       "lastDay": "Last 24 hours",
       "lastWeek": "Last 7 days",
       "total": "Total",
       "last10": "[ID] Last 10 Warnings",
-      "message": "{} warnings"
+      "message": "{count} warnings"
     },
     "reasonUnspecified": "Unspecified"
   },
   "starboard": {
     "create": "{blue_tick} Set the starboard channel to {channel}",
     "limit": {
-      "set": "{blue_tick} Messages now require {} stars to show up on the starboard.",
+      "set": "{blue_tick} Messages now require {amount} stars to show up on the starboard.",
       "reset": "{blue_tick} Reset the star limit to default."
     },
     "blacklist": {
@@ -493,13 +493,13 @@
       "disable": "{blue_x} Users can no longer star their own messages!"
     },
     "config": {
-      "threshold": "**Threshold:** {}",
-      "channel": "**Channel:** {}",
-      "allowNsfw": "**Allow NSFW:** {}",
-      "allowSelf": "**Allow Self Stars:** {}",
-      "showJumpLinks": "**Show Jump Links:** {}",
-      "locked": "**Locked:** {}",
-      "blacklistedChannels": "**Blacklisted Channels:** {}"
+      "threshold": "**Threshold:** {amount}",
+      "channel": "**Channel:** {channel_or_none}",
+      "allowNsfw": "**Allow NSFW:** {boolean}",
+      "allowSelf": "**Allow Self Stars:** {boolean}",
+      "showJumpLinks": "**Show Jump Links:** {boolean}",
+      "locked": "**Locked:** {boolean}",
+      "blacklistedChannels": "**Blacklisted Channels:** {list}"
     }
   },
   "suggestions": {
@@ -540,9 +540,9 @@
         "disable": "{blue_x} Anonymous suggestions have been **disabled**!"
       },
       "config": {
-        "channel": "**Channel:** {}",
-        "dm": "**Reponse DMs:** {}",
-        "anonymous": "**Anonymous Suggestions:** {}"
+        "channel": "**Channel:** {channel_or_none}",
+        "dm": "**Reponse DMs:** {boolean}",
+        "anonymous": "**Anonymous Suggestions:** {booolean}"
       },
       "reset": "Would you like to reset the suggestions system?\nThis will delete **ALL** data!"
     }
