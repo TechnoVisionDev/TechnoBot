@@ -69,12 +69,12 @@ public class Item {
         String priceField = currency+" "+ EconomyHandler.FORMATTER.format(price);
         String descField = (description != null) ? description : "None provided";
         String inventoryField = (showInInventory) ? "Yes" : "No";
-        String timeField = (expireTimestamp != null) ? TimeFormat.RELATIVE.format(expireTimestamp) : "No time limit";
-        String stockField = (stock != null) ? String.valueOf(stock) : "Infinity";
+        String timeField = (expireTimestamp != null) ? TimeFormat.RELATIVE.format(expireTimestamp) : "None";
+        String stockField = (stock != null) ? EconomyHandler.FORMATTER.format(stock) : "Infinity";
         String roleReqField = (requiredRole != null) ? "<@&"+requiredRole+">" : "None";
         String roleGivenField = (givenRole != null) ? "<@&"+givenRole+">" : "None";
         String roleRemovedField = (removedRole != null) ? "<@&"+removedRole+">" : "None";
-        String reqBalance = (requiredBalance != null) ? String.valueOf(requiredBalance) : "None";
+        String reqBalance = (requiredBalance != null) ? currency+" "+EconomyHandler.FORMATTER.format(requiredBalance) : "None";
         String reply = (replyMessage != null) ? replyMessage : "None";
         return new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
@@ -83,7 +83,7 @@ public class Item {
                 .addField("Price", priceField, true)
                 .addField("Description", descField, false)
                 .addField("Show in inventory?", inventoryField, true)
-                .addField("Time remaining", timeField, true)
+                .addField("Expiration date", timeField, true)
                 .addField("Stock remaining", stockField, true)
                 .addField("Role required", roleReqField, true)
                 .addField("Role given", roleGivenField, true)

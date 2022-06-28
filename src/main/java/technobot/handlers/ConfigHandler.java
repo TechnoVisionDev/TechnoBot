@@ -1,6 +1,7 @@
 package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
@@ -106,6 +107,26 @@ public class ConfigHandler {
         } catch (NullPointerException e) {
             return false;
         }
+    }
+
+    /**
+     * Removes a shop item from the local cache and database.
+     *
+     * @param name the name of the object to remove.
+     */
+    public void removeItem(String name) {
+        config.removeItem(name);
+        bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
+    }
+
+    /**
+     * Updates an item with new data in the local cache and database.
+     *
+     * @param item the item object to replace the existing item of the same name.
+     */
+    public void updateItem(Item item) {
+        config.addItem(item);
+        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
     }
 
     /**

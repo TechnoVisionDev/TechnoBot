@@ -174,4 +174,8 @@ public class Config {
     public void addItem(Item item) {
         this.shop.put(item.getName().toLowerCase(), item);
     }
+
+    public void removeItem(String name) {
+        this.shop.remove(name.toLowerCase());
+    }
 }
