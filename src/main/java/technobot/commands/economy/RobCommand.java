@@ -62,7 +62,7 @@ public class RobCommand extends Command {
             // Rob target
             EconomyReply reply = economyHandler.rob(user.getIdLong(), target.getIdLong());
             embed.setColor(reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color);
-            embed.setDescription(reply.getResponse());
+            embed.setDescription(reply.response());
             event.replyEmbeds(embed.build()).queue();
         }
     }

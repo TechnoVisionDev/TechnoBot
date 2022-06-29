@@ -26,6 +26,28 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.jsonschema2pojo</groupId>
+        <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+        <version>1.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>src/main/resources/localization/en_us.json</sourceDirectory>
+          <targetPackage>technobot.util.localization</targetPackage>
+          <includeAdditionalProperties>false</includeAdditionalProperties>
+          <includeConstructors>true</includeConstructors>
+          <includeGetters>false</includeGetters>
+          <includeSetters>false</includeSetters>
+          <annotationStyle>gson</annotationStyle>
+          <sourceType>json</sourceType>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <repositories>

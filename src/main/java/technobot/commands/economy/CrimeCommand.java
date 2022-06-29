@@ -43,9 +43,9 @@ public class CrimeCommand extends Command {
             // Commit crime
             EconomyReply reply = economyHandler.crime(user);
             int color = reply.isSuccess() ? EmbedColor.SUCCESS.color : EmbedColor.ERROR.color;
-            embed.setDescription(reply.getResponse());
+            embed.setDescription(reply.response());
             embed.setColor(color);
-            embed.setFooter(get(s -> s.economy.replyId, reply.getId()));
+            embed.setFooter(get(s -> s.economy.replyId, reply.id()));
             event.replyEmbeds(embed.build()).queue();
         }
     }

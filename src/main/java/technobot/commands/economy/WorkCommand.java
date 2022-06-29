@@ -42,9 +42,9 @@ public class WorkCommand extends Command {
         } else {
             // Work
             EconomyReply reply = economyHandler.work(user);
-            embed.setDescription(reply.getResponse());
+            embed.setDescription(reply.response());
             embed.setColor(EmbedColor.SUCCESS.color);
-            embed.setFooter(get(s -> s.economy.replyId, reply.getId()));
+            embed.setFooter(get(s -> s.economy.replyId, reply.id()));
             event.replyEmbeds(embed.build()).queue();
         }
     }
