@@ -12,7 +12,7 @@ import java.util.List;
 public class SecurityUtils {
 
     private static final List<String> ALLOWED_PROTOCOLS = List.of("http", "https");
-    private static final List<String> ALLOWED_DOMAINS = List.of("youtube", "soundcloud", "twitch");
+    private static final List<String> ALLOWED_DOMAINS = List.of("youtube", "soundcloud", "twitch", "spotify", "apple");
 
     /**
      * Check if the given url is a whitelisted domain and protocol.
@@ -36,7 +36,7 @@ public class SecurityUtils {
      * @param host The host url. Ex: www.youtube.com
      * @return The domain name without subdomains. Ex: youtube
      */
-    private static String getDomain(String host) {
+    public static String getDomain(String host) {
         String[] parts = host.split("(\\.|%2E)"); // Match dot or URL-Encoded dot
         int size = parts.length;
         if(size == 1) {

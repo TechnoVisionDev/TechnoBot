@@ -31,10 +31,8 @@ public class VolumeCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         int volume = event.getOption("amount").getAsInt();
-
-        MusicHandler music = bot.musicListener.getMusic(event, false);
+        MusicHandler music = bot.musicListener.getMusic(event, true);
         if (music == null) return;
         try {
             if (volume < 0 || volume > 100) {
@@ -42,11 +40,11 @@ public class VolumeCommand extends Command {
             }
             music.setVolume(volume);
             String text = get(s -> s.music.volume.success, volume);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         } catch (@NotNull NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}
 
         String text = get(s -> s.music.volume.failure);
-        event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+        event.replyEmbeds(EmbedUtils.createError(text)).queue();
     }
 }

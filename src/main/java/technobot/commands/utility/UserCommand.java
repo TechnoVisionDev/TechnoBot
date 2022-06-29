@@ -1,7 +1,6 @@
 package technobot.commands.utility;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -34,18 +33,19 @@ public class UserCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
         User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
-        Member member = event.getGuild().getMember(user);
 
-        // Create and send embed
-        String joinedDiscord = TimeFormat.RELATIVE.format(member.getTimeCreated().toInstant().toEpochMilli());
-        String joinedServer = TimeFormat.RELATIVE.format(member.getTimeJoined().toInstant().toEpochMilli());
-        EmbedBuilder embed = new EmbedBuilder()
-                .setColor(EmbedColor.DEFAULT.color)
-                .addField(get(s -> s.utility.user.joinedDiscord), joinedDiscord, true)
-                .addField(get(s -> s.utility.user.joinedServer), joinedServer, true)
-                .addField(get(s -> s.utility.user.discordId), user.getId(), false)
-                .setThumbnail(user.getEffectiveAvatarUrl())
-                .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
-        event.replyEmbeds(embed.build()).queue();
+        event.getGuild().retrieveMember(user).queue(member -> {
+            // Create and send embed
+            String joinedDiscord = TimeFormat.RELATIVE.format(member.getTimeCreated().toInstant().toEpochMilli());
+            String joinedServer = TimeFormat.RELATIVE.format(member.getTimeJoined().toInstant().toEpochMilli());
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setColor(EmbedColor.DEFAULT.color)
+                    .addField(get(s -> s.utility.user.joinedDiscord), joinedDiscord, true)
+                    .addField(get(s -> s.utility.user.joinedServer), joinedServer, true)
+                    .addField(get(s -> s.utility.user.discordId), user.getId(), false)
+                    .setThumbnail(user.getEffectiveAvatarUrl())
+                    .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
+            event.replyEmbeds(embed.build()).queue();
+        })
     }
 }

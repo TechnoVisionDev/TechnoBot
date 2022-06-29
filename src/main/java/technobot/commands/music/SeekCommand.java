@@ -29,7 +29,6 @@ public class SeekCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
@@ -53,8 +52,8 @@ public class SeekCommand extends Command {
 
             // Make sure pos is not longer than track
             if (pos >= music.getQueue().getFirst().getDuration()) {
-                String text = get(s -> s.music.seek.tooLong);
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                String text = "The timestamp cannot be longer than the song!";
+                event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 return;
             }
 
@@ -64,12 +63,12 @@ public class SeekCommand extends Command {
                     s -> s.music.seek.success,
                     MusicListener.formatTrackLength(pos)
             );
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
 
         } catch ( NumberFormatException | ArrayIndexOutOfBoundsException e) {
             // Invalid timestamps
             String text = get(s -> s.music.seek.invalidTimestamp);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).queue();
         }
     }
 }

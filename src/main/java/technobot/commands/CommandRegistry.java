@@ -63,6 +63,12 @@ public class CommandRegistry extends ListenerAdapter {
                 new DepositCommand(bot),
                 new WithdrawCommand(bot),
                 new PayCommand(bot),
+                new ShopCommand(bot),
+                new BuyCommand(bot),
+                new InventoryCommand(bot),
+                new InspectCommand(bot),
+                new ItemCommand(bot),
+                new EconomyCommand(bot),
 
                 //Greeting commands
                 new GreetCommand(bot),
@@ -80,6 +86,8 @@ public class CommandRegistry extends ListenerAdapter {
                 new EightBallCommand(bot),
                 new GoogleCommand(bot),
                 new RedditCommand(bot),
+                new InspireCommand(bot),
+                new WouldYouRatherCommand(bot),
                 new SurpriseCommand(bot),
 
                 //Leveling commands
@@ -133,10 +141,15 @@ public class CommandRegistry extends ListenerAdapter {
                 new UserCommand(bot),
                 new RollCommand(bot),
                 new RolesCommand(bot),
+                new AfkCommand(bot),
                 new PollCommand(bot),
-                new InviteCommand(bot),
-                new PremiumCommand(bot),
+                new TwitterCommand(bot),
+                new YouTubeCommand(bot),
                 new MathCommand(bot),
+                new VoteCommand(bot),
+                new PremiumCommand(bot),
+                new InviteCommand(bot),
+                new SupportCommand(bot),
                 new HelpCommand(bot) // The 'help' command MUST come last!!!
         );
     }
@@ -207,6 +220,6 @@ public class CommandRegistry extends ListenerAdapter {
         // Get GuildData from database
         GuildData.get(event.getGuild());
         // Register slash commands
-        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue();
+        event.getGuild().updateCommands().addCommands(unpackCommandData()).queue(succ -> {}, fail -> {});
     }
 }

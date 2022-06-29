@@ -2,10 +2,7 @@ package technobot.data.cache;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * POJO object that stores config data for a guild.
@@ -41,11 +38,16 @@ public class Config {
     @BsonProperty("auto_roles")
     private Set<Long> autoRoles;
 
+    private String currency;
+
+    private LinkedHashMap<String, Item> shop;
+
     @BsonProperty("locale")
     private String locale;
 
     public Config() {
         autoRoles = new HashSet<>();
+        shop = new LinkedHashMap<>();
     }
 
     public Config(long guild) {
@@ -153,6 +155,30 @@ public class Config {
     }
 
     public void removeAutoRole(long roleID) { this.autoRoles.remove(roleID); }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public LinkedHashMap<String, Item> getShop() {
+        return shop;
+    }
+
+    public void setShop(LinkedHashMap<String, Item> shop) {
+        this.shop = shop;
+    }
+
+    public void addItem(Item item) {
+        this.shop.put(item.getName().toLowerCase(), item);
+    }
+
+    public Item removeItem(String name) {
+        return this.shop.remove(name.toLowerCase());
+    }
 
     public String getLocale() {
         return locale;

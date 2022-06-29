@@ -6,6 +6,7 @@ import com.mongodb.lang.Nullable;
 import kotlin.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.moderation.Ban;
@@ -126,9 +127,9 @@ public class ModerationHandler {
      */
     public boolean canTargetMember(Member target) {
         // Check that target is not the owner of the guild
-        if (target.isOwner()) {
-            return false;
-        }
+        if (target == null) return true;
+        if (target.isOwner()) return false;
+
         // Check if bot has a higher role than user
         int botPos = guild.getBotRole().getPosition();
         for (Role role : target.getRoles()) {
@@ -303,7 +304,9 @@ public class ModerationHandler {
         if (moderation.getMutes().contains(member.getIdLong())) {
             Role muteRole = guild.getRoleById(moderation.getMuteRole());
             if (muteRole != null) {
-                guild.addRoleToMember(member, muteRole).queue();
+                try {
+                    guild.addRoleToMember(member, muteRole).queue();
+                } catch (HierarchyException ignored) { }
             }
         }
     }

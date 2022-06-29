@@ -1,5 +1,6 @@
 package technobot.commands.fun;
 
+import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -11,7 +12,6 @@ import okhttp3.Response;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
-import technobot.data.json.Emote;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
@@ -93,12 +93,12 @@ public class EmoteCommand extends Command {
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 if (!response.isSuccessful()) throw new IOException();
-                Emote entity = bot.gson.fromJson(response.body().string(), Emote.class);
+                JsonObject entity = bot.gson.fromJson(response.body().string(), JsonObject.class);
 
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
                         .setAuthor(finalText, null, event.getUser().getEffectiveAvatarUrl())
-                        .setImage(entity.getUrl());
+                        .setImage(entity.get("url").getAsString());
                 event.replyEmbeds(embed.build()).queue();
             }
         });

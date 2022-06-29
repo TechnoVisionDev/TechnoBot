@@ -41,14 +41,14 @@ public class GuildData {
      */
     private GuildData(Guild guild) {
         // Setup caches
+        configHandler = new ConfigHandler(bot, guild);
         musicHandler = null;
         suggestionHandler = new SuggestionHandler(bot, guild);
         moderationHandler = new ModerationHandler(bot, guild);
         starboardHandler = new StarboardHandler(bot, guild);
         levelingHandler = new LevelingHandler(bot, guild);
         greetingHandler = new GreetingHandler(bot, guild);
-        economyHandler = new EconomyHandler(bot, guild);
-        configHandler = new ConfigHandler(bot, guild);
+        economyHandler = new EconomyHandler(bot, guild, configHandler);
     }
 
     /**

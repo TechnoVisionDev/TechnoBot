@@ -31,28 +31,27 @@ public class PlayCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         String song = event.getOption("song").getAsString();
-
         MusicHandler music = bot.musicListener.getMusic(event, true);
         if (music == null) return;
 
         // Check if member is in the right voice channel
         AudioChannel channel = event.getMember().getVoiceState().getChannel();
         if (music.getPlayChannel() != channel) {
-            String text = get(s -> s.music.play.differentChannel);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            String text = "You are not in the same voice channel as TechnoBot!";
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
         // Cannot have more than 100 songs in the queue
         if (music.getQueue().size() >= 100) {
-            String text = get(s -> s.music.play.tooManySongs);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            String text = "You cannot queue more than 100 songs!";
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
         // Find working URL
+        String userID = event.getUser().getId();
         try {
             String url;
             try {
@@ -62,7 +61,7 @@ public class PlayCommand extends Command {
                 // Else search YouTube using args
                 url = "ytsearch:" + song;
                 music.setLogChannel(event.getTextChannel());
-                bot.musicListener.addTrack(event, url);
+                bot.musicListener.addTrack(event, url, userID);
                 return;
             }
             // Search YouTube if using a soundcloud link
@@ -72,10 +71,10 @@ public class PlayCommand extends Command {
             }
             // Otherwise add real URL to queue
             music.setLogChannel(event.getTextChannel());
-            bot.musicListener.addTrack(event, url);
+            bot.musicListener.addTrack(event, url, userID);
         } catch (IndexOutOfBoundsException e) {
             String text = get(s -> s.music.play.specifySong);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         }
     }
 }

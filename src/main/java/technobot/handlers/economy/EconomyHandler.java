@@ -7,12 +7,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
+import technobot.data.GuildData;
 import technobot.data.cache.Economy;
+import technobot.data.cache.Item;
+import technobot.handlers.ConfigHandler;
+import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static technobot.util.Localization.get;
@@ -24,6 +26,7 @@ import static technobot.util.Localization.get;
  */
 public class EconomyHandler {
 
+    public static final String DEFAULT_CURRENCY = "\uD83E\uDE99";
     public static final long WORK_TIMEOUT = 14400000;
     public static final long ROB_TIMEOUT = 86400000;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
@@ -35,14 +38,19 @@ public class EconomyHandler {
     private final TechnoBot bot;
     private final Bson guildFilter;
     private final Map<Long, UserTimeout> timeouts;
-    private final String currency;
+    private String currency;
 
-    public EconomyHandler(TechnoBot bot, Guild guild) {
+    public EconomyHandler(TechnoBot bot, Guild guild, ConfigHandler configHandler) {
         this.bot = bot;
         this.guild = guild;
         this.guildFilter = Filters.eq("guild", guild.getIdLong());
         this.timeouts = new HashMap<>();
-        this.currency = "\uD83E\uDE99";
+
+        // Set currency symbol
+        this.currency = configHandler.getConfig().getCurrency();
+        if (currency == null) {
+            this.currency = DEFAULT_CURRENCY;
+        }
     }
 
     /**
@@ -72,11 +80,11 @@ public class EconomyHandler {
             // Crime successful
             amount = ThreadLocalRandom.current().nextInt(450) + 250;
             addMoney(userID, amount);
-            reply = responses.getCrimeSuccessResponse(amount);
+            reply = responses.getCrimeSuccessResponse(amount, getCurrency());
         } else {
             // Crime failed
             amount = calculateFine(userID);
-            if (amount > 0) removeMoney(userID, calculateFine(userID));
+            if (amount > 0) removeMoney(userID, amount);
             reply = responses.getCrimeFailResponse(amount);
         }
         setTimeout(userID, TIMEOUT_TYPE.CRIME);
@@ -103,6 +111,7 @@ public class EconomyHandler {
 
         // Calculate mount stolen (success probability * their cash)
         long amountStolen = (long) ((1 - failChance) * targetCash);
+        if (amountStolen < 0) amountStolen = 0;
 
         // Attempt robbery
         setTimeout(userID, TIMEOUT_TYPE.ROB);
@@ -351,12 +360,56 @@ public class EconomyHandler {
     }
 
     /**
+     * Sets the currency symbol to a custom emoji or string.
+     *
+     * @param symbol the string or emoji symbol.
+     */
+    public void setCurrency(String symbol) {
+        bot.database.config.updateOne(guildFilter, Updates.set("currency", symbol));
+        this.currency = symbol;
+    }
+
+    /**
+     * Resets the currency symbol to the default emoji.
+     */
+    public void resetCurrency() {
+        bot.database.config.updateOne(guildFilter, Updates.unset("currency"));
+        this.currency = DEFAULT_CURRENCY;
+    }
+
+    /**
      * Get the currency symbol for this guild.
      *
      * @return string emoji for currency symbol.
      */
     public String getCurrency() {
         return currency;
+    }
+
+    /**
+     * Add an item from the store to a user's inventory.
+     *
+     * @param userID the user buying this item.
+     * @param item the item being purchased.
+     */
+    public void buyItem(long userID, Item item) {
+        removeMoney(userID, item.getPrice());
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        if (item.getShowInInventory()) {
+            bot.database.economy.updateOne(filter, Updates.inc("inventory." + item.getUuid(), 1));
+        }
+    }
+
+    /**
+     * Retrieves a user's inventory, which is a map of UUID counts.
+     *
+     * @param userID the ID of the user whose inventory is being retrieved.
+     * @return a map of item UUIDS to integer counts.
+     */
+    public LinkedHashMap<String,Long> getInventory(long userID) {
+        LinkedHashMap<String,Long> inv = getProfile(userID).getInventory();
+        if (inv == null) return new LinkedHashMap<>();
+        return inv;
     }
 
     /**

@@ -32,10 +32,10 @@ public class RepeatCommand extends Command {
         music.loop();
         String text;
         if (music.isLoop()) {
-            text = get(s -> s.music.repeat.enabled);
+            text = ":repeat: Repeat has been enabled.";
         } else {
-            text = get(s -> s.music.repeat.disabled);
+            text = ":repeat: Repeat has been disabled.";
         }
-        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

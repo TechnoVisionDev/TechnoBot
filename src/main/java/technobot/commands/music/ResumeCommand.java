@@ -25,17 +25,16 @@ public class ResumeCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         if (music.isPaused()) {
             music.unpause();
             String text = get(s -> s.music.resume.success);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         } else {
             String text = get(s -> s.music.resume.failure);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).queue();
         }
     }
 }

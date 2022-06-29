@@ -6,7 +6,7 @@ package technobot.data.json;
  *
  * @author TechnoVision
  */
-public class Post {
+public class RedditPost {
 
     public static final String UPVOTE_EMOJI = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/sony/336/thumbs-up_1f44d.png";
 
@@ -15,7 +15,7 @@ public class Post {
     private final String url;
     private final int ups;
 
-    public Post(String title, String postLink, String url, int ups) {
+    public RedditPost(String title, String postLink, String url, int ups) {
         this.title = title;
         this.postLink = postLink;
         this.url = url;

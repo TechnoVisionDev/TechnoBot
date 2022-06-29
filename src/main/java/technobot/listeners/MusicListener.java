@@ -1,5 +1,9 @@
 package technobot.listeners;
 
+import com.github.topislavalinkplugins.topissourcemanagers.ISRCAudioTrack;
+import com.github.topislavalinkplugins.topissourcemanagers.applemusic.AppleMusicSourceManager;
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
+import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -8,10 +12,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.AudioChannel;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -43,8 +44,20 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Setup audio player manager.
      */
-    public MusicListener() {
+    public MusicListener(String spotifyClientId, String spotifyClientSecret) {
         this.playerManager = new DefaultAudioPlayerManager();
+
+        // Add Spotify support
+        SpotifyConfig spotifyConfig = new SpotifyConfig();
+        spotifyConfig.setClientId(spotifyClientId);
+        spotifyConfig.setClientSecret(spotifyClientSecret);
+        spotifyConfig.setCountryCode("US");
+        this.playerManager.registerSourceManager(new SpotifySourceManager(null, spotifyConfig, playerManager));
+
+        // Add Apple Music support
+        playerManager.registerSourceManager(new AppleMusicSourceManager(null, "us", playerManager));
+
+        // Add audio player to source manager
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
 
@@ -80,7 +93,7 @@ public class MusicListener extends ListenerAdapter {
         // Check if user is in voice channel
         if (!inChannel(Objects.requireNonNull(event.getMember()))) {
             String text = get(s -> s.music.listener.connect);
-            event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return null;
         }
         // Bot should join voice channel if not already in one.
@@ -93,13 +106,13 @@ public class MusicListener extends ListenerAdapter {
         if (!skipQueueCheck) {
             if (settings.musicHandler == null || settings.musicHandler.getQueue().isEmpty()) {
                 String text = get(s -> s.music.listener.queueEmpty);
-                event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
+                event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
                 return null;
             }
             // Check if member is in the right voice channel
             if (settings.musicHandler.getPlayChannel() != channel) {
                 String text = get(s -> s.music.listener.differentChannel);
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 return null;
             }
         }
@@ -109,17 +122,18 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Joins a voice channel.
      *
-     * @param channel    The Voice Channel
+     * @para guildData    The GuilData instance for this guild.
+     * @param channel    The Voice Channel.
      * @param logChannel A log channel to notify users.
      */
     public void joinChannel(@NotNull GuildData settings, @NotNull AudioChannel channel, TextChannel logChannel) {
         AudioManager manager = channel.getGuild().getAudioManager();
-        if (settings.musicHandler == null) {
-            settings.musicHandler = new MusicHandler(playerManager.createPlayer());
+        if (guildData.musicHandler == null) {
+            guildData.musicHandler = new MusicHandler(playerManager.createPlayer());
         }
-        manager.setSendingHandler(settings.musicHandler);
-        Objects.requireNonNull(settings.musicHandler).setLogChannel(logChannel);
-        settings.musicHandler.setPlayChannel(channel);
+        manager.setSendingHandler(guildData.musicHandler);
+        Objects.requireNonNull(guildData.musicHandler).setLogChannel(logChannel);
+        guildData.musicHandler.setPlayChannel(channel);
         manager.openAudioConnection(channel);
     }
 
@@ -137,10 +151,11 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Add a track to the specified guild.
      *
-     * @param event A slash command event.
-     * @param url   The track URL.
+     * @param event  A slash command event.
+     * @param url    The track URL.
+     * @param userID The ID of the user that added this track.
      */
-    public void addTrack(SlashCommandInteractionEvent event, String url) {
+    public void addTrack(SlashCommandInteractionEvent event, String url, String userID) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) return;
 
@@ -156,33 +171,9 @@ public class MusicListener extends ListenerAdapter {
 
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
-                // Create embed message
-                if (!music.getQueue().isEmpty()) {
-                    String duration = formatTrackLength(audioTrack.getInfo().length);
-                    String thumb = String.format("https://img.youtube.com/vi/%s/0.jpg", audioTrack.getInfo().uri.substring(32));
-
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setColor(EmbedColor.DEFAULT.color)
-                            .setTitle(audioTrack.getInfo().title, audioTrack.getInfo().uri)
-                            .addField(get(s -> s.music.listener.songDuration), duration, true)
-                            .addField(get(s -> s.music.listener.position), String.valueOf(music.getQueue().size()), true)
-                            .setFooter(
-                                    get(s -> s.music.listener.addedBy, event.getUser().getAsTag()),
-                                    event.getUser().getEffectiveAvatarUrl()
-                            )
-                            .setThumbnail(thumb)
-                            .build();
-                    event.getHook().sendMessage(get(
-                            s -> s.music.listener.addSong,
-                            audioTrack.getInfo().title
-                    ) + "").addEmbeds(embed).queue();
-                } else {
-                    event.getHook().sendMessage(get(
-                            s -> s.music.listener.addSong,
-                            audioTrack.getInfo().title
-                    ) + "").queue();
-                }
+                audioTrack.setUserData(userID);
                 music.enqueue(audioTrack);
+                event.reply(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
             }
 
             @Override
@@ -196,11 +187,7 @@ public class MusicListener extends ListenerAdapter {
                 // Otherwise load first 100 tracks from playlist
                 int total = audioPlaylist.getTracks().size();
                 if (total > 100) total = 100;
-                String msg = get(
-                        s -> s.music.listener.addPlaylist,
-                        total, audioPlaylist.getName()
-                );
-                event.getHook().sendMessage(msg).queue();
+                event.reply(":notes: | Added **"+audioPlaylist.getName()+"** with `"+total+"` songs to the queue.").queue();
 
                 total = music.getQueue().size();
                 for (AudioTrack track : audioPlaylist.getTracks()) {
@@ -214,13 +201,13 @@ public class MusicListener extends ListenerAdapter {
             @Override
             public void noMatches() {
                 String msg = "That is not a valid song!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
+                event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
                 String msg = "That is not a valid link!";
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
+                event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
         });
     }
@@ -240,7 +227,7 @@ public class MusicListener extends ListenerAdapter {
         if (event.getJDA().getSelfUser().getIdLong() == event.getMember().getIdLong()) {
             GuildData data = GuildData.get(event.getGuild());
             if (data.musicHandler != null) {
-                data.musicHandler.stop();
+                data.musicHandler.disconnect();
             }
         }
     }

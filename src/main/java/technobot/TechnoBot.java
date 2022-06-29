@@ -7,9 +7,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import technobot.commands.CommandRegistry;
@@ -19,6 +16,12 @@ import technobot.listeners.*;
 
 import javax.security.auth.login.LoginException;
 
+/**
+ * Main class for TechnoBot Discord Bot.
+ * Initializes shard manager, database, and listeners.
+ *
+ * @author TechnoVision
+ */
 public class TechnoBot {
 
     public Gson gson;
@@ -48,37 +51,34 @@ public class TechnoBot {
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(config.get("TOKEN", System.getenv("TOKEN")));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("/help | technobot.app"));
-        builder.setChunkingFilter(ChunkingFilter.NONE);
-        builder.setMemberCachePolicy(MemberCachePolicy.NONE);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.GUILD_PRESENCES);
+                GatewayIntent.GUILD_MESSAGE_REACTIONS);
         builder.addEventListeners(new CommandRegistry(this));
         shardManager = builder.build();
         GuildData.init(this);
 
         //Register Listeners
         buttonListener = new ButtonListener();
-        musicListener = new MusicListener();
+        musicListener = new MusicListener(config.get("SPOTIFY_CLIENT_ID"), config.get("SPOTIFY_TOKEN"));
         shardManager.addEventListener(
-                new GuildListener(),
+                new GuildListener(this),
                 buttonListener,
                 musicListener,
                 new StarboardListener(),
                 new LevelingListener(this),
-                new GreetingListener());
+                new GreetingListener(),
+                new AfkListener());
     }
 
     /**
-     * Initialize CivBot.
+     * Initialize TechnoBot.
      *
      * @param args ignored
      */
     public static void main(String[] args) {
-        TechnoBot bot;
         try {
-            bot = new TechnoBot();
+            TechnoBot bot = new TechnoBot();
         } catch (LoginException e) {
             System.out.println("ERROR: Provided bot token is invalid!");
         }

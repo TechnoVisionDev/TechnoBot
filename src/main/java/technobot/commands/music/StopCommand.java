@@ -27,11 +27,13 @@ public class StopCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         MusicHandler musicHandler = GuildData.get(event.getGuild()).musicHandler;
-        if (musicHandler == null || musicHandler.getQueue().isEmpty()) {
+        if (musicHandler == null) {
             String text = get(s -> s.music.stop.failure);
             event.replyEmbeds(EmbedUtils.createError(text)).queue();
         } else {
-            musicHandler.stop();
+            musicHandler.disconnect();
+            event.getGuild().getAudioManager().closeAudioConnection();
+
             String text = get(s -> s.music.stop.success);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }
