@@ -7,12 +7,16 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 
+import java.util.UUID;
+
 /**
  * POJO object that stores a shop item.
  *
  * @author TechnoVision
  */
 public class Item {
+
+    private String uuid;
 
     private String name;
 
@@ -46,6 +50,7 @@ public class Item {
     public Item() { }
 
     public Item(String name) {
+        this.uuid = UUID.randomUUID().toString();
         this.name = name;
         this.price = 0L;
         this.description = null;
@@ -91,6 +96,14 @@ public class Item {
                 .addField("Required balance", reqBalance, true)
                 .addField("Reply message", reply, true)
                 .build();
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {

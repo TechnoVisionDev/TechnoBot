@@ -1,7 +1,6 @@
 package technobot.handlers;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bson.conversions.Bson;
@@ -9,7 +8,7 @@ import technobot.TechnoBot;
 import technobot.data.cache.Config;
 import technobot.data.cache.Item;
 
-import java.util.Set;
+import java.util.LinkedHashMap;
 
 /**
  * Handles config data for the guild and various modules.
@@ -22,6 +21,7 @@ public class ConfigHandler {
     private final TechnoBot bot;
     private final Bson filter;
     private Config config;
+    private LinkedHashMap<String, Item> shopUUIDs;
 
     public ConfigHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
@@ -33,6 +33,12 @@ public class ConfigHandler {
         if (this.config == null) {
             this.config = new Config(guild.getIdLong());
             bot.database.config.insertOne(config);
+        }
+
+        // Map shop UUIDs to items
+        shopUUIDs = new LinkedHashMap<>();
+        for (Item item : config.getShop().values()) {
+            shopUUIDs.put(item.getUuid(), item);
         }
     }
 
@@ -82,19 +88,6 @@ public class ConfigHandler {
     }
 
     /**
-     * Creates a new blank economy shop item.
-     * Adds it to local cache and database config file.
-     *
-     * @param name the name of the item to create.
-     */
-    public Item createItem(String name) {
-        Item item = new Item(name);
-        config.addItem(item);
-        bot.database.config.updateOne(filter, Updates.set("shop."+name.toLowerCase(), item));
-        return item;
-    }
-
-    /**
      * Adds an existing item to the economy shop.
      * Adds it to local cache and database config file.
      *
@@ -102,6 +95,7 @@ public class ConfigHandler {
      */
     public Item addItem(Item item) {
         config.addItem(item);
+        shopUUIDs.put(item.getUuid(), item);
         bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
         return item;
     }
@@ -127,7 +121,8 @@ public class ConfigHandler {
      * @param name the name of the object to remove.
      */
     public void removeItem(String name) {
-        config.removeItem(name);
+        Item item = config.removeItem(name);
+        shopUUIDs.remove(item.getUuid());
         bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
     }
 
@@ -149,6 +144,16 @@ public class ConfigHandler {
      */
     public Item getItem(String name) {
         return config.getShop().get(name.toLowerCase());
+    }
+
+    /**
+     * Retrieves a shop item by UUID from the local cache.
+     *
+     * @param uuid the UUID of the item to retrieve.
+     * @return an Item object.
+     */
+    public Item getItemByID(String uuid) {
+        return shopUUIDs.get(uuid);
     }
 
     /**

@@ -172,7 +172,7 @@ public class Config {
         this.shop.put(item.getName().toLowerCase(), item);
     }
 
-    public void removeItem(String name) {
-        this.shop.remove(name.toLowerCase());
+    public Item removeItem(String name) {
+        return this.shop.remove(name.toLowerCase());
     }
 }

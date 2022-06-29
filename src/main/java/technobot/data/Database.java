@@ -32,6 +32,7 @@ public class Database {
     public @NotNull MongoCollection<Config> config;
     public @NotNull MongoCollection<Greetings> greetings;
     public @NotNull MongoCollection<Economy> economy;
+    public @NotNull MongoCollection<Item> items;
 
     /**
      * Connect to database using MongoDB URI and
@@ -58,6 +59,7 @@ public class Database {
         config = database.getCollection("config", Config.class);
         greetings = database.getCollection("greetings", Greetings.class);
         economy = database.getCollection("economy", Economy.class);
+        items = database.getCollection("items", Item.class);
 
         Bson guildIndex = Indexes.descending("guild");
         suggestions.createIndex(guildIndex);

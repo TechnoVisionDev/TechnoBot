@@ -1,5 +1,6 @@
 package technobot.data.cache;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class Economy {
     private Long balance;
     private Long bank;
 
-    private Set<String> inventory;
+    private LinkedHashMap<String,Long> inventory;
 
     public Economy() { }
 
@@ -55,11 +56,11 @@ public class Economy {
         this.bank = bank;
     }
 
-    public Set<String> getInventory() {
+    public LinkedHashMap<String,Long> getInventory() {
         return inventory;
     }
 
-    public void setInventory(Set<String> inventory) {
+    public void setInventory(LinkedHashMap<String,Long> inventory) {
         this.inventory = inventory;
     }
 }

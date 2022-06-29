@@ -14,9 +14,7 @@ import technobot.handlers.ConfigHandler;
 import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -378,6 +376,32 @@ public class EconomyHandler {
      */
     public String getCurrency() {
         return currency;
+    }
+
+    /**
+     * Add an item from the store to a user's inventory.
+     *
+     * @param userID the user buying this item.
+     * @param item the item being purchased.
+     */
+    public void buyItem(long userID, Item item) {
+        removeMoney(userID, item.getPrice());
+        Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
+        if (item.getShowInInventory()) {
+            bot.database.economy.updateOne(filter, Updates.inc("inventory." + item.getUuid(), 1));
+        }
+    }
+
+    /**
+     * Retrieves a user's inventory, which is a map of UUID counts.
+     *
+     * @param userID the ID of the user whose inventory is being retrieved.
+     * @return a map of item UUIDS to integer counts.
+     */
+    public LinkedHashMap<String,Long> getInventory(long userID) {
+        LinkedHashMap<String,Long> inv = getProfile(userID).getInventory();
+        if (inv == null) return new LinkedHashMap<>();
+        return inv;
     }
 
     /**
