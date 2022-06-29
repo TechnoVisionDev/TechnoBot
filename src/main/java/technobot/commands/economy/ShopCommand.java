@@ -13,8 +13,7 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Command that displays the server shop and available items.
@@ -51,7 +50,10 @@ public class ShopCommand extends Command {
         // Create paginated embeds
         List<MessageEmbed> embeds = new ArrayList<>();
         int count = 0;
-        for (Item item : guildData.configHandler.getConfig().getShop().values()) {
+        LinkedHashMap<String, Item> shop = guildData.configHandler.getConfig().getShop();
+        ListIterator<Map.Entry<String, Item>> it = new ArrayList<>(shop.entrySet()).listIterator(shop.entrySet().size());
+        while(it.hasPrevious()) {
+            Item item = it.previous().getValue();
             String price = guildData.economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(item.getPrice());
             String desc = item.getDescription() != null ? "**\n" + item.getDescription() : "**";
             embed.appendDescription("\n\n**" + price + " - " + item.getName() + desc);

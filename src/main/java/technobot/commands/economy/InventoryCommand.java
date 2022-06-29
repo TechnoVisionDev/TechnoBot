@@ -75,6 +75,11 @@ public class InventoryCommand extends Command {
         }
 
         // Send embed
+        if (embeds.isEmpty()) {
+            embed.setDescription("You do not have any items!");
+            event.replyEmbeds(embed.build()).queue();
+            return;
+        }
         ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
         if (embeds.size() > 1) {
             ButtonListener.sendPaginatedMenu(event.getUser().getId(), action, embeds);
