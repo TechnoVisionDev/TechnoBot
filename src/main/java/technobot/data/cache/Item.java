@@ -3,6 +3,7 @@ package technobot.data.cache;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.utils.TimeFormat;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
@@ -50,7 +51,7 @@ public class Item {
     public Item() { }
 
     public Item(String name) {
-        this.uuid = UUID.randomUUID().toString();
+        this.uuid = RandomStringUtils.randomAlphanumeric(8);
         this.name = name;
         this.price = 0L;
         this.description = null;
