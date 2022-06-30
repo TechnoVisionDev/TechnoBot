@@ -46,7 +46,7 @@ public class EconomyCommand extends Command {
                         text = "The maximum length for the currency symbol is 100 characters!";
                         event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                         return;
-                    } else if (symbol.matches(".*[0-9].*")) {
+                    } else if (!symbol.startsWith("<") && !symbol.endsWith(">") && symbol.matches(".*[0-9].*")) {
                         text = "The currency symbol cannot contain numbers!";
                         event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                         return;
