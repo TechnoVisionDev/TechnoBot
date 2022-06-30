@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.member.GenericGuildMemberEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import technobot.data.cache.Leveling;
@@ -57,6 +58,21 @@ public interface PlaceholderFactory extends Supplier<Placeholder> {
                 .withGuildCapabilities(msg.getGuild())
                 .withChannelCapabilities(msg.getChannel())
                 .withUserCapabilities(msg.getAuthor());
+    }
+
+    /**
+     * Generate placeholder factory from slash command event.
+     * Used /buy and /use commands for item reply message parsing.
+     *
+     * @param event the event to generate capabilities from.
+     */
+    static @NotNull PlaceholderFactory fromSlashCommand(SlashCommandInteractionEvent event) {
+        PlaceholderFactory factory = assemble(new Placeholder());
+        factory.withGuildCapabilities(event.getGuild())
+                .withUserCapabilities(event.getUser())
+                .withChannelCapabilities(event.getChannel())
+                .withMemberCapabilities(event.getMember());
+        return factory;
     }
 
     /**

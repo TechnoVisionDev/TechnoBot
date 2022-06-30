@@ -10,6 +10,8 @@ import technobot.data.GuildData;
 import technobot.data.cache.Item;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.placeholders.Placeholder;
+import technobot.util.placeholders.PlaceholderFactory;
 
 import java.util.LinkedHashMap;
 
@@ -50,8 +52,9 @@ public class UseCommand extends Command {
         } else {
             // Use item
             econ.useItem(event.getMember(), item, response.count());
-            String reply = item.getReplyMessage() != null ? item.getReplyMessage() : ":thumbsup:";
-            event.reply(reply).queue();
+            Placeholder placeholder = PlaceholderFactory.fromSlashCommand(event).get();
+            String reply = (item.getReplyMessage() != null) ? item.getReplyMessage() : ":thumbsup:";
+            event.reply(placeholder.parse(reply)).queue();
         }
     }
 

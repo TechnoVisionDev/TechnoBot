@@ -12,6 +12,8 @@ import technobot.data.cache.Item;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.placeholders.Placeholder;
+import technobot.util.placeholders.PlaceholderFactory;
 
 /**
  * Command that buys an item from the server shop.
@@ -71,8 +73,9 @@ public class BuyCommand extends Command {
                 } else {
                     // Use item
                     econ.useItem(event.getMember(), item, 0);
-                    String reply = item.getReplyMessage() != null ? item.getReplyMessage() : ":thumbsup:";
-                    event.reply(reply).queue();
+                    Placeholder placeholder = PlaceholderFactory.fromSlashCommand(event).get();
+                    String reply = (item.getReplyMessage() != null) ? item.getReplyMessage() : ":thumbsup:";
+                    event.reply(placeholder.parse(reply)).queue();
                 }
             }
         } else {
