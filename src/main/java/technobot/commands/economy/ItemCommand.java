@@ -38,7 +38,7 @@ public class ItemCommand extends Command {
                         new OptionData(OptionType.INTEGER, "price", "Set the price for this item").setMinValue(0),
                         new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
                         new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
-                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
+                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(-1),
                         new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
                         new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
                         new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
@@ -50,7 +50,7 @@ public class ItemCommand extends Command {
                         new OptionData(OptionType.INTEGER, "price", "Set a new price for this item").setMinValue(0),
                         new OptionData(OptionType.BOOLEAN, "inventory", "Choose if this items appears in the inventory"),
                         new OptionData(OptionType.INTEGER, "duration", "Set the amount of hours this item will remain in the store").setMinValue(0).setMaxValue(8760),
-                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(0),
+                        new OptionData(OptionType.INTEGER, "stock", "Set the amount of stock this item has").setMinValue(-1),
                         new OptionData(OptionType.ROLE, "required_role", "Set a role required to purchase this item"),
                         new OptionData(OptionType.ROLE, "role_given", "Set a role to be given when this item is used"),
                         new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
@@ -200,22 +200,37 @@ public class ItemCommand extends Command {
             }
         } if (stockOption != null) {
             isUpdated = true;
-            item.setStock(stockOption.getAsLong());
+            Long stock = stockOption.getAsLong() == -1 ? null : stockOption.getAsLong();
+            item.setStock(stock);
         } if (reqRoleOption != null) {
             isUpdated = true;
-            item.setRequiredRole(reqRoleOption.getAsRole().getIdLong());
+            Long roleID = reqRoleOption.getAsRole().getIdLong();
+            if (item.getRequiredRole() != null && item.getRequiredRole().equals(roleID)) {
+                roleID = null;
+            }
+            item.setRequiredRole(roleID);
         } if (roleGivenOption != null) {
             isUpdated = true;
-            item.setGivenRole(roleGivenOption.getAsRole().getIdLong());
+            Long roleID = roleGivenOption.getAsRole().getIdLong();
+            if (item.getGivenRole() != null && item.getGivenRole().equals(roleID)) {
+                roleID = null;
+            }
+            item.setGivenRole(roleID);
         } if (roleRemovedOption != null) {
             isUpdated = true;
-            item.setRemovedRole(roleRemovedOption.getAsRole().getIdLong());
+            Long roleID = roleRemovedOption.getAsRole().getIdLong();
+            if (item.getRemovedRole() != null && item.getRemovedRole().equals(roleID)) {
+                roleID = null;
+            }
+            item.setRemovedRole(roleID);
         } if (reqBalOption != null) {
             isUpdated = true;
-            item.setRequiredBalance(reqBalOption.getAsLong());
+            Long reqBal = reqBalOption.getAsLong() == 0 ? null : reqBalOption.getAsLong();
+            item.setRequiredBalance(reqBal);
         } if (replyOption != null) {
             isUpdated = true;
-            item.setReplyMessage(replyOption.getAsString());
+            String reply = replyOption.getAsString().isBlank() ? null : replyOption.getAsString();
+            item.setReplyMessage(reply);
         }
         return new ItemResult(item, isUpdated);
     }
