@@ -13,8 +13,7 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static technobot.util.Localization.get;
 
@@ -52,7 +51,11 @@ public class ShopCommand extends Command {
         // Create paginated embeds
         List<MessageEmbed> embeds = new ArrayList<>();
         int count = 0;
-        for (Item item : guildData.configHandler.getConfig().getShop().values()) {
+        LinkedHashMap<String, Item> items = guildData.configHandler.getConfig().getItems();
+        LinkedHashMap<String, String> shop = guildData.configHandler.getConfig().getShop();
+        ListIterator<Map.Entry<String, String>> it = new ArrayList<>(shop.entrySet()).listIterator(shop.entrySet().size());
+        while(it.hasPrevious()) {
+            Item item = items.get(it.previous().getValue());
             String price = guildData.economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(item.getPrice());
             String desc = item.getDescription() != null ? "**\n" + item.getDescription() : "**";
             embed.appendDescription("\n\n**" + price + " - " + item.getName() + desc);
@@ -67,6 +70,10 @@ public class ShopCommand extends Command {
         }
 
         // Send embed
+        if (embeds.isEmpty()) {
+            event.replyEmbeds(embed.build()).queue();
+            return;
+        }
         ReplyCallbackAction action = event.replyEmbeds(embeds.get(0));
         if (embeds.size() > 1) {
             ButtonListener.sendPaginatedMenu(event.getUser().getId(), action, embeds);

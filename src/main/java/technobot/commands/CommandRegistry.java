@@ -66,6 +66,7 @@ public class CommandRegistry extends ListenerAdapter {
                 new ShopCommand(bot),
                 new BuyCommand(bot),
                 new InventoryCommand(bot),
+                new UseCommand(bot),
                 new InspectCommand(bot),
                 new ItemCommand(bot),
                 new EconomyCommand(bot),

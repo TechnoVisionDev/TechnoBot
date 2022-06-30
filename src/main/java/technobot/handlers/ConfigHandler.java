@@ -3,12 +3,17 @@ package technobot.handlers;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Config;
 import technobot.data.cache.Item;
 
-import java.util.LinkedHashMap;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles config data for the guild and various modules.
@@ -17,11 +22,13 @@ import java.util.LinkedHashMap;
  */
 public class ConfigHandler {
 
+    private static final ScheduledExecutorService expireScheduler = Executors.newScheduledThreadPool(10);
+    private static final Map<String, ScheduledFuture> expireTimers = new HashMap<>();
+
     private final Guild guild;
     private final TechnoBot bot;
     private final Bson filter;
     private Config config;
-    private LinkedHashMap<String, Item> shopUUIDs;
 
     public ConfigHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
@@ -35,10 +42,15 @@ public class ConfigHandler {
             bot.database.config.insertOne(config);
         }
 
-        // Map shop UUIDs to items
-        shopUUIDs = new LinkedHashMap<>();
-        for (Item item : config.getShop().values()) {
-            shopUUIDs.put(item.getUuid(), item);
+        // Start any item expiration timers
+        for (Item item : this.getConfig().getItems().values()) {
+            if (item.getExpireTimestamp() != null) {
+                long hours = 1 + ((item.getExpireTimestamp() - System.currentTimeMillis()) / 3600000);
+                expireTimers.put(item.getUuid(), expireScheduler.schedule(() -> {
+                    removeItem(item.getName());
+                    expireTimers.remove(item.getUuid());
+                }, hours, TimeUnit.HOURS));
+            }
         }
     }
 
@@ -88,15 +100,16 @@ public class ConfigHandler {
     }
 
     /**
-     * Adds an existing item to the economy shop.
+     * Adds an item to the economy shop.
      * Adds it to local cache and database config file.
      *
      * @param item the item object to be added.
      */
     public Item addItem(Item item) {
         config.addItem(item);
-        shopUUIDs.put(item.getUuid(), item);
-        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
+        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item.getUuid()));
+        bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
+        updateExpireTimer(item);
         return item;
     }
 
@@ -122,8 +135,21 @@ public class ConfigHandler {
      */
     public void removeItem(String name) {
         Item item = config.removeItem(name);
-        shopUUIDs.remove(item.getUuid());
+        cancelExpireTimer(item.getUuid());
         bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
+    }
+
+    /**
+     * Removes an item from the database entirely.
+     * Item will no longer be usable or purchasable.
+     *
+     * @param name the name of the object to erase.
+     */
+    public void eraseItem(String name) {
+        Item item = config.eraseItem(name);
+        cancelExpireTimer(item.getUuid());
+        bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
+        bot.database.config.updateOne(filter, Updates.unset("items."+item.getUuid()));
     }
 
     /**
@@ -133,7 +159,41 @@ public class ConfigHandler {
      */
     public void updateItem(Item item) {
         config.addItem(item);
-        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
+        bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
+        updateExpireTimer(item);
+    }
+
+    /**
+     * Updates the expiration timer for an item. This may include canceling or rescheduling.
+     *
+     * @param item the item whose expiration timer to modify.
+     */
+    private void updateExpireTimer(Item item) {
+        if (item.getExpireTimestamp() != null) {
+            // Check for existing timer and cancel
+            String id = item.getUuid();
+            cancelExpireTimer(id);
+
+            // Set new timer
+            long hours = 1 + ((item.getExpireTimestamp() - System.currentTimeMillis()) / 3600000);
+            expireTimers.put(id, expireScheduler.schedule(() -> {
+                removeItem(item.getName());
+                expireTimers.remove(id);
+            }, hours, TimeUnit.HOURS));
+        } else {
+            ScheduledFuture task = expireTimers.get(item.getUuid());
+            if (task != null) task.cancel(true);
+        }
+    }
+
+    /**
+     * Cancels an item's expiration timer.
+     *
+     * @param itemID the UUID of the item whose expiration timer to cancel.
+     */
+    private void cancelExpireTimer(String itemID) {
+        ScheduledFuture task = expireTimers.remove(itemID);
+        if (task != null) task.cancel(true);
     }
 
     /**
@@ -143,7 +203,13 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItem(String name) {
-        return config.getShop().get(name.toLowerCase());
+        name = name.toLowerCase();
+        String uuid = config.getShop().get(name);
+        if (uuid == null) {
+            String key = findClosestItem(name);
+            uuid = config.getShop().get(key);
+        }
+        return config.getItems().get(uuid);
     }
 
     /**
@@ -153,7 +219,28 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItemByID(String uuid) {
-        return shopUUIDs.get(uuid);
+        return config.getItems().get(uuid);
+    }
+
+    /**
+     * Finds the item with the name that most closely matches the input.
+     *
+     * @param input the name of the item searching for.
+     * @return the name of the item that most closely matches the input. Null if no match at all.
+     */
+    public String findClosestItem(String input) {
+        input = input.toLowerCase();
+        String closestMatch = null;
+        double bestValue = 0;
+        for (String name : config.getShop().keySet()) {
+            if (name.contains(input)) {
+                double result = StringUtils.getJaroWinklerDistance(name, input);
+                if (result >= bestValue) {
+                    closestMatch = name;
+                }
+            }
+        }
+        return closestMatch;
     }
 
     /**

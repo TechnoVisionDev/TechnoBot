@@ -4,6 +4,8 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.model.*;
 import com.mongodb.lang.Nullable;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
@@ -395,9 +397,15 @@ public class EconomyHandler {
      */
     public void buyItem(long userID, Item item) {
         removeMoney(userID, item.getPrice());
+        // Update user inventory in database
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         if (item.getShowInInventory()) {
             bot.database.economy.updateOne(filter, Updates.inc("inventory." + item.getUuid(), 1));
+        }
+        // Decrement stock in shop
+        if (item.getStock() != null) {
+            item.setStock(item.getStock()-1);
+            GuildData.get(guild).configHandler.updateItem(item);
         }
     }
 
@@ -408,9 +416,82 @@ public class EconomyHandler {
      * @return a map of item UUIDS to integer counts.
      */
     public LinkedHashMap<String,Long> getInventory(long userID) {
+        Economy profile = getProfile(userID);
+        if (profile == null) return new LinkedHashMap<>();
         LinkedHashMap<String,Long> inv = getProfile(userID).getInventory();
         if (inv == null) return new LinkedHashMap<>();
         return inv;
+    }
+
+    /**
+     * Counts the number of times this item appears in a user's inventory
+     *
+     * @param userID the ID of the user whose inventory to check.
+     * @param itemID the UUID of the item to look for.
+     * @return the amount of this item in user's inventory.
+     */
+    public long countItemInInventory(long userID, String itemID) {
+        Long count = getInventory(userID).get(itemID);
+        if (count == null) return 0;
+        return count;
+    }
+
+    /**
+     * Checks if a guild member meets the requirements to use an object.
+     *
+     * @param member a guild member instance for the user.
+     * @param item the item to check against.
+     * @return true if member can use item, otherwise false.
+     */
+    public boolean canUseItem(Member member, Item item) {
+        // Check for required role
+        if (item.getRequiredRole() != null) {
+            Role requiredRole = guild.getRoleById(item.getRequiredRole());
+            if (requiredRole != null && !member.getRoles().contains(requiredRole)) {
+                return false;
+            }
+        }
+        // Check for required balance
+        if (item.getRequiredBalance() != null) {
+            Long requiredBalance = item.getRequiredBalance();
+            if (requiredBalance != null && getNetworth(member.getIdLong()) < requiredBalance) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Uses an item and gains/removes specified roles.
+     *
+     * @param member The guild member using this item.
+     * @param item the item being used.
+     * @param itemCount the amount of this item in member's inventory.
+     */
+    public void useItem(Member member, Item item, long itemCount) {
+        // Give roles
+        if (item.getGivenRole() != null) {
+            Role givenRole = guild.getRoleById(item.getGivenRole());
+            if (givenRole != null) {
+                guild.addRoleToMember(member, givenRole).queue();
+            }
+        }
+        // Remove roles
+        if (item.getRemovedRole() != null) {
+            Role removedRole = guild.getRoleById(item.getRemovedRole());
+            if (removedRole != null) {
+                guild.removeRoleFromMember(member, removedRole).queue();
+            }
+        }
+        // Remove item from inventory
+        if (itemCount > 0) {
+            Bson filter = Filters.and(guildFilter, Filters.eq("user", member.getIdLong()));
+            if (itemCount == 1) {
+                bot.database.economy.updateOne(filter, Updates.unset("inventory." + item.getUuid()));
+            } else {
+                bot.database.economy.updateOne(filter, Updates.inc("inventory." + item.getUuid(), -1));
+            }
+        }
     }
 
     /**
