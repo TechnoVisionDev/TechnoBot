@@ -10,6 +10,8 @@ import technobot.util.embeds.EmbedColor;
 import java.time.Instant;
 import java.util.HashMap;
 
+import static technobot.util.Localization.get;
+
 /**
  * Listens for message mentions and handles afk message responses.
  *
@@ -18,12 +20,15 @@ import java.util.HashMap;
 public class AfkListener extends ListenerAdapter {
 
 
-    /** Map of User objects to a pair containing the AFK message to be sent and the time created */
+    /**
+     * Map of User objects to a pair containing the AFK message to be sent and the time created
+     */
     public static HashMap<Member, AfkStatus> AFK_MESSAGES = new HashMap<>();
 
     /**
      * Sends AFK messages if necessary.
      * Also removes users from AFK list if they sent a message.
+     *
      * @param event executes whenever a message in sent in chat.
      */
     @Override
@@ -31,7 +36,7 @@ public class AfkListener extends ListenerAdapter {
         // Check if AFK user has returned
         if (AFK_MESSAGES.containsKey(event.getMember())) {
             AFK_MESSAGES.remove(event.getMember());
-            event.getMessage().addReaction("\uD83D\uDC4B").queue();
+            event.getMessage().addReaction("👋").queue();
             return;
         }
 
@@ -42,7 +47,11 @@ public class AfkListener extends ListenerAdapter {
                 // Mentioned user was AFK -- send message response
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
-                        .setAuthor(member.getEffectiveName()+" is currently AFK", null, member.getEffectiveAvatarUrl())
+                        .setAuthor(
+                                get(s -> s.general.afk, member.getEffectiveName()),
+                                null,
+                                member.getEffectiveAvatarUrl()
+                        )
                         .setDescription(status.message())
                         .setTimestamp(status.timestamp());
                 event.getChannel().sendMessageEmbeds(embed.build()).queue();
@@ -54,8 +63,9 @@ public class AfkListener extends ListenerAdapter {
     /**
      * represents an AFK status message and timestamp.
      *
-     * @param message the afk message to be sent.
+     * @param message   the afk message to be sent.
      * @param timestamp the time the user when afk.
      */
-    public record AfkStatus(String message, Instant timestamp) {}
+    public record AfkStatus(String message, Instant timestamp) {
+    }
 }

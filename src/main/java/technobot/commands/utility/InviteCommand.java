@@ -6,6 +6,7 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Invite;
 
 import static technobot.util.Localization.get;
 
@@ -25,12 +26,12 @@ public class InviteCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        Button botInvite = Button.link("https://discord.com/oauth2/authorize?client_id=979590525428580363&permissions=2088234238&scope=applications.commands%20bot", "Invite TechnoBot");
-        Button supportServerInvite = Button.link("https://discord.gg/2TKJqfUQas", "Support Server");
-        Button dashboardLink = Button.link("https://technobot.app", "Dashboard");
-        event.replyEmbeds(EmbedUtils.createDefault(
-                        get(s -> s.utility.invite)
-                ))
-                .addActionRow(botInvite, supportServerInvite, dashboardLink).queue();
+        Invite inviteText = get(s -> s.utility.invite);
+        Button botInvite = Button.link("https://discord.com/oauth2/authorize?client_id=979590525428580363&permissions=2088234238&scope=applications.commands%20bot", inviteText.inviteButton);
+        Button supportServerInvite = Button.link("https://discord.gg/2TKJqfUQas", inviteText.serverButton);
+        Button dashboardLink = Button.link("https://technobot.app", inviteText.dashboardButton);
+        event.replyEmbeds(EmbedUtils.createDefault(inviteText.message))
+                .addActionRow(botInvite, supportServerInvite, dashboardLink)
+                .queue();
     }
 }

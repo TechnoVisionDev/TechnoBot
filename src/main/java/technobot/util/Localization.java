@@ -1,6 +1,7 @@
 package technobot.util;
 
 import com.google.gson.Gson;
+import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedUtils;
 import technobot.util.localization.EnUs;
 
@@ -67,7 +68,7 @@ public class Localization {
                 .replaceAll("\\{user\\}", "<@!{user}>")
                 .replaceAll("\\{role\\}", "<@&{role}>")
                 .replaceAll("\\{channel\\}", "<#{channel}>")
-                .replaceAll("\\{currency\\}", "\uD83E\uDE99");
+                .replaceAll("\\{currency\\}", EconomyHandler.DEFAULT_CURRENCY);
 
         var argsList = Arrays.stream(args).map(Object::toString).toList();
         var templateArgsCount = Pattern.compile("\\{\\w+\\}").matcher(template).groupCount();

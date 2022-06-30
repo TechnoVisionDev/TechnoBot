@@ -52,7 +52,7 @@ public class SeekCommand extends Command {
 
             // Make sure pos is not longer than track
             if (pos >= music.getQueue().getFirst().getDuration()) {
-                String text = "The timestamp cannot be longer than the song!";
+                String text = get(s -> s.music.seek.tooLong);
                 event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 return;
             }

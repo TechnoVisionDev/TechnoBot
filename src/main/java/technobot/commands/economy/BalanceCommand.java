@@ -33,8 +33,7 @@ public class BalanceCommand extends Command {
 
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
-        OptionMapping userOption = event.getOption("user");
-        User user = (userOption != null) ? userOption.getAsUser() : event.getUser();
+        User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
 
         // Get balance and bank values
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
@@ -61,7 +60,7 @@ public class BalanceCommand extends Command {
                 .addField(get(s -> s.economy.balance.cash), currency + " " + EconomyHandler.FORMATTER.format(balance), true)
                 .addField(get(s -> s.economy.balance.bank), currency + " " + EconomyHandler.FORMATTER.format(bank), true)
                 .addField(get(s -> s.economy.balance.total), currency + " " + EconomyHandler.FORMATTER.format(total), true)
-            .setColor(EmbedColor.DEFAULT.color);
+                .setColor(EmbedColor.DEFAULT.color);
         event.replyEmbeds(embed.build()).queue();
     }
 }

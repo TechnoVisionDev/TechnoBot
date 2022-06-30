@@ -7,14 +7,15 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.utils.TimeFormat;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
-import technobot.data.GuildData;
 import technobot.data.cache.Economy;
 import technobot.data.cache.Item;
 import technobot.handlers.ConfigHandler;
-import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static technobot.util.Localization.get;
@@ -26,7 +27,7 @@ import static technobot.util.Localization.get;
  */
 public class EconomyHandler {
 
-    public static final String DEFAULT_CURRENCY = "\uD83E\uDE99";
+    public static final String DEFAULT_CURRENCY = "🪙";
     public static final long WORK_TIMEOUT = 14400000;
     public static final long ROB_TIMEOUT = 86400000;
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
@@ -80,7 +81,7 @@ public class EconomyHandler {
             // Crime successful
             amount = ThreadLocalRandom.current().nextInt(450) + 250;
             addMoney(userID, amount);
-            reply = responses.getCrimeSuccessResponse(amount, getCurrency());
+            reply = responses.getCrimeSuccessResponse(amount);
         } else {
             // Crime failed
             amount = calculateFine(userID);

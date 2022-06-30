@@ -6,6 +6,7 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Repeat;
 
 import static technobot.util.Localization.get;
 
@@ -30,12 +31,10 @@ public class RepeatCommand extends Command {
         if (music == null) return;
 
         music.loop();
-        String text;
-        if (music.isLoop()) {
-            text = ":repeat: Repeat has been enabled.";
-        } else {
-            text = ":repeat: Repeat has been disabled.";
-        }
+
+        Repeat repeatText = get(s -> s.music.repeat);
+        String text = music.isLoop() ? repeatText.enabled : repeatText.disabled;
+
         event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

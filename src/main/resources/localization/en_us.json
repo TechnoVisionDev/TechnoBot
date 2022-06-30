@@ -27,6 +27,11 @@
       "bank": "Bank:",
       "total": "Total:"
     },
+    "buy": {
+      "noItem": "That item doesn't exist! See all valid items with `/shop`",
+      "success": "{green_tick} You have bought 1 {item} for {currency} {price}! This is now in your inventory.\nUser this item with the `/use <item>` command.",
+      "noMoney": "You do not have enough money to buy this item. You currently have {currency} {value} on hand."
+    },
     "crime": {
       "timeout": ":stopwatch: You can next commit a crime {timestamp}.",
       "success": [
@@ -59,6 +64,34 @@
       "notEnough": "{red_x} You cannot deposit more than {currency} {amount}!",
       "success": "{green_tick} Deposited {currency} {amount} to your bank!"
     },
+    "economy": {
+      "currency": {
+        "tooLong": "The maximum length for the currency symbol is 100 characters!",
+        "hasNums": "The currency symbol cannot contain numbers!",
+        "success": "{blue_tick} The currency symbol has been set to **{symbol}**!",
+        "reset": "{blue_tick} The currency symbol has been reset."
+      }
+    },
+    "inspect": "That item doesn't exist!",
+    "inventory": {
+      "user": "{userTag}'s Inventory",
+      "description": "Use an item with the `/use <item>` command.",
+      "noItems": "You do not have any items!"
+    },
+    "item": {
+      "noItem": "That item doesn't exist!",
+      "create": {
+        "maxReached": "You have reached the maximum item limit! Use `/item remove` to make some room before adding a new item.",
+        "tooShort": "The minimum length for an item name is 3 characters.",
+        "alreadyExists": "There is already an item with that name!",
+        "success": "{green_tick} Item create successfully!"
+      },
+      "edit": {
+        "notUpdated": "Use one of the available command options to edit this item!",
+        "success": "{green_tick} Item updated successfully!"
+      },
+      "remove": "{blue_tick} The item has been removed from the shop."
+    },
     "pay": {
       "paySelf": "{red_x} You cannot pay yourself!",
       "payBots": "{red_x} You cannot pay bots!",
@@ -71,6 +104,10 @@
       "timeout": ":stopwatch: You can attempt to rob another member {timestamp}.",
       "failure": "You were caught attempting to rob {mention}, and have been fined {currency} {amount}.",
       "success": "{green_tick} You robbed {currency} {amount} from {mention}!"
+    },
+    "shop": {
+      "empty": "There are no items in this shop!\nUse the `/item create <name>` command to add some.",
+      "info": "Buy an item with the `/buy <item> [quantity]` command.\nFor more information on an item use the `/inspect <item>` command."
     },
     "withdraw": {
       "noMoney": "{red_x} You don't have any money in your bank to withdraw!",
@@ -167,11 +204,17 @@
       "yawn": "is getting very sleepy."
     },
     "google": "google doesn't like questions longer than 250 characters!",
+    "inspire": "I was unable to fetch an inspiring quote!",
     "joke": "I was unable to fetch any jokes!",
     "meme": "I was unable to fetch any memes!",
     "nsfw": "I was unable to fetch any nsfw pictures!",
     "reddit": "I was unable to fetch any posts from that subreddit!",
-    "surprise": "I was unable to fetch any surprises!"
+    "surprise": "I was unable to fetch any surprises!",
+    "wouldYouRather": {
+      "failure": "I was unable to fetch any questions!",
+      "title": "Would you rather...",
+      "message": "**{optionA}** or **{optionB}**"
+    }
   },
   "greeting": {
     "farewell": {
@@ -197,6 +240,7 @@
     }
   },
   "levels": {
+    "defaultMessage": "Congrats {mention}, you just advanced to **Level {level}**! :tada:",
     "leveling": {
       "channel": {
         "specific": "{blue_tick} Leveling messages will now only display in {channel}",
@@ -293,17 +337,24 @@
       "songDuration": "Song Duration",
       "position": "Position in Queue",
       "addedBy": "Added By {username}",
-      "addSong": "{blue_tick} **{song}** successfully added!",
-      "addPlaylist": ":ballot_box_with_check: Added {amount} tracks from playlist `{name}`",
+      "addSong": ":notes: | Added **{song}** to the queue.",
+      "addPlaylist": ":notes: | Added **{playlist}** with `{count}` songs to the queue.",
       "invalidSong": "That is not a valid song!",
-      "invalidLink": "That is not a valid link!"
+      "invalidLink": "That is not a valid link!",
+      "trackStuck": "Track got stuck, attempting to fix..."
     },
     "nowPlaying": {
       "notPlaying": ":sound: Not currently playing any music!",
       "title": "Now Playing :musical_note:",
-      "positionTitle": "Position",
-      "progressTitle": "Progress",
-      "progress": "{current} / {max}"
+      "durationTitle": "Duration",
+      "queueTitle": "Queue",
+      "volumeTitle": "Volume",
+      "requesterTitle": "Requester",
+      "linkTitle": "Link",
+      "link": "[`Click Here`]({url})",
+      "repeatTitle": "Repeat",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
     },
     "pause": {
       "success": ":pause_button: Paused the music player!",
@@ -324,8 +375,8 @@
       "upNext": "__Up Next:__"
     },
     "repeat": {
-      "enabled": ":repeat_one: Loop Enabled!",
-      "disabled": ":repeat_one: Loop Disabled!"
+      "enabled": ":repeat: Repeat has been enabled!",
+      "disabled": ":repeat: Repeat has been disabled!"
     },
     "resume": {
       "success": ":play_pause: Resuming the music player!",
@@ -333,7 +384,7 @@
     },
     "seek": {
       "success": ":fast_forward: Set position to `{time}`",
-      "tooLong": "Time cannot be longer than the song!",
+      "tooLong": "The timestamp cannot be longer than the song!",
       "invalidTimestamp": "That is not a valid timestamp!"
     },
     "skip": {
@@ -464,6 +515,11 @@
   },
   "starboard": {
     "create": "{blue_tick} Set the starboard channel to {channel}",
+    "jumpLink": {
+      "title": "Source",
+      "message": "[Jump to message!]({message_link})"
+    },
+    "attachmentTitle": "Attachment",
     "limit": {
       "set": "{blue_tick} Messages now require {amount} stars to show up on the starboard.",
       "reset": "{blue_tick} Reset the star limit to default."
@@ -548,6 +604,7 @@
     }
   },
   "utility": {
+    "afk": ":wave: | **{username}** has gone AFK. See you later!",
     "avatar": "Avatar Link",
     "help": {
       "categories": {
@@ -574,7 +631,12 @@
       "noCommand": "No command called {cmdName} found.",
       "defaultTitle": "TechnoBot Commands"
     },
-    "invite": ":robot: Click the button below to invite TechnoBot to your servers!",
+    "invite": {
+      "message": ":robot: Click the button below to invite TechnoBot to your servers!",
+      "inviteButton": "Invite TechnoBot",
+      "serverButton": "Support Server",
+      "dashboardButton": "Dashboard"
+    },
     "math": {
       "expression": "Expression",
       "result": "Result",
@@ -589,7 +651,7 @@
     },
     "poll": {
       "tooManyChoices": "You cannot have more than 10 choices!",
-      "noPerms": "I don't have permissions to add reactions in this channel!"
+      "message": "**{username} asks:** {question}"
     },
     "premium": {
       "title": "TechnoBot Premium",
@@ -614,10 +676,50 @@
       "roles": ":closed_lock_with_key: Roles ({count})",
       "rolesList": "To see a list with all roles use **`/roles`**."
     },
+    "support": {
+      "title": "TechnoBot Support",
+      "description": "Hey {username}, how can I help you?",
+      "serverTitle": "Server",
+      "askAQuestion": "[Ask a question.]({link})",
+      "bugReportTitle": "Bug Report",
+      "reportAnIssue": "[Report an issue.]({link})"
+    },
+    "twitter": {
+      "failure": "I was unable to find that user!",
+      "footer": "Following: {count} | Followers: {count}"
+    },
     "user": {
       "joinedDiscord": ":calendar: Joined Discord:",
       "joinedServer": ":calendar: Joined Server:",
       "discordId": ":id: Discord ID:"
+    },
+    "vote": {
+      "cooldown": ":stopwatch: Your daily vote is on cooldown!",
+      "thanks": "Thanks so much for voting for me today! :heart_eyes:",
+      "dontForget": "Don't forget to vote every 12 hours [here]({link}).",
+      "voteAvailable": "{blue_tick} Your daily vote is available!",
+      "clickHere": "Click [here]({link}) to vote for me!",
+      "voteEvery12h": "You can vote every 12 hours!",
+      "button": "Vote Here",
+      "noLink": "I was unable to find the vote link!"
+    },
+    "youtube": {
+      "channel": "{name} | YouTube Channel",
+      "statsTitle": "Statistics",
+      "stats": "**Subscribers:** {subscribers}\n**Views:** {views}\n**Videos:** {videos}",
+      "failure": "I was unable to find that YouTube channel!"
     }
-  }
+  },
+  "general": {
+    "afk": "{username} is currently AFK.",
+    "reset": {
+      "success": "{systemName} system was successfully reset!",
+      "failure": "{systemName} system was **NOT** reset!"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "error": "An error occurred! {exception}"
 }

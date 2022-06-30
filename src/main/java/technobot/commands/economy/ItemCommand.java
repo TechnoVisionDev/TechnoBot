@@ -15,6 +15,8 @@ import technobot.data.cache.Item;
 import technobot.handlers.ConfigHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that performs CRUD operations for economy shop items.
  *
@@ -68,61 +70,63 @@ public class ItemCommand extends Command {
 
         String text = "";
         String name = event.getOption("name").getAsString();
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "create" -> {
                 if (configHandler.getConfig().getShop().size() >= MAX_SHOP_SIZE) {
-                    text = "You have reached the maximum item limit! Use `/item remove` to make some room before adding a new item.";
+                    text = get(s -> s.economy.item.create.maxReached);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                     return;
                 }
                 if (name.length() < 3) {
-                    text = "The minimum length for an item name is 3 characters.";
+                    text = get(s -> s.economy.item.create.tooShort);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                     return;
                 }
                 if (configHandler.containsItem(name)) {
-                    text = "There is already an item with that name!";
+                    text = get(s -> s.economy.item.create.alreadyExists);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                     return;
                 }
                 ItemResult result = updateItem(new Item(name), event);
                 MessageEmbed embed = configHandler.addItem(result.item()).toEmbed(currency);
-                text = EmbedUtils.GREEN_TICK + " Item created successfully!";
+                text = get(s -> s.economy.item.create.success);
                 event.reply(text).addEmbeds(embed).queue();
             }
             case "edit" -> {
                 // Get existing item
                 Item item = configHandler.getItem(name);
                 if (item == null) {
-                    text = "That item name doesn't exist!";
+                    text = get(s -> s.economy.item.noItem);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                     return;
                 }
                 // Update item in cache and database
                 ItemResult result = updateItem(item, event);
                 if (!result.isUpdated) {
-                    text = "Use one of the available command options to edit this item!";
+                    text = get(s -> s.economy.item.edit.notUpdated);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 } else {
                     configHandler.updateItem(item);
-                    text = EmbedUtils.GREEN_TICK + " Item updated successfully!";
+                    text = get(s -> s.economy.item.edit.success);
                     event.reply(text).addEmbeds(item.toEmbed(currency)).queue();
                 }
             }
             case "remove" -> {
                 if (configHandler.containsItem(name)) {
                     configHandler.removeItem(name);
-                    text = EmbedUtils.BLUE_TICK + " Item has been removed from the store.";
+                    text = get(s -> s.economy.item.remove);
                     event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
                 } else {
-                    text = "That item name doesn't exist!";
+                    text = get(s -> s.economy.item.noItem);
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 }
             }
             case "info" -> {
                 Item item = configHandler.getItem(name);
                 if (item == null) {
-                    event.replyEmbeds(EmbedUtils.createError("That item does not exist!")).queue();
+                    event.replyEmbeds(EmbedUtils.createError(
+                            get(s -> s.economy.item.noItem))
+                    ).queue();
                     return;
                 }
                 event.replyEmbeds(configHandler.getItem(name).toEmbed(currency)).queue();
@@ -147,37 +151,47 @@ public class ItemCommand extends Command {
         if (descOption != null) {
             isUpdated = true;
             item.setDescription(descOption.getAsString());
-        } if (priceOption != null) {
+        }
+        if (priceOption != null) {
             isUpdated = true;
             item.setPrice(priceOption.getAsLong());
-        } if (inventoryOption != null) {
+        }
+        if (inventoryOption != null) {
             isUpdated = true;
             item.setShowInInventory(inventoryOption.getAsBoolean());
-        } if (durationOption != null) {
+        }
+        if (durationOption != null) {
             isUpdated = true;
             long timestamp = (3600000 * durationOption.getAsLong()) + System.currentTimeMillis();
             item.setExpireTimestamp(timestamp);
-        } if (stockOption != null) {
+        }
+        if (stockOption != null) {
             isUpdated = true;
             item.setStock(stockOption.getAsLong());
-        } if (reqRoleOption != null) {
+        }
+        if (reqRoleOption != null) {
             isUpdated = true;
             item.setRequiredRole(reqRoleOption.getAsRole().getIdLong());
-        } if (roleGivenOption != null) {
+        }
+        if (roleGivenOption != null) {
             isUpdated = true;
             item.setGivenRole(roleGivenOption.getAsRole().getIdLong());
-        } if (roleRemovedOption != null) {
+        }
+        if (roleRemovedOption != null) {
             isUpdated = true;
             item.setRemovedRole(roleRemovedOption.getAsRole().getIdLong());
-        } if (reqBalOption != null) {
+        }
+        if (reqBalOption != null) {
             isUpdated = true;
             item.setRequiredBalance(reqBalOption.getAsLong());
-        } if (replyOption != null) {
+        }
+        if (replyOption != null) {
             isUpdated = true;
             item.setReplyMessage(replyOption.getAsString());
         }
         return new ItemResult(item, isUpdated);
     }
 
-    record ItemResult(Item item, boolean isUpdated) { }
+    record ItemResult(Item item, boolean isUpdated) {
+    }
 }

@@ -13,6 +13,8 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that buys an item from the server shop.
  *
@@ -37,7 +39,9 @@ public class BuyCommand extends Command {
         String itemName = event.getOption("item").getAsString();
         Item item = guildData.configHandler.getItem(itemName);
         if (item == null) {
-            event.replyEmbeds(EmbedUtils.createError("That item doesn't exist! See all valid items with `/shop`")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.economy.buy.noItem)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -47,8 +51,7 @@ public class BuyCommand extends Command {
             // Purchase was successful
             econ.buyItem(event.getUser().getIdLong(), item);
             if (item.getShowInInventory()) {
-                String price = econ.getCurrency() + " " + item.getPrice();
-                String text = EmbedUtils.GREEN_TICK + " You have bought 1 " + item.getName() + " for " + price + "! This is now in your inventory.\nUse this item with the `/use <item>` command.";
+                String text = get(s -> s.economy.buy.success, item.getName(), item.getPrice());
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.SUCCESS.color)
                         .setAuthor(event.getUser().getAsTag(), null, event.getUser().getEffectiveAvatarUrl())
@@ -60,8 +63,7 @@ public class BuyCommand extends Command {
             }
         } else {
             // Not enough money to purchase
-            String value = econ.getCurrency() + " " + EconomyHandler.FORMATTER.format(balance);
-            String text = " You do not have enough money to buy this item. You currently have "+value+" on hand.";
+            String text = get(s -> s.economy.buy.noMoney, EconomyHandler.FORMATTER.format(balance));
             EmbedBuilder embed = new EmbedBuilder().setDescription(EmbedUtils.RED_X + text).setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         }

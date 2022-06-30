@@ -14,6 +14,8 @@ import technobot.handlers.StarboardHandler;
 import javax.annotation.Nonnull;
 import java.util.Date;
 
+import static technobot.util.Localization.get;
+
 /**
  * Listens for reactions and updates starboard accordingly
  *
@@ -24,9 +26,9 @@ public class StarboardListener extends ListenerAdapter {
     /**
      * Emojis and colors for the Starboard.
      */
-    public static final String STAR_EMOTE_1 = "\u2B50"; //:star:
-    public static final String STAR_EMOTE_2 = "\uD83C\uDF1F"; //:star2:
-    public static final String STAR_EMOTE_3 = "\uD83D\uDCAB"; //:dizzy:
+    public static final String STAR_EMOTE_1 = "⭐"; //:star:
+    public static final String STAR_EMOTE_2 = "🌟"; //:star2:
+    public static final String STAR_EMOTE_3 = "💫"; //:dizzy:
     public static final int POST_COLOR = 0xfffa74;
 
     /**
@@ -62,7 +64,11 @@ public class StarboardListener extends ListenerAdapter {
 
         // Add source jump link if enabled
         if (starboardHandler.hasJumpLink()) {
-            embed.addField("Source", "[Jump to Message!](" + msg.getJumpUrl() + ")", true);
+            embed.addField(
+                    get(s -> s.starboard.jumpLink.title),
+                    get(s -> s.starboard.jumpLink.message, msg.getJumpUrl()),
+                    true
+            );
         }
 
         // Add field for unsupported attachments
@@ -71,7 +77,11 @@ public class StarboardListener extends ListenerAdapter {
             if (file.isImage()) {
                 embed.setImage(file.getUrl());
             } else if (!file.isSpoiler()) {
-                embed.addField("Attachment", "[" + file.getFileName() + "](" + file.getUrl() + ")", false);
+                embed.addField(
+                        get(s -> s.starboard.attachmentTitle),
+                        "[" + file.getFileName() + "](" + file.getUrl() + ")",
+                        false
+                );
             }
         }
         return embed.build();

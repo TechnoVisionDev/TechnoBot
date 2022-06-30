@@ -55,7 +55,9 @@ public class HelpCommand extends Command {
         OptionMapping option = event.getOption("category");
         OptionMapping commandOption = event.getOption("command");
         if (option != null && commandOption != null) {
-            event.replyEmbeds(EmbedUtils.createError("Please only give one optional argument and try again.")).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.utility.help.oneArgument)
+            )).queue();
         } else if (option != null) {
             // Display category commands menu
             Category category = Category.valueOf(option.getAsString().toUpperCase());

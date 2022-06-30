@@ -14,8 +14,12 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Vote;
 
 import java.io.IOException;
+
+import static technobot.util.Localization.format;
+import static technobot.util.Localization.get;
 
 /**
  * Command that retrieves information about a Twitter account.
@@ -62,14 +66,16 @@ public class VoteCommand extends Command {
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
                         .setThumbnail(event.getJDA().getSelfUser().getEffectiveAvatarUrl());
+
+                Vote voteText = get(s -> s.utility.vote);
                 if (voted == 1) {
-                    embed.setTitle(":stopwatch: Your daily vote is on cooldown!");
-                    embed.appendDescription("Thanks so much for voting for me today! :heart_eyes:");
-                    embed.appendDescription("\nDon't forget to vote every 12 hours [here]("+VOTE_LINK+").");
+                    embed.setTitle(voteText.cooldown);
+                    embed.appendDescription(voteText.thanks);
+                    embed.appendDescription("\n" + format(voteText.dontForget, VOTE_LINK));
                 } else {
-                    embed.setTitle(EmbedUtils.BLUE_TICK + " Your daily vote is available!");
-                    embed.appendDescription("Click [here]("+VOTE_LINK+") to vote for me!");
-                    embed.appendDescription("\nYou can vote every 12 hours.");
+                    embed.setTitle(voteText.voteAvailable);
+                    embed.appendDescription(format(voteText.clickHere, VOTE_LINK));
+                    embed.appendDescription("\n" + voteText.voteEvery12h);
                 }
                 event.getHook().sendMessageEmbeds(embed.build()).addActionRow(Button.link(VOTE_LINK, "Vote Here")).queue();
             }
@@ -77,7 +83,7 @@ public class VoteCommand extends Command {
     }
 
     private void sendErrorMessage(InteractionHook hook) {
-        String text = "I was unable to find the vote link!";
+        String text = get(s -> s.utility.vote.noLink);
         hook.sendMessageEmbeds(EmbedUtils.createError(text)).queue();
     }
 }

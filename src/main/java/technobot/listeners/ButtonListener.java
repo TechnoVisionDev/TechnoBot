@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static technobot.util.Localization.get;
+
 /**
  * Listens for button input and handles all button backend.
  *
@@ -87,9 +89,15 @@ public class ButtonListener extends ListenerAdapter {
      */
     private static List<Button> getPaginationButtons(String uuid, int maxPages) {
         return Arrays.asList(
-                Button.primary("pagination:prev:"+uuid, "Previous").asDisabled(),
-                Button.of(ButtonStyle.SECONDARY, "pagination:page:0", "1/"+maxPages).asDisabled(),
-                Button.primary("pagination:next:"+uuid, "Next")
+                Button.primary(
+                        "pagination:prev:" + uuid,
+                        get(s -> s.general.buttons.previous) + ""
+                ).asDisabled(),
+                Button.of(ButtonStyle.SECONDARY, "pagination:page:0", "1/" + maxPages).asDisabled(),
+                Button.primary(
+                        "pagination:next:" + uuid,
+                        get(s -> s.general.buttons.next) + ""
+                )
         );
     }
 
@@ -102,8 +110,8 @@ public class ButtonListener extends ListenerAdapter {
      */
     private static List<Button> getResetButtons(String uuid, String systemName) {
         return Arrays.asList(
-            Button.success("reset:yes:"+uuid+":"+systemName, Emoji.fromMarkdown("\u2714")),
-            Button.danger("reset:no:"+uuid+":"+systemName, Emoji.fromUnicode("\u2716"))
+                Button.success("reset:yes:" + uuid + ":" + systemName, Emoji.fromMarkdown("✔")),
+                Button.danger("reset:no:" + uuid + ":" + systemName, Emoji.fromUnicode("✖"))
         );
     }
 
@@ -199,11 +207,15 @@ public class ButtonListener extends ListenerAdapter {
                 if (systemName.equalsIgnoreCase("Suggestion")) data.greetingHandler.reset();
                 else if (systemName.equalsIgnoreCase("Greeting")) data.greetingHandler.reset();
                 else if (systemName.equalsIgnoreCase("Leveling")) data.levelingHandler.resetAll();
-                MessageEmbed embed = EmbedUtils.createSuccess(systemName+" system was successfully reset!");
+                MessageEmbed embed = EmbedUtils.createSuccess(
+                        get(s -> s.general.reset.success, systemName)
+                );
                 event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
             } else if (pressedArgs[1].equals("no")) {
                 event.deferEdit().queue();
-                MessageEmbed embed = EmbedUtils.createError(systemName+" system was **NOT** reset!");
+                MessageEmbed embed = EmbedUtils.createError(
+                        get(s -> s.general.reset.failure, systemName)
+                );
                 event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
             }
         }

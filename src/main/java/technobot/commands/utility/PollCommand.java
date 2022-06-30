@@ -1,6 +1,5 @@
 package technobot.commands.utility;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -10,10 +9,12 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Poll;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static technobot.util.Localization.format;
 import static technobot.util.Localization.get;
 
 /**
@@ -40,7 +41,9 @@ public class PollCommand extends Command {
         // Get user
         event.deferReply().queue();
         String question = event.getOption("question").getAsString();
-        StringBuilder poll = new StringBuilder("**" + event.getUser().getName() + " asks:** " + question);
+
+        Poll pollText = get(s -> s.utility.poll);
+        StringBuilder poll = new StringBuilder(format(pollText.message, event.getUser().getName()));
 
         OptionMapping choicesOption = event.getOption("choices");
         if (choicesOption != null) {
@@ -48,7 +51,7 @@ public class PollCommand extends Command {
             String[] choices = choicesOption.getAsString().strip().split("\\s+");
             if (choices.length > 10) {
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(
-                        get(s -> s.utility.poll.tooManyChoices)
+                        pollText.tooManyChoices
                 )).queue();
                 return;
             }

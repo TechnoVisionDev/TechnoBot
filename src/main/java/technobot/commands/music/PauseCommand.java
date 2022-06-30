@@ -29,10 +29,10 @@ public class PauseCommand extends Command {
         if (music == null) return;
 
         if (music.isPaused()) {
-            String text = "The player is already paused!";
+            String text = get(s -> s.music.pause.failure);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         } else {
-            String text = ":pause_button: Paused the music player.";
+            String text = get(s -> s.music.pause.success);
             music.pause();
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
         }

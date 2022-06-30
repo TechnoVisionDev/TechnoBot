@@ -19,6 +19,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that retrieves information about a Twitter account.
  * Uses the Twitter API v2 with bearer token.
@@ -43,10 +45,10 @@ public class TwitterCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         String username = event.getOption("user").getAsString();
-        String url = "https://api.twitter.com/2/users/by/username/"+username+"?user.fields=profile_image_url%2Cpublic_metrics%2Clocation%2Cdescription%2Curl";
+        String url = "https://api.twitter.com/2/users/by/username/" + username + "?user.fields=profile_image_url%2Cpublic_metrics%2Clocation%2Cdescription%2Curl";
 
         // Asynchronous API call
-        Request request = new Request.Builder().url(url).addHeader("Authorization", "Bearer "+TWITTER_TOKEN).build();
+        Request request = new Request.Builder().url(url).addHeader("Authorization", "Bearer " + TWITTER_TOKEN).build();
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -78,12 +80,14 @@ public class TwitterCommand extends Command {
 
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(EmbedColor.DEFAULT.color)
-                        .setAuthor(name + "(@" + username + ")", "https://twitter.com/"+username, avatar)
+                        .setAuthor(name + "(@" + username + ")", "https://twitter.com/" + username, avatar)
                         .setThumbnail(avatar)
-                        .setFooter("Following: " + following + " | Followers: " + followers);
-                if (!location.isEmpty()) embed.appendDescription("\n:pushpin: "+location);
-                if (!url.isEmpty()) embed.appendDescription("\n:link: "+url);
-                if (!bio.isEmpty()) embed.appendDescription("\n:information_source: "+bio);
+                        .setFooter(
+                                get(s -> s.utility.twitter.footer, following, followers)
+                        );
+                if (!location.isEmpty()) embed.appendDescription("\n:pushpin: " + location);
+                if (!url.isEmpty()) embed.appendDescription("\n:link: " + url);
+                if (!bio.isEmpty()) embed.appendDescription("\n:information_source: " + bio);
 
                 event.getHook().sendMessageEmbeds(embed.build()).queue();
             }
@@ -91,7 +95,7 @@ public class TwitterCommand extends Command {
     }
 
     private void sendErrorMessage(InteractionHook hook) {
-        String text = "I was unable to find that user!";
+        String text = get(s -> s.utility.twitter.failure);
         hook.sendMessageEmbeds(EmbedUtils.createError(text)).queue();
     }
 }

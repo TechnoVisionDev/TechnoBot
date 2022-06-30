@@ -15,6 +15,8 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that creates a fun 'would you rather' poll using an API.
  *
@@ -40,33 +42,32 @@ public class WouldYouRatherCommand extends Command {
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                String text = "I was unable to fetch any questions!";
+                String text = get(s -> s.fun.wouldYouRather.failure);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             }
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    String text = "I was unable to fetch any questions!";
+                    String text = get(s -> s.fun.wouldYouRather.failure);
                     event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                     return;
                 }
 
-                // Build 'Would you Rathe' embed from API response
+                // Build 'Would you Rather' embed from API response
                 String questions = bot.gson.fromJson(response.body().string(), JsonObject.class).get("data").getAsString();
                 String[] split = questions.split(" or ");
                 String optionA = ":regional_indicator_a: "+split[0].substring(17);
-                String optionB = ":regional_indicator_b: "+split[1].substring(0, split[1].length()-1);
+                String optionB = ":regional_indicator_b: " + split[1].substring(0, split[1].length() - 1);
                 EmbedBuilder embed = new EmbedBuilder()
-                        .setTitle("Would you rather...")
+                        .setTitle(get(s -> s.fun.wouldYouRather.title))
                         .setColor(EmbedColor.DEFAULT.color)
-                        .setDescription(optionA)
-                        .addField("or", optionB, false);
+                        .setDescription(get(s -> s.fun.wouldYouRather.message, optionA, optionB));
 
                 // Send embed and add emoji reactions
                 event.getHook().sendMessageEmbeds(embed.build()).queue(msg -> {
-                    msg.addReaction("\uD83C\uDDE6").queue();
-                    msg.addReaction("\uD83C\uDDE7").queue();
+                    msg.addReaction("🇦").queue();
+                    msg.addReaction("🇧").queue();
                 });
             }
         });

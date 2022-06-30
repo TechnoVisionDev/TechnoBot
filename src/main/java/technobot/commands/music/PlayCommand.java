@@ -38,14 +38,14 @@ public class PlayCommand extends Command {
         // Check if member is in the right voice channel
         AudioChannel channel = event.getMember().getVoiceState().getChannel();
         if (music.getPlayChannel() != channel) {
-            String text = "You are not in the same voice channel as TechnoBot!";
+            String text = get(s -> s.music.play.differentChannel);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
         // Cannot have more than 100 songs in the queue
         if (music.getQueue().size() >= 100) {
-            String text = "You cannot queue more than 100 songs!";
+            String text = get(s -> s.music.play.tooManySongs);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }

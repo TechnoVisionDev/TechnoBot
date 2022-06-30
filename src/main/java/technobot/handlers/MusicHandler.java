@@ -22,6 +22,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
+import static technobot.util.Localization.get;
+
 /**
  * Handles music for each guild with a unique queue and audio player for each.
  *
@@ -29,20 +31,30 @@ import java.util.LinkedList;
  */
 public class MusicHandler implements AudioSendHandler {
 
-    /** LavaPlayer essentials. */
+    /**
+     * LavaPlayer essentials.
+     */
     public final @NotNull AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
 
-    /** Queue of music tacks in FIFO order. */
+    /**
+     * Queue of music tacks in FIFO order.
+     */
     private final @NotNull LinkedList<AudioTrack> queue;
 
-    /** The text channel in which the bot is logging music actions. */
+    /**
+     * The text channel in which the bot is logging music actions.
+     */
     private TextChannel logChannel;
 
-    /** The voice channel in which the bot is playing music. */
+    /**
+     * The voice channel in which the bot is playing music.
+     */
     private @Nullable AudioChannel playChannel;
 
-    /** Whether the music player is on loop. */
+    /**
+     * Whether the music player is on loop.
+     */
     private boolean isLoop;
     private boolean isSkip;
 
@@ -214,6 +226,46 @@ public class MusicHandler implements AudioSendHandler {
     }
 
     /**
+     * Creates a thumbnail URL with the track image.
+     *
+     * @param track the AudioTrack object from the music player.
+     * @return a URL to the song video thumbnail.
+     */
+    private static String getThumbnail(AudioTrack track) {
+        String domain = SecurityUtils.getDomain(track.getInfo().uri);
+        if (domain.equalsIgnoreCase("spotify") || domain.equalsIgnoreCase("apple")) {
+            return ((ISRCAudioTrack) track).getArtworkURL();
+        }
+        return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getIdentifier());
+    }
+
+    /**
+     * Creates an embed displaying details about a track.
+     *
+     * @param track   the track to display details about.
+     * @param handler the music handler instance.
+     * @return a MessageEmbed displaying track details.
+     */
+    public static MessageEmbed displayTrack(AudioTrack track, MusicHandler handler) {
+        var nowPlaying = get(s -> s.music.nowPlaying);
+        String duration = MusicListener.formatTrackLength(track.getInfo().length);
+        String repeat = (handler.isLoop()) ? nowPlaying.enabled : nowPlaying.disabled;
+        String userMention = "<@!" + track.getUserData(String.class) + ">";
+        return new EmbedBuilder()
+                .setTitle(nowPlaying.title)
+                .setDescription("[" + track.getInfo().title + "](" + track.getInfo().uri + ")")
+                .addField(nowPlaying.durationTitle, "`" + duration + "`", true)
+                .addField(nowPlaying.queueTitle, "`" + (handler.queue.size() - 1) + "`", true)
+                .addField(nowPlaying.volumeTitle, "`" + handler.audioPlayer.getVolume() + "%`", true)
+                .addField(nowPlaying.requesterTitle, userMention, true)
+                .addField(nowPlaying.linkTitle, get(s -> nowPlaying.link, track.getInfo().uri), true)
+                .addField(nowPlaying.repeatTitle, "`" + repeat + "`", true)
+                .setColor(EmbedColor.DEFAULT.color)
+                .setThumbnail(getThumbnail(track))
+                .build();
+    }
+
+    /**
      * Manages audio events and schedules tracks.
      */
     public static class TrackScheduler extends AudioEventAdapter {
@@ -253,57 +305,18 @@ public class MusicHandler implements AudioSendHandler {
 
         @Override
         public void onTrackException(AudioPlayer player, AudioTrack track, @NotNull FriendlyException exception) {
-            String msg = "An error occurred! " + exception.getMessage();
+            String msg = get(s -> s.error, exception.getMessage());
             handler.logChannel.sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
             exception.printStackTrace();
         }
 
         @Override
         public void onTrackStuck(@NotNull AudioPlayer player, AudioTrack track, long thresholdMs) {
-            String msg = "Track got stuck, attempting to fix...";
+            String msg = get(s -> s.music.listener.trackStuck);
             handler.logChannel.sendMessageEmbeds(EmbedUtils.createError(msg)).queue();
             handler.queue.remove(track);
             player.stopTrack();
             player.playTrack(handler.queue.getFirst());
         }
-    }
-
-    /**
-     * Creates a thumbnail URL with the track image.
-     * @param track the AudioTrack object from the music player.
-     *
-     * @return a URL to the song video thumbnail.
-     */
-    private static String getThumbnail(AudioTrack track) {
-        String domain = SecurityUtils.getDomain(track.getInfo().uri);
-        if (domain.equalsIgnoreCase("spotify") || domain.equalsIgnoreCase("apple")) {
-            return ((ISRCAudioTrack) track).getArtworkURL();
-        }
-        return String.format("https://img.youtube.com/vi/%s/0.jpg", track.getIdentifier());
-    }
-
-    /**
-     * Creates an embed displaying details about a track.
-     *
-     * @param track the track to display details about.
-     * @param handler the music handler instance.
-     * @return a MessageEmbed displaying track details.
-     */
-    public static MessageEmbed displayTrack(AudioTrack track, MusicHandler handler) {
-        String duration = MusicListener.formatTrackLength(track.getInfo().length);
-        String repeat = (handler.isLoop()) ? "Enabled" : "Disabled";
-        String userMention = "<@!"+track.getUserData(String.class)+">";
-        return new EmbedBuilder()
-                .setTitle("Now Playing")
-                .setDescription("[" + track.getInfo().title + "](" + track.getInfo().uri + ")")
-                .addField("Duration", "`"+duration+"`", true)
-                .addField("Queue", "`"+(handler.queue.size()-1)+"`", true)
-                .addField("Volume", "`"+handler.audioPlayer.getVolume()+"%`", true)
-                .addField("Requester", userMention, true)
-                .addField("Link", "[`Click Here`]("+track.getInfo().uri+")", true)
-                .addField("Repeat", "`"+repeat+"`", true)
-                .setColor(EmbedColor.DEFAULT.color)
-                .setThumbnail(getThumbnail(track))
-                .build();
     }
 }

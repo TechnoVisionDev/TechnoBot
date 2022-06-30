@@ -46,6 +46,6 @@ public class UserCommand extends Command {
                     .setThumbnail(user.getEffectiveAvatarUrl())
                     .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
             event.replyEmbeds(embed.build()).queue();
-        })
+        });
     }
 }

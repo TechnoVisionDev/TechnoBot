@@ -11,6 +11,8 @@ import technobot.listeners.AfkListener;
 
 import java.util.Date;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that allows a user to set their AFK status message.
  *
@@ -30,6 +32,6 @@ public class AfkCommand extends Command {
         OptionMapping option = event.getOption("message");
         String message = option != null ? option.getAsString() : "";
         AfkListener.AFK_MESSAGES.put(event.getMember(), new AfkListener.AfkStatus(message, new Date().toInstant()));
-        event.reply(":wave: | **"+event.getMember().getEffectiveName()+"** has gone AFK. See you later!").queue();
+        event.reply(get(s -> s.utility.afk) + "").queue();
     }
 }
