@@ -21,12 +21,6 @@ public class EmbedUtils {
     public static final String BLUE_X = "<:blue_x:800623785736798228>";
 
     /**
-     * Custom Emojis - ID ONLY.
-     */
-    public static final String YES_ID = "800673964925386753";
-    public static final String NO_ID = "800673984794329098";
-
-    /**
      * Quickly creates a simple error embed.
      *
      * @param errorMessage message to be displayed.
