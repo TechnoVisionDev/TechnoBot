@@ -50,14 +50,14 @@ public class ShopCommand extends Command {
         // Create paginated embeds
         List<MessageEmbed> embeds = new ArrayList<>();
         int count = 0;
-        LinkedHashMap<String, Item> shop = guildData.configHandler.getConfig().getShop();
-        ListIterator<Map.Entry<String, Item>> it = new ArrayList<>(shop.entrySet()).listIterator(shop.entrySet().size());
+        LinkedHashMap<String, Item> items = guildData.configHandler.getConfig().getItems();
+        LinkedHashMap<String, String> shop = guildData.configHandler.getConfig().getShop();
+        ListIterator<Map.Entry<String, String>> it = new ArrayList<>(shop.entrySet()).listIterator(shop.entrySet().size());
         while(it.hasPrevious()) {
-            Item item = it.previous().getValue();
+            Item item = items.get(it.previous().getValue());
             String price = guildData.economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(item.getPrice());
             String desc = item.getDescription() != null ? "**\n" + item.getDescription() : "**";
             embed.appendDescription("\n\n**" + price + " - " + item.getName() + desc);
-            if (item.isExpired()) embed.appendDescription(" [Expired]");
             count++;
             if (count % ITEMS_PER_PAGE == 0) {
                 embeds.add(embed.build());

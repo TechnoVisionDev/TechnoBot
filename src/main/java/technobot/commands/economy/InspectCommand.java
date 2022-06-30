@@ -32,7 +32,7 @@ public class InspectCommand extends Command {
 
         Item item = guildData.configHandler.getItem(event.getOption("item").getAsString());
         if (item == null) {
-            event.replyEmbeds(EmbedUtils.createError("That item doesn't exist!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError("That item is not currently in the store!")).setEphemeral(true).queue();
             return;
         }
         event.replyEmbeds(item.toEmbed(currency)).queue();

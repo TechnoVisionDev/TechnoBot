@@ -40,11 +40,14 @@ public class Config {
 
     private String currency;
 
-    private LinkedHashMap<String, Item> shop;
+    private LinkedHashMap<String, Item> items; //Maps item ids to item objects
+
+    private LinkedHashMap<String, String> shop; //Maps item names to ids
 
     public Config() {
-        autoRoles = new HashSet<>();
-        shop = new LinkedHashMap<>();
+        this.autoRoles = new HashSet<>();
+        this.items = new LinkedHashMap<>();
+        this.shop = new LinkedHashMap<>();
     }
 
     public Config(long guild) {
@@ -58,6 +61,8 @@ public class Config {
         this.levelingBackground = null;
         this.rewards = new HashMap<>();
         this.autoRoles = new HashSet<>();
+        this.items = new LinkedHashMap<>();
+        this.shop = new LinkedHashMap<>();
     }
 
     public long getGuild() {
@@ -160,19 +165,28 @@ public class Config {
         this.currency = currency;
     }
 
-    public LinkedHashMap<String, Item> getShop() {
+    public LinkedHashMap<String, String> getShop() {
         return shop;
     }
 
-    public void setShop(LinkedHashMap<String, Item> shop) {
+    public void setShop(LinkedHashMap<String, String> shop) {
         this.shop = shop;
     }
 
-    public void addItem(Item item) {
-        this.shop.put(item.getName().toLowerCase(), item);
+    public LinkedHashMap<String, Item> getItems() {
+        return items;
     }
 
-    public Item removeItem(String name) {
-        return this.shop.remove(name.toLowerCase());
+    public void setItems(LinkedHashMap<String, Item> items) {
+        this.items = items;
+    }
+
+    public void addItem(Item item) {
+        this.shop.put(item.getName().toLowerCase(), item.getUuid());
+        this.items.put(item.getUuid(), item);
+    }
+
+    public void removeItem(String name) {
+        this.shop.remove(name.toLowerCase());
     }
 }

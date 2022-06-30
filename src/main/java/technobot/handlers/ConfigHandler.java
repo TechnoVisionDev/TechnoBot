@@ -21,7 +21,6 @@ public class ConfigHandler {
     private final TechnoBot bot;
     private final Bson filter;
     private Config config;
-    private final LinkedHashMap<String, Item> shopUUIDs;
 
     public ConfigHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
@@ -33,12 +32,6 @@ public class ConfigHandler {
         if (this.config == null) {
             this.config = new Config(guild.getIdLong());
             bot.database.config.insertOne(config);
-        }
-
-        // Map shop UUIDs to items
-        shopUUIDs = new LinkedHashMap<>();
-        for (Item item : config.getShop().values()) {
-            shopUUIDs.put(item.getUuid(), item);
         }
     }
 
@@ -88,15 +81,15 @@ public class ConfigHandler {
     }
 
     /**
-     * Adds an existing item to the economy shop.
+     * Adds an item to the economy shop.
      * Adds it to local cache and database config file.
      *
      * @param item the item object to be added.
      */
     public Item addItem(Item item) {
         config.addItem(item);
-        shopUUIDs.put(item.getUuid(), item);
-        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
+        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item.getUuid()));
+        bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
         return item;
     }
 
@@ -121,8 +114,7 @@ public class ConfigHandler {
      * @param name the name of the object to remove.
      */
     public void removeItem(String name) {
-        Item item = config.removeItem(name);
-        shopUUIDs.remove(item.getUuid());
+        config.removeItem(name);
         bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
     }
 
@@ -133,8 +125,7 @@ public class ConfigHandler {
      */
     public void updateItem(Item item) {
         config.addItem(item);
-        shopUUIDs.put(item.getUuid(), item);
-        bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
+        bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
     }
 
     /**
@@ -144,7 +135,8 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItem(String name) {
-        return config.getShop().get(name.toLowerCase());
+        String uuid = config.getShop().get(name.toLowerCase());
+        return config.getItems().get(uuid);
     }
 
     /**
@@ -154,7 +146,7 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItemByID(String uuid) {
-        return shopUUIDs.get(uuid);
+        return config.getItems().get(uuid);
     }
 
     /**

@@ -68,8 +68,6 @@ public class InventoryCommand extends Command {
                     embeds.add(embed.build());
                     embed.setDescription(info);
                 }
-            } else {
-                // TODO: Remove invalid items from inventory
             }
         }
         if (count % ITEMS_PER_PAGE != 0) {

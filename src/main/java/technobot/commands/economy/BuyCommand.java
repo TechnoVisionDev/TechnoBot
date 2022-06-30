@@ -45,10 +45,10 @@ public class BuyCommand extends Command {
         long balance = econ.getBalance(event.getUser().getIdLong());
         if (balance >= item.getPrice()) {
             // Check expiration timestamp & stock
-            if (item.isExpired()) {
+            if (item.checkIfExpired()) {
                 event.replyEmbeds(EmbedUtils.createError("That item has expired and is no longer purchasable.")).setEphemeral(true).queue();
                 return;
-            } else if (item.getStock() != null & item.getStock() <= 0) {
+            } else if (item.getStock() != null && item.getStock() <= 0) {
                 event.replyEmbeds(EmbedUtils.createError("There is not enough stock for you to buy this item.")).setEphemeral(true).queue();
                 return;
             }

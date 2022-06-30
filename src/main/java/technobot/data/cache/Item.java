@@ -103,7 +103,7 @@ public class Item {
      * Check if item has expired based on expire timestamp
      * @return true if expired, otherwise false.
      */
-    public boolean isExpired() {
+    public boolean checkIfExpired() {
         return this.getExpireTimestamp() != null && this.getExpireTimestamp() <= System.currentTimeMillis();
     }
 

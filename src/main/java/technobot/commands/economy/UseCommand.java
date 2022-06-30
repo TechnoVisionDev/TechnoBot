@@ -1,6 +1,5 @@
 package technobot.commands.economy;
 
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -11,6 +10,8 @@ import technobot.data.GuildData;
 import technobot.data.cache.Item;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedUtils;
+
+import java.util.LinkedHashMap;
 
 /**
  * Command that uses an item from the inventory.
@@ -31,19 +32,13 @@ public class UseCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         GuildData guildData = GuildData.get(event.getGuild());
         EconomyHandler econ = guildData.economyHandler;
+        long userID = event.getUser().getIdLong();
 
-        // Check if item exists
+        // Check if item exists & is in inventory
         String itemName = event.getOption("item").getAsString();
-        Item item = guildData.configHandler.getItem(itemName);
+        ItemAndCount response = getItemForUse(itemName, userID, guildData);
+        Item item = response.item();
         if (item == null) {
-            event.replyEmbeds(EmbedUtils.createError("That item doesn't exist! See your items with `/inventory`")).setEphemeral(true).queue();
-            return;
-        }
-
-        // Check if item is in inventory
-        User user = event.getUser();
-        long itemCount = econ.countItemInInventory(user.getIdLong(), item.getUuid());
-        if (itemCount <= 0) {
             event.replyEmbeds(EmbedUtils.createError("You don't own that item! See your items with `/inventory`")).setEphemeral(true).queue();
             return;
         }
@@ -54,9 +49,24 @@ public class UseCommand extends Command {
             event.replyEmbeds(EmbedUtils.createError("You do not meet the requirements to use that item! Use `/inspect <item>` for more details.")).setEphemeral(true).queue();
         } else {
             // Use item
-            econ.useItem(event.getMember(), item, itemCount);
+            econ.useItem(event.getMember(), item, response.count());
             String reply = item.getReplyMessage() != null ? item.getReplyMessage() : ":thumbsup:";
             event.reply(reply).queue();
         }
     }
+
+    private ItemAndCount getItemForUse(String itemName, long userID, GuildData guildData) {
+        LinkedHashMap<String, Long> inventory = guildData.economyHandler.getInventory(userID);
+        for (Item item : guildData.configHandler.getConfig().getItems().values()) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                Long count = inventory.get(item.getUuid());
+                if (count != null) {
+                    return new ItemAndCount(item, count);
+                }
+            }
+        }
+        return new ItemAndCount(null, 0);
+    }
+
+    private record ItemAndCount(Item item, long count) { }
 }
