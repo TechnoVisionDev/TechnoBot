@@ -229,6 +229,7 @@ public class ConfigHandler {
      * @return the name of the item that most closely matches the input. Null if no match at all.
      */
     public String findClosestItem(String input) {
+        input = input.toLowerCase();
         String closestMatch = null;
         double bestValue = 0;
         for (String name : config.getShop().keySet()) {
