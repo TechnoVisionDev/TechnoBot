@@ -85,6 +85,11 @@ public class ItemCommand extends Command {
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                     return;
                 }
+                if (name.length() > 100) {
+                    text = "The maximum length for an item name is 100 characters.";
+                    event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
+                    return;
+                }
                 if (configHandler.containsItem(name)) {
                     text = "There is already an item with that name!";
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
