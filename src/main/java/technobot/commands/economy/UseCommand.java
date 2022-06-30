@@ -55,6 +55,15 @@ public class UseCommand extends Command {
         }
     }
 
+    /**
+     * Loops through item map and checks if name and uuid match any.
+     * This is necessary in the case that an item is created with the same name as a deleted one.
+     *
+     * @param itemName the name of the item to search for.
+     * @param userID the ID of the user using this item.
+     * @param guildData the GuildData instance for the user's guild.
+     * @return an ItemAndCount object, which contains the item itself and it's count in the inventory. Both may be null.
+     */
     private ItemAndCount getItemForUse(String itemName, long userID, GuildData guildData) {
         LinkedHashMap<String, Long> inventory = guildData.economyHandler.getInventory(userID);
         for (Item item : guildData.configHandler.getConfig().getItems().values()) {
@@ -68,5 +77,11 @@ public class UseCommand extends Command {
         return new ItemAndCount(null, 0);
     }
 
+    /**
+     * Used exclusively for getItemForUse to store a pair response.
+     *
+     * @param item an inventory item object.
+     * @param count the number of occurrences of this item in a user's inventory.
+     */
     private record ItemAndCount(Item item, long count) { }
 }

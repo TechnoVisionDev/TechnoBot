@@ -4,6 +4,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import technobot.TechnoBot;
 import technobot.commands.Category;
@@ -29,12 +32,14 @@ public class InventoryCommand extends Command {
         this.name = "inventory";
         this.description = "View your inventory items.";
         this.category = Category.ECONOMY;
+        this.args.add(new OptionData(OptionType.USER, "user", "The user whose inventory you want to see"));
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildData guildData = GuildData.get(event.getGuild());
-        User user = event.getUser();
+        OptionMapping userOption = event.getOption("user");
+        User user = (userOption != null) ? userOption.getAsUser() : event.getUser();
 
         // Build embed template
         String info = "Use an item with the `/use <item>` command.";

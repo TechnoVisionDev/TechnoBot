@@ -407,6 +407,8 @@ public class EconomyHandler {
      * @return a map of item UUIDS to integer counts.
      */
     public LinkedHashMap<String,Long> getInventory(long userID) {
+        Economy profile = getProfile(userID);
+        if (profile == null) return new LinkedHashMap<>();
         LinkedHashMap<String,Long> inv = getProfile(userID).getInventory();
         if (inv == null) return new LinkedHashMap<>();
         return inv;
