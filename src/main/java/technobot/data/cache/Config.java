@@ -186,7 +186,13 @@ public class Config {
         this.items.put(item.getUuid(), item);
     }
 
-    public void removeItem(String name) {
-        this.shop.remove(name.toLowerCase());
+    public Item removeItem(String name) {
+        String uuid = this.shop.remove(name.toLowerCase());
+        return this.items.get(uuid);
+    }
+
+    public Item eraseItem(String name) {
+        String uuid = this.shop.remove(name.toLowerCase());
+        return this.items.remove(uuid);
     }
 }

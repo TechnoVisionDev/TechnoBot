@@ -54,7 +54,9 @@ public class ItemCommand extends Command {
                         new OptionData(OptionType.ROLE, "role_removed", "Set a role to be removed when this item is used"),
                         new OptionData(OptionType.INTEGER, "required_balance", "Set a balance amount required to purchased this item").setMinValue(0),
                         new OptionData(OptionType.STRING, "reply", "Set a message to be sent when this item is used")));
-        this.subCommands.add(new SubcommandData("remove", "Removes an item from your store.")
+        this.subCommands.add(new SubcommandData("remove", "Remove an item from your store (members can still use them).")
+                .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to remove", true)));
+        this.subCommands.add(new SubcommandData("erase", "Erase an item entirely from the store and user inventories.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to remove", true)));
         this.subCommands.add(new SubcommandData("info", "Display details about an item.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to display", true)));
@@ -112,7 +114,17 @@ public class ItemCommand extends Command {
             case "remove" -> {
                 if (configHandler.containsItem(name)) {
                     configHandler.removeItem(name);
-                    text = EmbedUtils.BLUE_TICK + " Item has been removed from the store.";
+                    text = EmbedUtils.BLUE_X + " Item has been removed from the store. Users will still be able to `/use` this item if they already own it.";
+                    event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
+                } else {
+                    text = "That item name doesn't exist!";
+                    event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
+                }
+            }
+            case "erase" -> {
+                if (configHandler.containsItem(name)) {
+                    configHandler.eraseItem(name);
+                    text = EmbedUtils.BLUE_X + " Item has been erased and can never be purchased or used.";
                     event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
                 } else {
                     text = "That item name doesn't exist!";

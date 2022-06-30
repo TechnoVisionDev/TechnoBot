@@ -135,8 +135,22 @@ public class ConfigHandler {
      * @param name the name of the object to remove.
      */
     public void removeItem(String name) {
-        config.removeItem(name);
+        Item item = config.removeItem(name);
+        cancelExpireTimer(item.getUuid());
         bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
+    }
+
+    /**
+     * Removes an item from the database entirely.
+     * Item will no longer be usable or purchasable.
+     *
+     * @param name the name of the object to erase.
+     */
+    public void eraseItem(String name) {
+        Item item = config.eraseItem(name);
+        cancelExpireTimer(item.getUuid());
+        bot.database.config.updateOne(filter, Updates.unset("shop."+name.toLowerCase()));
+        bot.database.config.updateOne(filter, Updates.unset("items."+item.getUuid()));
     }
 
     /**
@@ -150,12 +164,16 @@ public class ConfigHandler {
         updateExpireTimer(item);
     }
 
+    /**
+     * Updates the expiration timer for an item. This may include canceling or rescheduling.
+     *
+     * @param item the item whose expiration timer to modify.
+     */
     private void updateExpireTimer(Item item) {
         if (item.getExpireTimestamp() != null) {
             // Check for existing timer and cancel
             String id = item.getUuid();
-            ScheduledFuture task = expireTimers.get(id);
-            if (task != null) task.cancel(true);
+            cancelExpireTimer(id);
 
             // Set new timer
             long hours = 1 + ((item.getExpireTimestamp() - System.currentTimeMillis()) / 3600000);
@@ -167,6 +185,16 @@ public class ConfigHandler {
             ScheduledFuture task = expireTimers.get(item.getUuid());
             if (task != null) task.cancel(true);
         }
+    }
+
+    /**
+     * Cancels an item's expiration timer.
+     *
+     * @param itemID the UUID of the item whose expiration timer to cancel.
+     */
+    private void cancelExpireTimer(String itemID) {
+        ScheduledFuture task = expireTimers.remove(itemID);
+        if (task != null) task.cancel(true);
     }
 
     /**
