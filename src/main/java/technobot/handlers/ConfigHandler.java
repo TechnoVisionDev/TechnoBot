@@ -9,9 +9,7 @@ import technobot.TechnoBot;
 import technobot.data.cache.Config;
 import technobot.data.cache.Item;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -231,21 +229,17 @@ public class ConfigHandler {
      * @return the name of the item that most closely matches the input. Null if no match at all.
      */
     public String findClosestItem(String input) {
-        int value = Integer.MAX_VALUE;
-        int longest = 0;
-        String itemName = null;
+        String closestMatch = null;
+        double bestValue = 0;
         for (String name : config.getShop().keySet()) {
-            int temp = StringUtils.getLevenshteinDistance(input, name);
-            if (temp < value) {
-                value = temp;
-                itemName = name;
-            }
-            if (name.length() > longest) {
-                longest = name.length();
+            if (name.contains(input)) {
+                double result = StringUtils.getJaroWinklerDistance(name, input);
+                if (result >= bestValue) {
+                    closestMatch = name;
+                }
             }
         }
-        if (itemName != null && value >= longest) return null;
-        return itemName;
+        return closestMatch;
     }
 
     /**
