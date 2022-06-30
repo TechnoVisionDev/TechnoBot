@@ -57,6 +57,7 @@ public class ShopCommand extends Command {
             String price = guildData.economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(item.getPrice());
             String desc = item.getDescription() != null ? "**\n" + item.getDescription() : "**";
             embed.appendDescription("\n\n**" + price + " - " + item.getName() + desc);
+            if (item.isExpired()) embed.appendDescription(" [Expired]");
             count++;
             if (count % ITEMS_PER_PAGE == 0) {
                 embeds.add(embed.build());

@@ -99,6 +99,14 @@ public class Item {
                 .build();
     }
 
+    /**
+     * Check if item has expired based on expire timestamp
+     * @return true if expired, otherwise false.
+     */
+    public boolean isExpired() {
+        return this.getExpireTimestamp() != null && this.getExpireTimestamp() <= System.currentTimeMillis();
+    }
+
     public String getUuid() {
         return uuid;
     }

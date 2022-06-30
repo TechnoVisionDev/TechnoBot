@@ -45,7 +45,7 @@ public class BuyCommand extends Command {
         long balance = econ.getBalance(event.getUser().getIdLong());
         if (balance >= item.getPrice()) {
             // Check expiration timestamp & stock
-            if (item.getExpireTimestamp() != null && item.getExpireTimestamp() <= System.currentTimeMillis()) {
+            if (item.isExpired()) {
                 event.replyEmbeds(EmbedUtils.createError("That item has expired and is no longer purchasable.")).setEphemeral(true).queue();
                 return;
             } else if (item.getStock() != null & item.getStock() <= 0) {

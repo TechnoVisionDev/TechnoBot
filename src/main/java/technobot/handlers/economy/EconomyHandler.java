@@ -397,7 +397,6 @@ public class EconomyHandler {
         if (item.getStock() != null) {
             item.setStock(item.getStock()-1);
             GuildData.get(guild).configHandler.updateItem(item);
-            bot.database.config.updateOne(guildFilter, Updates.inc("shop."+item.getName().toLowerCase()+".stock", -1));
         }
     }
 
