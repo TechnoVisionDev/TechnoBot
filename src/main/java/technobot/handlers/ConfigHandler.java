@@ -3,6 +3,7 @@ package technobot.handlers;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.entities.Guild;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.cache.Config;
@@ -204,7 +205,12 @@ public class ConfigHandler {
      * @return an Item object.
      */
     public Item getItem(String name) {
-        String uuid = config.getShop().get(name.toLowerCase());
+        name = name.toLowerCase();
+        String uuid = config.getShop().get(name);
+        if (uuid == null) {
+            String key = findClosestItem(name);
+            uuid = config.getShop().get(key);
+        }
         return config.getItems().get(uuid);
     }
 
@@ -216,6 +222,30 @@ public class ConfigHandler {
      */
     public Item getItemByID(String uuid) {
         return config.getItems().get(uuid);
+    }
+
+    /**
+     * Finds the item with the name that most closely matches the input.
+     *
+     * @param input the name of the item searching for.
+     * @return the name of the item that most closely matches the input. Null if no match at all.
+     */
+    public String findClosestItem(String input) {
+        int value = Integer.MAX_VALUE;
+        int longest = 0;
+        String itemName = null;
+        for (String name : config.getShop().keySet()) {
+            int temp = StringUtils.getLevenshteinDistance(input, name);
+            if (temp < value) {
+                value = temp;
+                itemName = name;
+            }
+            if (name.length() > longest) {
+                longest = name.length();
+            }
+        }
+        if (itemName != null && value >= longest) return null;
+        return itemName;
     }
 
     /**

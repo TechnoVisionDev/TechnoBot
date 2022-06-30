@@ -121,7 +121,7 @@ public class ItemCommand extends Command {
                 }
             }
             case "remove" -> {
-                String name = event.getOption("name").getAsString();
+                String name = configHandler.findClosestItem(event.getOption("name").getAsString());
                 if (configHandler.containsItem(name)) {
                     configHandler.removeItem(name);
                     text = EmbedUtils.BLUE_X + " Item has been removed from the store. Users will still be able to `/use` this item if they already own it.";
@@ -132,7 +132,7 @@ public class ItemCommand extends Command {
                 }
             }
             case "erase" -> {
-                String name = event.getOption("name").getAsString();
+                String name = configHandler.findClosestItem(event.getOption("name").getAsString());
                 if (configHandler.containsItem(name)) {
                     configHandler.eraseItem(name);
                     text = EmbedUtils.BLUE_X + " Item has been erased and can never be purchased or used.";

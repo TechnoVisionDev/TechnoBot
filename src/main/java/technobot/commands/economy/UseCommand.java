@@ -38,6 +38,7 @@ public class UseCommand extends Command {
 
         // Check if item exists & is in inventory
         String itemName = event.getOption("item").getAsString();
+        itemName = guildData.configHandler.findClosestItem(itemName);
         ItemAndCount response = getItemForUse(itemName, userID, guildData);
         Item item = response.item();
         if (item == null) {
