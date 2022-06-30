@@ -155,8 +155,12 @@ public class ItemCommand extends Command {
             item.setShowInInventory(inventoryOption.getAsBoolean());
         } if (durationOption != null) {
             isUpdated = true;
-            long timestamp = (3600000 * durationOption.getAsLong()) + System.currentTimeMillis();
-            item.setExpireTimestamp(timestamp);
+            if (durationOption.getAsLong() == 0) {
+                item.setExpireTimestamp(null);
+            } else {
+                long timestamp = (3600000 * durationOption.getAsLong()) + System.currentTimeMillis();
+                item.setExpireTimestamp(timestamp);
+            }
         } if (stockOption != null) {
             isUpdated = true;
             item.setStock(stockOption.getAsLong());

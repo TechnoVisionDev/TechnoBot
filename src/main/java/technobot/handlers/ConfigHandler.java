@@ -8,7 +8,13 @@ import technobot.TechnoBot;
 import technobot.data.cache.Config;
 import technobot.data.cache.Item;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles config data for the guild and various modules.
@@ -16,6 +22,9 @@ import java.util.LinkedHashMap;
  * @author TechnoVision
  */
 public class ConfigHandler {
+
+    private static final ScheduledExecutorService expireScheduler = Executors.newScheduledThreadPool(10);
+    private static final Map<String, ScheduledFuture> expireTimers = new HashMap<>();
 
     private final Guild guild;
     private final TechnoBot bot;
@@ -32,6 +41,17 @@ public class ConfigHandler {
         if (this.config == null) {
             this.config = new Config(guild.getIdLong());
             bot.database.config.insertOne(config);
+        }
+
+        // Start any item expiration timers
+        for (Item item : this.getConfig().getItems().values()) {
+            if (item.getExpireTimestamp() != null) {
+                long hours = 1 + ((item.getExpireTimestamp() - System.currentTimeMillis()) / 3600000);
+                expireTimers.put(item.getUuid(), expireScheduler.schedule(() -> {
+                    removeItem(item.getName());
+                    expireTimers.remove(item.getUuid());
+                }, hours, TimeUnit.HOURS));
+            }
         }
     }
 
@@ -90,6 +110,7 @@ public class ConfigHandler {
         config.addItem(item);
         bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item.getUuid()));
         bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
+        updateExpireTimer(item);
         return item;
     }
 
@@ -126,6 +147,26 @@ public class ConfigHandler {
     public void updateItem(Item item) {
         config.addItem(item);
         bot.database.config.updateOne(filter, Updates.set("items."+item.getUuid(), item));
+        updateExpireTimer(item);
+    }
+
+    private void updateExpireTimer(Item item) {
+        if (item.getExpireTimestamp() != null) {
+            // Check for existing timer and cancel
+            String id = item.getUuid();
+            ScheduledFuture task = expireTimers.get(id);
+            if (task != null) task.cancel(true);
+
+            // Set new timer
+            long hours = 1 + ((item.getExpireTimestamp() - System.currentTimeMillis()) / 3600000);
+            expireTimers.put(id, expireScheduler.schedule(() -> {
+                removeItem(item.getName());
+                expireTimers.remove(id);
+            }, hours, TimeUnit.HOURS));
+        } else {
+            ScheduledFuture task = expireTimers.get(item.getUuid());
+            if (task != null) task.cancel(true);
+        }
     }
 
     /**
