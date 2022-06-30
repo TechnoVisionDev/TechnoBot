@@ -21,7 +21,7 @@ public class ConfigHandler {
     private final TechnoBot bot;
     private final Bson filter;
     private Config config;
-    private LinkedHashMap<String, Item> shopUUIDs;
+    private final LinkedHashMap<String, Item> shopUUIDs;
 
     public ConfigHandler(TechnoBot bot, Guild guild) {
         this.bot = bot;
@@ -133,6 +133,7 @@ public class ConfigHandler {
      */
     public void updateItem(Item item) {
         config.addItem(item);
+        shopUUIDs.put(item.getUuid(), item);
         bot.database.config.updateOne(filter, Updates.set("shop."+item.getName().toLowerCase(), item));
     }
 

@@ -44,6 +44,15 @@ public class BuyCommand extends Command {
         // Attempt to purchase item
         long balance = econ.getBalance(event.getUser().getIdLong());
         if (balance >= item.getPrice()) {
+            // Check expiration timestamp & stock
+            if (item.getExpireTimestamp() != null && item.getExpireTimestamp() <= System.currentTimeMillis()) {
+                event.replyEmbeds(EmbedUtils.createError("That item has expired and is no longer purchasable.")).setEphemeral(true).queue();
+                return;
+            } else if (item.getStock() != null & item.getStock() <= 0) {
+                event.replyEmbeds(EmbedUtils.createError("There is not enough stock for you to buy this item.")).setEphemeral(true).queue();
+                return;
+            }
+
             // Purchase was successful
             econ.buyItem(event.getUser().getIdLong(), item);
             if (item.getShowInInventory()) {
@@ -55,8 +64,16 @@ public class BuyCommand extends Command {
                         .setDescription(text);
                 event.replyEmbeds(embed.build()).queue();
             } else {
-                // TODO: Instantly use item
-                event.reply(":thumbsup:").queue();
+                // Instantly use item
+                if (!econ.canUseItem(event.getMember(), item)) {
+                    // Does not meet requirements
+                    event.replyEmbeds(EmbedUtils.createError("You do not meet the requirements to use that item! Use `/inspect <item>` for more details.")).setEphemeral(true).queue();
+                } else {
+                    // Use item
+                    econ.useItem(event.getMember(), item, 0);
+                    String reply = item.getReplyMessage() != null ? item.getReplyMessage() : ":thumbsup:";
+                    event.reply(reply).queue();
+                }
             }
         } else {
             // Not enough money to purchase

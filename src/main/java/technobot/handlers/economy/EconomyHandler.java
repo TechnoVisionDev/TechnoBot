@@ -388,9 +388,16 @@ public class EconomyHandler {
      */
     public void buyItem(long userID, Item item) {
         removeMoney(userID, item.getPrice());
+        // Update user inventory in database
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         if (item.getShowInInventory()) {
             bot.database.economy.updateOne(filter, Updates.inc("inventory." + item.getUuid(), 1));
+        }
+        // Decrement stock in shop
+        if (item.getStock() != null) {
+            item.setStock(item.getStock()-1);
+            GuildData.get(guild).configHandler.updateItem(item);
+            bot.database.config.updateOne(guildFilter, Updates.inc("shop."+item.getName().toLowerCase()+".stock", -1));
         }
     }
 
