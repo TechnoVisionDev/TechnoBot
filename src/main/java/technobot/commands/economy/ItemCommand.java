@@ -1,5 +1,6 @@
 package technobot.commands.economy;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -13,6 +14,7 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.data.cache.Item;
 import technobot.handlers.ConfigHandler;
+import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 /**
@@ -60,6 +62,7 @@ public class ItemCommand extends Command {
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to remove", true)));
         this.subCommands.add(new SubcommandData("info", "Display details about an item.")
                 .addOptions(new OptionData(OptionType.STRING, "name", "The name of the item to display", true)));
+        this.subCommands.add(new SubcommandData("options", "View the different options available for editing an item."));
     }
 
     @Override
@@ -69,9 +72,9 @@ public class ItemCommand extends Command {
         String currency = guildData.economyHandler.getCurrency();
 
         String text = "";
-        String name = event.getOption("name").getAsString();
         switch(event.getSubcommandName()) {
             case "create" -> {
+                String name = event.getOption("name").getAsString();
                 if (configHandler.getConfig().getShop().size() >= MAX_SHOP_SIZE) {
                     text = "You have reached the maximum item limit! Use `/item remove` to make some room before adding a new item.";
                     event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
@@ -94,6 +97,7 @@ public class ItemCommand extends Command {
             }
             case "edit" -> {
                 // Get existing item
+                String name = event.getOption("name").getAsString();
                 Item item = configHandler.getItem(name);
                 if (item == null) {
                     text = "That item name doesn't exist!";
@@ -112,6 +116,7 @@ public class ItemCommand extends Command {
                 }
             }
             case "remove" -> {
+                String name = event.getOption("name").getAsString();
                 if (configHandler.containsItem(name)) {
                     configHandler.removeItem(name);
                     text = EmbedUtils.BLUE_X + " Item has been removed from the store. Users will still be able to `/use` this item if they already own it.";
@@ -122,6 +127,7 @@ public class ItemCommand extends Command {
                 }
             }
             case "erase" -> {
+                String name = event.getOption("name").getAsString();
                 if (configHandler.containsItem(name)) {
                     configHandler.eraseItem(name);
                     text = EmbedUtils.BLUE_X + " Item has been erased and can never be purchased or used.";
@@ -132,12 +138,31 @@ public class ItemCommand extends Command {
                 }
             }
             case "info" -> {
+                String name = event.getOption("name").getAsString();
                 Item item = configHandler.getItem(name);
                 if (item == null) {
                     event.replyEmbeds(EmbedUtils.createError("That item does not exist!")).queue();
                     return;
                 }
                 event.replyEmbeds(configHandler.getItem(name).toEmbed(currency)).queue();
+            }
+            case "options" -> {
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(EmbedColor.DEFAULT.color)
+                        .setTitle("Item Options")
+                        .setDescription("Usage: `/item edit <name> <option>`\nType the item name as it appears in the shop, including any spaces and emoji.")
+                        .addField("Name", "A name to identify the item. Must be between 3 and 100 characters.", false)
+                        .addField("Price", "Price to buy 1 of the item. Can be 0 for free items.", false)
+                        .addField("Description", "Describe what it does or what it gives the member buying it.", false)
+                        .addField("Inventory", "Whether the item should show in your inventory.\nInventory items have to be used with the `/use <item>` command before roles are given/removed or seeing the item reply.", false)
+                        .addField("Duration", "The amount of hours the item will stay in the store for.\nTo remove the duration use `0`.", false)
+                        .addField("Stock", "Amount of stock the item has. When the stock is 0 the item cannot be bought.\nUse `-1` for an unlimited stock.", false)
+                        .addField("Required Role", "A role the user must already have in order to buy (and use) the item.\nSet the same role a second time to detach it from the item.", false)
+                        .addField("Role Given", "The role you are given when buying (non-inventory item) or using (inventory item) the item.\nSet the same role a second time to detach it from the item.", false)
+                        .addField("Role Removed", "The role taken when buying (non-inventory item) or using (inventory item) the item.\nSet the same role a second time to detach it from the item.", false)
+                        .addField("Required Balance", "The balance the user must have in order to buy (and use if an inventory item) the item.\nSet to `0` for no required balance.", false)
+                        .addField("Reply Message", "The message that the bot replies with when the item is bought (non-inventory item) or used (inventory item). You can use member and server placeholder tags in these messages!", false);
+                event.replyEmbeds(embed.build()).queue();
             }
         }
     }
