@@ -32,7 +32,7 @@ public class ButtonListener extends ListenerAdapter {
 
     public static final int MINUTES_TO_DISABLE = 3;
 
-    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(20);
     public static final Map<String, List<MessageEmbed>> menus = new HashMap<>();
     public static final Map<String, List<Button>> buttons = new HashMap<>();
 
@@ -118,10 +118,11 @@ public class ButtonListener extends ListenerAdapter {
     public static void disableButtons(String uuid, InteractionHook hook) {
         Runnable task = () -> {
             List<Button> actionRow = ButtonListener.buttons.get(uuid);
-            for (int i = 0; i < actionRow.size(); i++) {
-                actionRow.set(i, actionRow.get(i).asDisabled());
+            List<Button> newActionRow = new ArrayList<>();
+            for (Button button : actionRow) {
+                newActionRow.add(button.asDisabled());
             }
-            hook.editOriginalComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
+            hook.editOriginalComponents(ActionRow.of(newActionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
             ButtonListener.buttons.remove(uuid);
             ButtonListener.menus.remove(uuid);
         };
@@ -137,10 +138,11 @@ public class ButtonListener extends ListenerAdapter {
     public static void disableButtons(String uuid, Message hook) {
         Runnable task = () -> {
             List<Button> actionRow = ButtonListener.buttons.get(uuid);
-            for (int i = 0; i < actionRow.size(); i++) {
-                actionRow.set(i, actionRow.get(i).asDisabled());
+            List<Button> newActionRow = new ArrayList<>();
+            for (Button button : actionRow) {
+                newActionRow.add(button.asDisabled());
             }
-            hook.editMessageComponents(ActionRow.of(actionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
+            hook.editMessageComponents(ActionRow.of(newActionRow)).queue(null, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_MESSAGE));
             ButtonListener.buttons.remove(uuid);
             ButtonListener.menus.remove(uuid);
         };

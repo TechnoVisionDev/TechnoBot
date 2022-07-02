@@ -12,7 +12,6 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.Economy;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
@@ -20,6 +19,7 @@ import technobot.util.embeds.EmbedUtils;
 import technobot.util.enums.Cards;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Command that plays a game of blackjack.
@@ -30,7 +30,7 @@ public class BlackjackCommand extends Command {
 
     public static final String CARDBACK_EMOJI = "<:cardback:992575657320140801>";
     public static final Map<String, Blackjack> games = new HashMap<>();
-    public static final Stack<Cards> deck = new Stack<>();
+    public static final Map<String, Stack<Cards>> decks = new HashMap<>();
 
     public BlackjackCommand(TechnoBot bot) {
         super(bot);
@@ -38,17 +38,20 @@ public class BlackjackCommand extends Command {
         this.description = "Play a game of blackjack.";
         this.category = Category.CASINO;
         this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(1));
-
-        // Setup deck of cards
-        for (Cards card : Cards.values()) {
-            deck.push(card);
-        }
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        // Charge player for bet
+        // Check if game already exists
         User user = event.getUser();
+        String userID = user.getId();
+        if (games.containsKey(userID)) {
+            String text = "You are already playing a blackjack game!";
+            event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
+            return;
+        }
+
+        // Charge player for bet
         long bet = event.getOption("bet").getAsLong();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
         long balance = economyHandler.getBalance(user.getIdLong());
@@ -60,16 +63,23 @@ public class BlackjackCommand extends Command {
         }
         economyHandler.removeMoney(user.getIdLong(), bet);
 
-        // Shuffle deck
-        Stack<Cards> shuffledDeck = (Stack<Cards>) deck.clone();
-        Collections.shuffle(shuffledDeck);
+        // Create and shuffle draw deck
+        Stack<Cards> deck = decks.get(userID);
+        if (deck == null || deck.size() <= 15) {
+            deck = new Stack<>();
+            for (Cards card : Cards.values()) {
+                deck.push(card);
+            }
+            Collections.shuffle(deck);
+            decks.put(userID, deck);
+        }
 
         // Create new blackjack game
-        Cards dealerCard = shuffledDeck.pop();
+        Cards dealerCard = deck.pop();
         List<Cards> playerHand = new ArrayList<>();
-        playerHand.add(shuffledDeck.pop());
-        playerHand.add(shuffledDeck.pop());
-        games.put(user.getId(), new Blackjack(shuffledDeck, dealerCard, playerHand));
+        playerHand.add(deck.pop());
+        playerHand.add(deck.pop());
+        games.put(user.getId(), new Blackjack(userID, dealerCard, playerHand));
 
         // Send embed with buttons
         int score = calculateValue(playerHand);
@@ -77,22 +87,30 @@ public class BlackjackCommand extends Command {
         String uuid = user.getId() + ":" + UUID.randomUUID();
         List<Button> buttons = List.of(Button.primary("blackjack:hit:"+uuid+":"+bet, "Hit"), Button.secondary("blackjack:stand:"+uuid+":"+bet, "Stand"));
         ButtonListener.buttons.put(uuid, buttons);
-        event.replyEmbeds(embed).addActionRow(buttons).queue(interactionHook -> ButtonListener.disableButtons(uuid, interactionHook));
+        event.replyEmbeds(embed).addActionRow(buttons).queue(interactionHook -> {
+            // Delete all game data if no response for 3 min
+            ButtonListener.disableButtons(uuid, interactionHook);
+            ButtonListener.executor.schedule(() -> {
+                decks.remove(userID);
+                games.remove(userID);
+            }, 3, TimeUnit.MINUTES);
+        });
     }
 
     /**
      * Stores and represents a blackjack game.
      *
-     * @param deck the shuffled deck of cards to draw from.
      * @param dealerCard the card that the dealer has revealed.
      * @param playerHand List of cards that the player has.
      */
-    public record Blackjack(Stack<Cards> deck, Cards dealerCard, List<Cards> playerHand) {
+    public record Blackjack(String userID, Cards dealerCard, List<Cards> playerHand) {
 
         /**
          * Draws a card from the deck and adds it to the player's hand.
          */
-        public void hit() { playerHand.add(deck.pop()); }
+        public void hit() {
+            playerHand.add(decks.get(userID).pop());
+        }
     }
 
     /**
@@ -150,7 +168,7 @@ public class BlackjackCommand extends Command {
         dealerHand.add(game.dealerCard());
         int dealerScore = game.dealerCard().value;
         do {
-            Cards card = game.deck().pop();
+            Cards card = decks.get(game.userID()).pop();
             dealerScore += card.value;
             dealerHand.add(card);
         } while (dealerScore < playerScore && dealerScore < 17);
@@ -178,7 +196,7 @@ public class BlackjackCommand extends Command {
          if (score >= 21) {
              if (score > 21) {
                  // Player busted
-                 List<Cards> dealerHand = List.of(game.dealerCard(), game.deck().pop());
+                 List<Cards> dealerHand = List.of(game.dealerCard(), decks.get(game.userID()).pop());
                  int dealerScore = calculateValue(dealerHand);
                  embed = getResultEmbed(user, dealerHand, score, dealerScore);
                  embed.setDescription("Result: Bust " + currency + " -" + bet);
