@@ -19,6 +19,7 @@ import technobot.util.embeds.EmbedUtils;
 import technobot.util.enums.Cards;
 
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,6 +32,7 @@ public class BlackjackCommand extends Command {
     public static final String CARDBACK_EMOJI = "<:cardback:992575657320140801>";
     public static final Map<String, Blackjack> games = new HashMap<>();
     public static final Map<String, Stack<Cards>> decks = new HashMap<>();
+    public static final Map<String, ScheduledFuture> resetTimers = new HashMap<>();
 
     public BlackjackCommand(TechnoBot bot) {
         super(bot);
@@ -90,10 +92,10 @@ public class BlackjackCommand extends Command {
         event.replyEmbeds(embed).addActionRow(buttons).queue(interactionHook -> {
             // Delete all game data if no response for 3 min
             ButtonListener.disableButtons(uuid, interactionHook);
-            ButtonListener.executor.schedule(() -> {
+            resetTimers.put(userID, ButtonListener.executor.schedule(() -> {
                 decks.remove(userID);
                 games.remove(userID);
-            }, 3, TimeUnit.MINUTES);
+            }, 3, TimeUnit.MINUTES));
         });
     }
 
@@ -280,6 +282,7 @@ public class BlackjackCommand extends Command {
      */
     public static void endGame(String userID, String uuid) {
         games.remove(userID);
+        resetTimers.remove(userID).cancel(true);
         List<Button> old = ButtonListener.buttons.get(uuid);
         List<Button> components = new ArrayList<>();
         components.add(old.get(0).asDisabled());
