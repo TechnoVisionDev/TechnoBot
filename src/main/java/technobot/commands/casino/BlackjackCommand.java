@@ -95,6 +95,7 @@ public class BlackjackCommand extends Command {
             resetTimers.put(userID, ButtonListener.executor.schedule(() -> {
                 decks.remove(userID);
                 games.remove(userID);
+                resetTimers.remove(userID);
             }, 3, TimeUnit.MINUTES));
         });
     }
