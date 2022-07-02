@@ -8,8 +8,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 
-import java.util.UUID;
-
 /**
  * POJO object that stores a shop item.
  *

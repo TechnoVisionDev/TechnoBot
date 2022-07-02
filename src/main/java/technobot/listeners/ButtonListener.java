@@ -13,8 +13,10 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
+import technobot.commands.casino.BlackjackCommand;
 import technobot.data.GuildData;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.enums.Cards;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -206,6 +208,16 @@ public class ButtonListener extends ListenerAdapter {
                 MessageEmbed embed = EmbedUtils.createError(systemName+" system was **NOT** reset!");
                 event.getHook().editOriginalComponents(new ArrayList<>()).setEmbeds(embed).queue();
             }
+        }
+        else if (pressedArgs[0].equals("blackjack") && storedArgs[0].equals("blackjack")) {
+            long bet = Long.parseLong(pressedArgs[4]);
+            MessageEmbed embed = null;
+            if (pressedArgs[1].equals("hit")) {
+                embed = BlackjackCommand.hit(event.getGuild(), event.getUser(), bet, uuid);
+            } else if (pressedArgs[1].equals("stand")) {
+                embed = BlackjackCommand.stand(event.getGuild(), event.getUser(), bet, uuid);
+            }
+            event.editComponents(ActionRow.of(buttons.get(uuid))).setEmbeds(embed).queue();
         }
     }
 }

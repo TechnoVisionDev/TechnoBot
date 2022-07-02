@@ -274,7 +274,7 @@ public class EconomyHandler {
      *
      * @param amount the amount of money to add.
      */
-    private void addMoney(long userID, long amount) {
+    public void addMoney(long userID, long amount) {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         bot.database.economy.updateOne(filter, Updates.inc("balance", amount), UPSERT);
     }
@@ -284,7 +284,7 @@ public class EconomyHandler {
      *
      * @param amount the amount of money to remove.
      */
-    private void removeMoney(long userID, long amount) {
+    public void removeMoney(long userID, long amount) {
         Bson filter = Filters.and(guildFilter, Filters.eq("user", userID));
         bot.database.economy.updateOne(filter, Updates.inc("balance", -1 * amount), UPSERT);
     }
