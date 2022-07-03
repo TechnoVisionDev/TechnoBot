@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import technobot.TechnoBot;
 import technobot.commands.automation.AutoRoleCommand;
 import technobot.commands.casino.BlackjackCommand;
+import technobot.commands.casino.CoinflipCommand;
 import technobot.commands.economy.*;
 import technobot.commands.fun.*;
 import technobot.commands.greetings.FarewellCommand;
@@ -55,6 +56,7 @@ public class CommandRegistry extends ListenerAdapter {
         mapCommand(
                 //Casino commands
                 new BlackjackCommand(bot),
+                new CoinflipCommand(bot),
 
                 //Automation commands
                 new AutoRoleCommand(bot),
