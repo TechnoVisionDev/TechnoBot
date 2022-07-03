@@ -9,17 +9,13 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.data.GuildData;
-import technobot.data.cache.Item;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
-import technobot.util.placeholders.Placeholder;
-import technobot.util.placeholders.PlaceholderFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Command that plays a coinflip casino game.
@@ -57,6 +53,7 @@ public class CoinflipCommand extends Command {
         }
         economyHandler.removeMoney(user.getIdLong(), bet);
 
+        // Flip coin and calculate result
         EmbedBuilder embed = new EmbedBuilder();
         int result = ThreadLocalRandom.current().nextInt(2);
         String winnings = economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet*2);
@@ -83,7 +80,7 @@ public class CoinflipCommand extends Command {
             }
         }
 
-        // Flip coin
+        // Send message response
         event.reply("<a:coinflip:993258934909550592> The coin flips into the air...").queue(msg -> {
             new Timer().schedule(new TimerTask() {
                 @Override
