@@ -85,7 +85,7 @@ public class CoinflipCommand extends Command {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    msg.retrieveOriginal().flatMap(hook -> hook.editMessageEmbeds(embed.build())).queue();
+                    msg.retrieveOriginal().flatMap(hook -> hook.editMessage(" ").setEmbeds(embed.build())).queue();
                 }
             }, 2500L);
         });
