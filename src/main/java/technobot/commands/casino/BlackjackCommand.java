@@ -173,6 +173,14 @@ public class BlackjackCommand extends Command {
         do {
             Cards card = decks.get(game.userID()).pop();
             dealerScore += card.value;
+            if (dealerScore > 21) {
+                for (Cards curr : dealerHand) {
+                    if (curr.isAce) {
+                        dealerScore -= 10;
+                        break;
+                    }
+                }
+            }
             dealerHand.add(card);
         } while (dealerScore < playerScore && dealerScore < 17);
         return dealerHand;
