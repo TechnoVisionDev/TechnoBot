@@ -33,7 +33,7 @@ public class CrashCommand extends Command {
     public CrashCommand(TechnoBot bot) {
         super(bot);
         this.name = "crash";
-        this.description = "Bet against a multiplier that crashes at any moment.";
+        this.description = "Bet against a multiplier that can crash at any moment.";
         this.category = Category.CASINO;
         this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(1));
     }
