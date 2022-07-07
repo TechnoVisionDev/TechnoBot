@@ -107,9 +107,9 @@ public class SlotsCommand extends Command {
         long earnings = bet;
         if (isWinner) {
             switch (slot[0]) {
-                case 0 -> earnings = bet * 5;
-                case 1 -> earnings = bet * 8;
-                case 2 -> earnings = bet * 10;
+                case 0 -> earnings = bet * 9;
+                case 1 -> earnings = bet * 9;
+                case 2 -> earnings = bet * 9;
             }
         }
 
