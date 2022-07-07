@@ -28,7 +28,7 @@ import java.util.concurrent.*;
 public class CrashCommand extends Command {
 
     public static final HashMap<Long, CrashGame> games = new HashMap<>();
-    private static final ScheduledExecutorService tasks = Executors.newScheduledThreadPool(5);
+    private static final ScheduledExecutorService tasks = Executors.newScheduledThreadPool(10);
 
     public CrashCommand(TechnoBot bot) {
         super(bot);
