@@ -60,6 +60,18 @@ public class CrashCommand extends Command {
         }
         economyHandler.removeMoney(user.getIdLong(), bet);
 
+        // Check for auto fail
+        if (ThreadLocalRandom.current().nextDouble() <= 0.03) {
+            EmbedBuilder embed = new EmbedBuilder()
+                    .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
+                    .setColor(EmbedColor.ERROR.color)
+                    .setDescription("Your bet: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet))
+                    .addField("Crashed At", "x1.00", true)
+                    .addField("Loss", economyHandler.getCurrency() + " -" + EconomyHandler.FORMATTER.format(bet), true);
+            event.replyEmbeds(embed.build()).addActionRow(Button.primary("cashout", "Cashout").asDisabled()).queue();
+            return;
+        }
+
         // Setup crash game
         double multiplier = 0.01 + (0.99 / ThreadLocalRandom.current().nextDouble());
         if (multiplier > 30) multiplier = 30;
@@ -86,9 +98,9 @@ public class CrashCommand extends Command {
                     embed2.setDescription("Your bet: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet));
                     embed2.addField("Crashed At", multiplierString, true);
                     embed2.addField("Loss", economyHandler.getCurrency() + " -" + EconomyHandler.FORMATTER.format(bet), true);
-                    msg.editOriginalEmbeds(embed2.build()).queue();
                     games.remove(user.getIdLong()).task.cancel(true);
-                    ButtonListener.buttons.remove(uuid);
+                    Button disabledButton = ButtonListener.buttons.remove(uuid).get(0).asDisabled();
+                    msg.editOriginalEmbeds(embed2.build()).setActionRow(disabledButton).queue();
                 } else {
                     int profit = (int) (((double)bet)*game.currMultiplier);
                     embed2.setColor(EmbedColor.DEFAULT.color);
