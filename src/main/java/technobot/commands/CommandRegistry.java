@@ -14,6 +14,7 @@ import technobot.TechnoBot;
 import technobot.commands.automation.AutoRoleCommand;
 import technobot.commands.casino.BlackjackCommand;
 import technobot.commands.casino.CoinflipCommand;
+import technobot.commands.casino.CrashCommand;
 import technobot.commands.casino.SlotsCommand;
 import technobot.commands.economy.*;
 import technobot.commands.fun.*;
@@ -58,6 +59,7 @@ public class CommandRegistry extends ListenerAdapter {
                 //Casino commands
                 new BlackjackCommand(bot),
                 new SlotsCommand(bot),
+                new CrashCommand(bot),
                 new CoinflipCommand(bot),
 
                 //Automation commands

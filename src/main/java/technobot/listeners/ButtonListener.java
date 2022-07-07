@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import technobot.commands.casino.BlackjackCommand;
+import technobot.commands.casino.CrashCommand;
 import technobot.data.GuildData;
 import technobot.util.embeds.EmbedUtils;
 import technobot.util.enums.Cards;
@@ -220,6 +221,11 @@ public class ButtonListener extends ListenerAdapter {
                 embed = BlackjackCommand.stand(event.getGuild(), event.getUser(), bet, uuid);
             }
             event.editComponents(ActionRow.of(buttons.get(uuid))).setEmbeds(embed).queue();
+        }
+        else if (pressedArgs[0].equals("crash") && storedArgs[0].equals("crash")) {
+            MessageEmbed embed = CrashCommand.cashout(event.getGuild(), event.getUser());
+            Button disabledButton = buttons.remove(uuid).get(0).asDisabled();
+            event.editComponents(ActionRow.of(disabledButton)).setEmbeds(embed).queue();
         }
     }
 }

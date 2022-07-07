@@ -32,7 +32,7 @@ public class CoinflipCommand extends Command {
         this.args.add(new OptionData(OptionType.STRING, "choice", "The side you think the coin will land on", true)
                 .addChoice("heads", "heads")
                 .addChoice("tails", "tails"));
-        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(0));
+        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(1));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CoinflipCommand extends Command {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    msg.retrieveOriginal().flatMap(hook -> hook.editMessage(" ").setEmbeds(embed.build())).queue();
+                    msg.editOriginalEmbeds(embed.build()).queue();
                 }
             }, 2500L);
         });

@@ -32,7 +32,7 @@ public class SlotsCommand extends Command {
         this.name = "slots";
         this.description = "Spin the slot machine.";
         this.category = Category.CASINO;
-        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(0));
+        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(1));
         this.args.add(new OptionData(OptionType.STRING, "theme", "The theme of the slot machine")
                 .addChoice("fruity", "fruity")
                 .addChoice("luxury", "luxury")
