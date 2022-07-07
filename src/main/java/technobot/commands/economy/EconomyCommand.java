@@ -1,6 +1,7 @@
 package technobot.commands.economy;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -28,6 +29,12 @@ public class EconomyCommand extends Command {
         this.permission = Permission.MANAGE_SERVER;
         this.subCommands.add(new SubcommandData("currency", "Set the currency symbol.")
                 .addOptions(new OptionData(OptionType.STRING, "symbol", "The emoji or symbol to set as the currency.")));
+        this.subCommands.add(new SubcommandData("add", "Add money to the balance of a user.")
+                .addOptions(new OptionData(OptionType.USER, "user", "The user you want to add money to.", true))
+                .addOptions(new OptionData(OptionType.INTEGER, "amount", "The amount of money to add", true)));
+        this.subCommands.add(new SubcommandData("remove", "Remove money from the balance of a user.")
+                .addOptions(new OptionData(OptionType.USER, "user", "The user you want to remove money from.", true))
+                .addOptions(new OptionData(OptionType.INTEGER, "amount", "The amount of money to remove", true)));
     }
 
     @Override
@@ -58,6 +65,26 @@ public class EconomyCommand extends Command {
                     economyHandler.resetCurrency();
                     text = EmbedUtils.BLUE_TICK + " The currency symbol has been reset.";
                 }
+            }
+            case "add" -> {
+                User user = event.getOption("user").getAsUser();
+                long amount = event.getOption("amount").getAsLong();
+                economyHandler.addMoney(user.getIdLong(), amount);
+                String currency = economyHandler.getCurrency() + " **" + EconomyHandler.FORMATTER.format(amount) + "**";
+                text = EmbedUtils.BLUE_TICK + " Successfully added " + currency + " to " + user.getAsMention();
+            }
+            case "remove" -> {
+                User user = event.getOption("user").getAsUser();
+                long amount = event.getOption("amount").getAsLong();
+                long networth = economyHandler.getNetworth(user.getIdLong());
+                if (amount > networth) {
+                    text = "You cannot remove more money than a user has!";
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
+                    return;
+                }
+                economyHandler.removeMoney(user.getIdLong(), amount);
+                String currency = economyHandler.getCurrency() + " **" + EconomyHandler.FORMATTER.format(amount) + "**";
+                text = EmbedUtils.BLUE_TICK + " Successfully removed " + currency + " from " + user.getAsMention();
             }
         }
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
