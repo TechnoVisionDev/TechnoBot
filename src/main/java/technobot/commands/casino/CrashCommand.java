@@ -44,7 +44,7 @@ public class CrashCommand extends Command {
         User user = event.getUser();
         long bet = event.getOption("bet").getAsLong();
         if (games.containsKey(user.getIdLong())) {
-            String text = "You are already playing a game of crash!";
+            String text = "You are currently playing a game of crash!";
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
@@ -67,8 +67,9 @@ public class CrashCommand extends Command {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
                 .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-                .setDescription("Your profit: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet))
-                .addField("Multiplier", "x1.00", false);
+                .setDescription("Your Bet: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet))
+                .addField("Multiplier", "x1.00", true)
+                .addField("Profit", economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet), true);
 
         // Start crash game
         String uuid = user.getId() + ":" + UUID.randomUUID();
@@ -82,16 +83,18 @@ public class CrashCommand extends Command {
                 EmbedBuilder embed2 = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
                 if (game.currMultiplier >= game.maxMultiplier) {
                     embed2.setColor(EmbedColor.ERROR.color);
-                    embed2.setDescription("Result: Loss " + economyHandler.getCurrency() + " -" + EconomyHandler.FORMATTER.format(bet));
-                    embed2.addField("Crashed At", multiplierString, false);
+                    embed2.setDescription("Your bet: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet));
+                    embed2.addField("Crashed At", multiplierString, true);
+                    embed2.addField("Loss", economyHandler.getCurrency() + " -" + EconomyHandler.FORMATTER.format(bet), true);
                     msg.editOriginalEmbeds(embed2.build()).queue();
                     games.remove(user.getIdLong()).task.cancel(true);
                     ButtonListener.buttons.remove(uuid);
                 } else {
                     int profit = (int) (((double)bet)*game.currMultiplier);
                     embed2.setColor(EmbedColor.DEFAULT.color);
-                    embed2.setDescription("Your profit: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(profit));
-                    embed2.addField("Multiplier", multiplierString, false);
+                    embed2.setDescription("Your bet: " + economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(bet));
+                    embed2.addField("Multiplier", multiplierString, true);
+                    embed2.addField("Profit", economyHandler.getCurrency() + " " + EconomyHandler.FORMATTER.format(profit), true);
                     msg.editOriginalEmbeds(embed2.build()).queue();
                 }
             }, 1500, 1500, TimeUnit.MILLISECONDS);
@@ -100,6 +103,13 @@ public class CrashCommand extends Command {
         });
     }
 
+    /**
+     * Stop the multiplier and cashout.
+     *
+     * @param guild the guild of the user playing this game.
+     * @param user the user playing this game.
+     * @return a result embed for the current game.
+     */
     public static MessageEmbed cashout(Guild guild, User user) {
         // Cancel game
         CrashGame game = games.remove(user.getIdLong());
@@ -115,11 +125,15 @@ public class CrashCommand extends Command {
         return new EmbedBuilder()
             .setColor(EmbedColor.SUCCESS.color)
             .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-            .setDescription("Result: Win " + econ.getCurrency() + " " + EconomyHandler.FORMATTER.format(profit))
-            .addField("Multiplier", multiplierString, false)
+            .setDescription("Your bet: " + econ.getCurrency() + " " + EconomyHandler.FORMATTER.format(game.bet))
+            .addField("Multiplier", multiplierString, true)
+            .addField("Win", econ.getCurrency() + " " + EconomyHandler.FORMATTER.format(profit), true)
             .build();
     }
 
+    /**
+     * Represents a Crash game and stores game data.
+     */
     public static class CrashGame {
 
         ScheduledFuture task;
@@ -127,6 +141,14 @@ public class CrashCommand extends Command {
         double maxMultiplier;
         long bet;
 
+        /**
+         * Stores Crash game data
+         *
+         * @param task the scheduled runnable for this game.
+         * @param currMultiplier the current multiplier.
+         * @param maxMultiplier the maximum multiplier before crashing.
+         * @param bet the bet made for this game.
+         */
         public CrashGame(ScheduledFuture task, double currMultiplier, double maxMultiplier, long bet) {
             this.task = task;
             this.currMultiplier = currMultiplier;
