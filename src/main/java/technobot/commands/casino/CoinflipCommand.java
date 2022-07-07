@@ -28,11 +28,11 @@ public class CoinflipCommand extends Command {
         super(bot);
         this.name = "coinflip";
         this.description = "Flip a coin and bet on heads or tails.";
-        this.category = Category.ECONOMY;
+        this.category = Category.CASINO;
         this.args.add(new OptionData(OptionType.STRING, "choice", "The side you think the coin will land on", true)
                 .addChoice("heads", "heads")
                 .addChoice("tails", "tails"));
-        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true));
+        this.args.add(new OptionData(OptionType.INTEGER, "bet", "The amount you want to wager", true).setMinValue(0));
     }
 
     @Override
