@@ -16,6 +16,7 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * Command that plays slot machine game.
@@ -89,16 +90,23 @@ public class SlotsCommand extends Command {
         economyHandler.removeMoney(user.getIdLong(), bet);
 
         // Spin slot machine
-        int[] slot = new int[3];
+        int[] slot;
+        
         StringBuilder slotMachine = new StringBuilder();
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                int index = ThreadLocalRandom.current().nextInt(3);
-                slotMachine.append(emojis.get(index));
-                if (j != 2) slotMachine.append(" | ");
-                if (i == 1) slot[j] = index;
+            IntStream slotsRow = new ThreadLocalRandom.current()
+                .ints(3, 0, 3);
+            
+            slotMachine.append(slotsRow
+                .mapToObj(slot -> emojis.get(slot))
+                .collect(Collectors.joining(" | "))
+            )
+
+            if (i == 1) {
+                slot = slotsRow.toArray();
+                slotMachine.append(" ⬅");
             }
-            if (i == 1) slotMachine.append(" ⬅");
+
             slotMachine.append("\n");
         }
 
