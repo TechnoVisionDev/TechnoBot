@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.bson.conversions.Bson;
 import technobot.TechnoBot;
 import technobot.data.GuildData;
@@ -14,6 +13,8 @@ import technobot.data.cache.Suggestion;
 import technobot.util.embeds.EmbedUtils;
 
 import java.util.List;
+
+import static technobot.util.Localization.get;
 
 /**
  * Handles the suggestion board for a guild.
@@ -31,7 +32,7 @@ public class SuggestionHandler {
     /**
      * Sets up the local cache for this guild's suggestions from MongoDB.
      *
-     * @param bot Instance of TechnoBot shard.
+     * @param bot   Instance of TechnoBot shard.
      * @param guild Instance of the guild this handler is for.
      */
     public SuggestionHandler(TechnoBot bot, Guild guild) {
@@ -66,7 +67,7 @@ public class SuggestionHandler {
         // Update local cache
         suggestions.getMessages().add(messageID);
         suggestions.getAuthors().add(author);
-        suggestions.setNumber(suggestions.getNumber()+1);
+        suggestions.setNumber(suggestions.getNumber() + 1);
 
         // Update MongoDB data file
         bot.database.suggestions.updateOne(filter, Updates.push("messages", messageID));
@@ -96,14 +97,18 @@ public class SuggestionHandler {
      *
      * @return anonymous mode boolean.
      */
-    public boolean isAnonymous() { return suggestions.isAnonymous(); }
+    public boolean isAnonymous() {
+        return suggestions.isAnonymous();
+    }
 
     /**
      * Checks if response DMs are enabled/disabled.
      *
      * @return response DMs boolean.
      */
-    public boolean hasResponseDM() { return suggestions.isResponseDM(); }
+    public boolean hasResponseDM() {
+        return suggestions.isResponseDM();
+    }
 
     /**
      * Gets the number of the next suggestion.
@@ -128,7 +133,9 @@ public class SuggestionHandler {
      *
      * @return list of suggestion message IDs.
      */
-    public List<Long> getMessages() { return suggestions.getMessages(); }
+    public List<Long> getMessages() {
+        return suggestions.getMessages();
+    }
 
     /**
      * Switches on/off anonymous mode and returns the result.
@@ -157,32 +164,36 @@ public class SuggestionHandler {
     /**
      * Responds to a suggestion by editing the embed and responding to the author.
      *
-     * @param event The slash command event that triggered this method.
-     * @param id the id number of the suggestion to respond to.
-     * @param reasonOption the reason option passed in by user.
-     * @param responseType the type of response (approve, deny, etc).
+     * @param event         The slash command event that triggered this method.
+     * @param id            the id number of the suggestion to respond to.
+     * @param reason        the reason passed in by user.
+     * @param response      the response message (approve, deny, etc).
+     * @param responseColor the color of the response message.
      */
-    public void respond(SlashCommandInteractionEvent event, int id, OptionMapping reasonOption, SuggestionResponse responseType) {
-        String reason = (reasonOption != null) ? reasonOption.getAsString() : "No reason given";
+    public void respond(SlashCommandInteractionEvent event, int id, String reason, String response, int responseColor) {
         try {
             SuggestionHandler suggestionHandler = GuildData.get(event.getGuild()).suggestionHandler;
             TextChannel channel = event.getGuild().getTextChannelById(suggestionHandler.getChannel());
-            if (channel == null) { throw new NullPointerException(); }
+            if (channel == null) {
+                throw new NullPointerException();
+            }
 
             // Edit suggestion embed
             Message suggestionMessage = channel.retrieveMessageById(suggestionHandler.getMessages().get(id)).complete();
             MessageEmbed embed = suggestionMessage.getEmbeds().get(0);
             MessageEmbed editedEmbed = new EmbedBuilder()
                     .setAuthor(embed.getAuthor().getName(), embed.getUrl(), embed.getAuthor().getIconUrl())
-                    .setTitle("Suggestion #" + (id+1) + " " + responseType.response)
+                    .setTitle(
+                            get(s -> s.suggestions.respond.title, id + 1, response) + ""
+                    )
                     .setDescription(embed.getDescription())
-                    .addField("Reason from " + event.getUser().getAsTag(), reason.toString(), false)
-                    .setColor(responseType.color)
+                    .addField(get(s -> s.suggestions.respond.reason, event.getUser().getAsTag()), reason, false)
+                    .setColor(responseColor)
                     .build();
             suggestionMessage.editMessageEmbeds(editedEmbed).queue();
 
-            String lowercaseResponse = responseType.response.toLowerCase();
-            String text = "Suggestion #" + (id+1) + " has been " + lowercaseResponse + "!";
+            String lowercaseResponse = response.toLowerCase();
+            String text = get(s -> s.suggestions.respond.message, id + 1, lowercaseResponse);
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
 
             // DM Author if response DMs are turned on
@@ -190,7 +201,7 @@ public class SuggestionHandler {
                 User author = event.getJDA().getUserById(suggestions.getAuthors().get(id));
                 if (author != null) {
                     author.openPrivateChannel().queue(dm -> {
-                        String dmText = "Your suggestion has been " + lowercaseResponse + " by " + event.getUser().getAsTag();
+                        String dmText = get(s -> s.suggestions.respond.dmText, lowercaseResponse, event.getUser().getAsTag());
                         dm.sendMessage(dmText).setEmbeds(editedEmbed).queue();
                     });
                 }
@@ -198,11 +209,11 @@ public class SuggestionHandler {
 
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             // Invalid ID format
-            String text = "Could not find a suggestion with that id number.";
+            String text = get(s -> s.suggestions.respond.noSuggestion);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         } catch (ErrorResponseException | NullPointerException e) {
             // Invalid channel
-            String text = "Could not find that message, was the channel deleted or changed?";
+            String text = get(s -> s.suggestions.respond.noMessage);
             event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
         }
     }
@@ -212,16 +223,14 @@ public class SuggestionHandler {
      * Includes the correct color scheme and wording.
      */
     public enum SuggestionResponse {
-        APPROVE("Approved", 0xd2ffd0),
-        DENY("Denied", 0xffd0ce),
-        CONSIDER("Considered", 0xfdff91),
-        IMPLEMENT("Implemented", 0x91fbff);
+        APPROVE(0xd2ffd0),
+        DENY(0xffd0ce),
+        CONSIDER(0xfdff91),
+        IMPLEMENT(0x91fbff);
 
-        private final String response;
-        private final int color;
+        public final int color;
 
-        SuggestionResponse(String response, int color) {
-            this.response = response;
+        SuggestionResponse(int color) {
             this.color = color;
         }
     }

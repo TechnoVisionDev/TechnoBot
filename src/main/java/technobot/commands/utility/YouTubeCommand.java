@@ -16,9 +16,13 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Youtube;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+
+import static technobot.util.Localization.format;
+import static technobot.util.Localization.get;
 
 /**
  * Command that retrieves information about a YouTube channel.
@@ -44,7 +48,7 @@ public class YouTubeCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         String channel = event.getOption("channel").getAsString().replace(" ", "+");
-        String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q="+channel+"&key="+YOUTUBE_TOKEN;
+        String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=" + channel + "&key=" + YOUTUBE_TOKEN;
 
         // Asynchronous API call
         Request request = new Request.Builder().url(url).build();
@@ -74,7 +78,7 @@ public class YouTubeCommand extends Command {
                 String avatar = channelSnippet.getAsJsonObject("thumbnails").getAsJsonObject("default").get("url").getAsString();
 
                 // Second Asynchronous API call
-                String statsURL = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id="+channelID+"&key="+YOUTUBE_TOKEN;
+                String statsURL = "https://www.googleapis.com/youtube/v3/channels?part=statistics&id=" + channelID + "&key=" + YOUTUBE_TOKEN;
                 Request request2 = new Request.Builder().url(statsURL).build();
                 bot.httpClient.newCall(request2).enqueue(new Callback() {
                     @Override
@@ -94,15 +98,20 @@ public class YouTubeCommand extends Command {
                         String views = FORMATTER.format(stats.get("viewCount").getAsLong());
                         String subs = FORMATTER.format(stats.get("subscriberCount").getAsLong());
                         String videos = FORMATTER.format(stats.get("videoCount").getAsLong());
-                        String link = "https://www.youtube.com/channel/"+channelID;
+                        String link = "https://www.youtube.com/channel/" + channelID;
 
+                        Youtube youtubeText = get(s -> s.utility.youtube);
                         // Build nice embed displaying all info
                         EmbedBuilder embed = new EmbedBuilder()
                                 .setColor(EmbedColor.DEFAULT.color)
-                                .setAuthor(title + " | YouTube Channel", link, avatar)
+                                .setAuthor(format(youtubeText.channel, title), link, avatar)
                                 .setThumbnail(avatar)
                                 .setDescription(desc)
-                                .addField("Statistics", "**Subscribers:** "+subs+"\n**Views:** "+views+"\n**Videos:** "+videos, false);
+                                .addField(
+                                        youtubeText.statsTitle,
+                                        format(youtubeText.stats, subs, views, videos),
+                                        false
+                                );
                         event.getHook().sendMessageEmbeds(embed.build()).queue();
                     }
                 });

@@ -1,0 +1,725 @@
+{
+  "automation": {
+    "autoRole": {
+      "add": {
+        "higherLevel": "I cannot give out roles that have a higher position than me!",
+        "premium": "You can set multiple auto-roles with premium! For more info, use `/premium`.",
+        "maxRolesReached": "You have hit the maximum number of auto-roles for this guild!",
+        "roleAdded": "{blue_tick} The {role} role will be given to all new members when they join the server."
+      },
+      "remove": {
+        "failure": "The {role} role is not set as an auto-role.",
+        "success": "{blue_x} The {role} role will no longer be given to new members when they join the server."
+      },
+      "list": {
+        "noAutoRoles": "Use `/auto-role add <role>` to set your first auto role!",
+        "premium": "Add additional roles with `/premium`",
+        "roleCount": "There are {count} auto roles given to new members:",
+        "role": "**{num}**. {role}"
+      }
+    }
+  },
+  "economy": {
+    "replyId": "Reply #{num}",
+    "balance": {
+      "leaderboardRank": "Leaderboard Rank: #{rank}",
+      "cash": "Cash:",
+      "bank": "Bank:",
+      "total": "Total:"
+    },
+    "buy": {
+      "noItem": "That item doesn't exist! See all valid items with `/shop`",
+      "success": "{green_tick} You have bought 1 {item} for {currency} {price}! This is now in your inventory.\nUser this item with the `/use <item>` command.",
+      "noMoney": "You do not have enough money to buy this item. You currently have {currency} {value} on hand."
+    },
+    "crime": {
+      "timeout": ":stopwatch: You can next commit a crime {timestamp}.",
+      "success": [
+        "You work for the Juarez cartel as a brick-presser and earn {currency} {amount}! They'll probably kill you and your family tomorrow. Just saying.",
+        "You rob an orphanage for {currency} {amount}.",
+        "You break into the house next door and sell their gaming PC on E-Bay for {currency} {amount}.",
+        "You work as a scam seller on Amazon selling fake airpods for {currency} {amount}.",
+        "You break into Rapunzel's kingdom, steal her hair, and sell it on the black market for {currency} {amount}.",
+        "You are a high school chemistry teacher diagnosed with lung cancer & turn to selling meth for {currency} {amount} to secure your family's future.",
+        "You punched some random person and they gave you {currency} {amount} to stop.",
+        "You smashed a kid's piggy bank and got {currency} {amount} from it.",
+        "What you did was too horrible to speak of. I can't believe you would do that. Was the {currency} {amount} even worth it for those horrible crimes you did? No.",
+        "You were hired as an assassin and you succeeded, earning {currency} {amount}.",
+        "You need some extra cash for your drug habit. You break into the local dirty video store and rob them of {currency} {amount}! You also take a few \"items\" for yourself..."
+      ],
+      "failure": [
+        "You break into the house next door only to find the whole family eating dinner together. Your bail cost {currency} {amount}.",
+        "You got shot trying to smuggle drugs across the border. The medical bills cost you a whopping {currency} {amount}.",
+        "You get caught shoplifting by the local mall cop, who fines you for {currency} {amount}.",
+        "You tried to do a prank call but called the police instead and were fined {currency} {amount}.",
+        "You tried to rob a McDonalds but Ronald Mcdonald Big Mac'd you in the face and stole {currency} {amount} from you.",
+        "You tried to rob someone but they just mugged you instead. You lost {currency} {amount}.",
+        "You attempted to steal a bar of chocolate from a local store but were caught and had to pay {currency} {amount}. It was bad chocolate.",
+        "You tried to jump the old lady walking down the street. Turns out she had a gun, and robbed you blind of {currency} {amount}.",
+        "You attempted to cook up some drugs to sell on the black market, but the chemicals exploded in your face, costing you {currency} {amount} in medical bills."
+      ]
+    },
+    "deposit": {
+      "noMoney": "{red_x} You don't have any money to deposit!",
+      "notEnough": "{red_x} You cannot deposit more than {currency} {amount}!",
+      "success": "{green_tick} Deposited {currency} {amount} to your bank!"
+    },
+    "economy": {
+      "currency": {
+        "tooLong": "The maximum length for the currency symbol is 100 characters!",
+        "hasNums": "The currency symbol cannot contain numbers!",
+        "success": "{blue_tick} The currency symbol has been set to **{symbol}**!",
+        "reset": "{blue_tick} The currency symbol has been reset."
+      }
+    },
+    "inspect": "That item doesn't exist!",
+    "inventory": {
+      "user": "{userTag}'s Inventory",
+      "description": "Use an item with the `/use <item>` command.",
+      "noItems": "You do not have any items!"
+    },
+    "item": {
+      "noItem": "That item doesn't exist!",
+      "create": {
+        "maxReached": "You have reached the maximum item limit! Use `/item remove` to make some room before adding a new item.",
+        "tooShort": "The minimum length for an item name is 3 characters.",
+        "alreadyExists": "There is already an item with that name!",
+        "success": "{green_tick} Item create successfully!"
+      },
+      "edit": {
+        "notUpdated": "Use one of the available command options to edit this item!",
+        "success": "{green_tick} Item updated successfully!"
+      },
+      "remove": "{blue_tick} The item has been removed from the shop."
+    },
+    "pay": {
+      "paySelf": "{red_x} You cannot pay yourself!",
+      "payBots": "{red_x} You cannot pay bots!",
+      "notEnough": "{red_x} You don't have that much money to give. You currently have {currency} {amount} on hand.",
+      "success": "{green_tick} {mention} has received your {currency} {amount}."
+    },
+    "rob": {
+      "robSelf": "{red_x} You cannot rob yourself!",
+      "robBots": "{red_x} You cannot rob bots, they are too powerful for you!",
+      "timeout": ":stopwatch: You can attempt to rob another member {timestamp}.",
+      "failure": "You were caught attempting to rob {mention}, and have been fined {currency} {amount}.",
+      "success": "{green_tick} You robbed {currency} {amount} from {mention}!"
+    },
+    "shop": {
+      "empty": "There are no items in this shop!\nUse the `/item create <name>` command to add some.",
+      "info": "Buy an item with the `/buy <item> [quantity]` command.\nFor more information on an item use the `/inspect <item>` command."
+    },
+    "withdraw": {
+      "noMoney": "{red_x} You don't have any money in your bank to withdraw!",
+      "tooMuch": "{red_x} You cannot withdraw more than {currency} {amount}!",
+      "success": "{green_tick} Withdrew {currency} {amount} from your bank!"
+    },
+    "work": {
+      "timeout": ":stopwatch: You can next work {timestamp}.",
+      "success": [
+        "You suggest something good and get rewarded {currency} {amount}.",
+        "You drove the school bus today and were only 5 minutes late, but you still got {currency} {amount} for your efforts!",
+        "You dig up some buried treasure on an island and find {currency} {amount} worth of gold jewelry!",
+        "You work as a teacher and earn {currency} {amount} for inspiring young minds.",
+        "Your boring nine-to-five office job pays you {currency} {amount}.",
+        "You've worked on a farm cultivating wheat from dawn to dusk. The land lord pays you {currency} {amount} for your struggles.",
+        "You discover a cure for a rare disease and earn {currency} {amount} in grant money!",
+        "Your recent novel becomes a hit, earning you {currency} {amount} in royalties.",
+        "You find a rare fossil on the beach and sell it to the museum for {currency} {amount}.",
+        "You invested in the right stocks a the right time, earning {currency} {amount}.",
+        "Your NFT collection surges in price, so you sell them for {currency} {amount}.",
+        "You finished digging in the mines for the day. It's hard work, but they paid you {currency} {amount}.",
+        "Dogecoin went to the moon! Your patient waiting got you {currency} {amount}.",
+        "The lemonade sold well. Your efforts gathered you {currency} {amount}.",
+        "Your dog dug up some cash. Finders keepers! {currency} {amount}",
+        "You decided to buy a lottery ticket. You won {currency} {amount}.",
+        "You made a viral video on the internet and got {currency} {amount} from ad revenue.",
+        "You found a lost cat and were given {currency} {amount} as a thanks.",
+        "You decided to become a web developer (why). Anyway you earned {currency} {amount}."
+      ]
+    }
+  },
+  "fun": {
+    "action": {
+      "failure": "I was unable to fetch that emote!",
+      "bite": "takes a bit out of {target}.",
+      "brofist": "and {target} brofist!",
+      "cuddle": "cuddles with {target}.",
+      "handhold": "and {target} hold hands. How sweet <3",
+      "hug": "gives {target} a big hug!",
+      "kiss": "kisses {target}.",
+      "lick": "licks {target}... gross!",
+      "pat": "gives {target} a little pat on the head",
+      "pinch": "pinches {target}. Ouch!",
+      "poke": "gives {target} a little poke.",
+      "punch": "punches {target} right in the face!",
+      "slap": "slaps {target}. They deserved it!",
+      "smack": "gives {target} a smack they will remember.",
+      "sorry": "apologizes to {target}.",
+      "stare": "won't stop staring at {target}...",
+      "thumbsup": "gives {target} two thumbs up!",
+      "tickle": "tickles {target}.",
+      "wave": "waves at {target}. ",
+      "wink": "winks at {target}."
+    },
+    "cute": "I was unable to fetch any cute pictures!",
+    "eightBall": {
+      "tooLong": "The 8ball doesn't like questions longer than 250 characters!",
+      "responses": [
+        "I can tell you certainly, no.",
+        "I'm not sure but ur def stupid.",
+        "It is certain.",
+        "Without a doubt.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Signs point to yes.",
+        "Reply hazy try again.",
+        "Better not tell you now.",
+        "Hmm imma just let u figure it out.",
+        "Don't count on it.",
+        "Outlook not so good.",
+        "My sources say no."
+      ]
+    },
+    "emote": {
+      "failure": "I was unable to fetch that emote!",
+      "mad": "doesn't like that.",
+      "blush": "has turned into a tomato.",
+      "celebrate": "is ready to celebrate!",
+      "clap": "claps excitedly.",
+      "confused": "is really confused.",
+      "cry": "needs a hug...",
+      "dance": "is dancing!",
+      "facepalm": "is in disbelief.",
+      "happy": "smiles.",
+      "laugh": "laughs out loud.",
+      "pout": "is in a bad mood.",
+      "shrug": "doesn't care...",
+      "shy": "is feeling timid.",
+      "sigh": "is disappointed.",
+      "slowClap": "is not amused.",
+      "scared": "fears for their life.",
+      "sleep": "falls into a deep sleep.",
+      "yawn": "is getting very sleepy."
+    },
+    "google": "google doesn't like questions longer than 250 characters!",
+    "inspire": "I was unable to fetch an inspiring quote!",
+    "joke": "I was unable to fetch any jokes!",
+    "meme": "I was unable to fetch any memes!",
+    "nsfw": "I was unable to fetch any nsfw pictures!",
+    "reddit": "I was unable to fetch any posts from that subreddit!",
+    "surprise": "I was unable to fetch any surprises!",
+    "wouldYouRather": {
+      "failure": "I was unable to fetch any questions!",
+      "title": "Would you rather...",
+      "message": "**{optionA}** or **{optionB}**"
+    }
+  },
+  "greeting": {
+    "farewell": {
+      "reset": "{blue_x} Farewell message successfully removed!",
+      "set": "{blue_tick} Farewell message successfully updated!"
+    },
+    "greet": {
+      "reset": "{blue_x} Greeting message successfully removed!",
+      "set": "{blue_tick} Greeting message successfully updated!"
+    },
+    "greetings": {
+      "removed": "{blue_x} Welcome channel successfully removed!",
+      "set": "{blue_x} Welcome channel set to {channel}",
+      "reset": "Would you like to reset the greeting system?\nThis will delete **ALL** data!",
+      "welcomeConfig": "**Welcome Channel:** {channel_or_none}",
+      "greetingConfig": "**Greeting:** {message}",
+      "farewellConfig": "**Farewell:** {message}",
+      "joinDmConfig": "**Join DM:** {message}"
+    },
+    "joinDm": {
+      "reset": "{blue_x} Join DM message successfully removed!",
+      "set": "{blue_tick} Join DM message successfully updated!"
+    }
+  },
+  "levels": {
+    "defaultMessage": "Congrats {mention}, you just advanced to **Level {level}**! :tada:",
+    "leveling": {
+      "channel": {
+        "specific": "{blue_tick} Leveling messages will now only display in {channel}",
+        "user": "{blue_tick} Leveling messages will now display in the channel the user levels up in."
+      },
+      "message": {
+        "set": "{blue_tick} Successfully set a custom level-up message.",
+        "reset": "{blue_tick} Reset the level-up message to default."
+      },
+      "dm": {
+        "enable": "{blue_tick} Level-up messages will now be sent through DMs.",
+        "disable": "{blue_tick} Level-up messages will no longer be sent through DMs."
+      },
+      "mod": {
+        "set": "{blue_tick} Leveling messages will now only display every **{modulus}** levels.",
+        "reset": "{blue_tick} Leveling messages have been reset to display every level."
+      },
+      "serverBackground": {
+        "set": "{blue_tick} Successfully updated the server rank card background!",
+        "reset": "{blue_tick} Reset the server rank card background to default image!",
+        "failure": "Unable to set that URL as the server rank card background!"
+      },
+      "mute": {
+        "enable": "{blue_x} Leveling messages have been muted and will not be displayed!",
+        "disable": "{blue_tick} Leveling messages will now be displayed!"
+      },
+      "reward": {
+        "add": "{blue_tick} Users will now receive the {role} role at level **{level}**.",
+        "remove": "{blue_tick Successfully removed the {role} reward role.",
+        "failure": "I cannot reward that role! Please check my permissions and role position."
+      },
+      "config": {
+        "channel": "**Level-up Channel:** {channel_or_none}",
+        "modulus": "**Leveling Modulus:** {modulus}",
+        "muted": "**Is Muted:** {boolean}",
+        "dms": "**Level-Up DMs:** {boolean}",
+        "message": "**Custom Message:** {message}",
+        "background": "**Custom Background:** {url}"
+      },
+      "reset": "{blue_tick} All leveling data was reset for **{username}**.",
+      "resetAll": "Would you like to reset the leveling system?\nThis will delete **ALL** data!"
+    },
+    "rankCard": {
+      "noRank": "You do not have a rank yet! Send some messages first.",
+      "background": {
+        "success": "Successfully updated your background!",
+        "failure": "Unable to set that URL as your background!"
+      },
+      "color": {
+        "success": "Successfully updated your color to **{color}**",
+        "failure": "That is not a valid hex code, please use a valid color."
+      },
+      "accent": {
+        "success": "Successfully updated your accent color to **{color}**",
+        "failure": "That is not a valid hex code, please use a valid color."
+      },
+      "opacity": "Successfully updated your opacity to **{opacity}%**",
+      "reset": "Successfully reset your rank card to default settings!"
+    },
+    "rank": {
+      "noRankSelf": "You do not have a rank yet! Send some messages first.",
+      "noRankOther": "That user does not have a rank yet!",
+      "accessFailure": "An error occurred while trying to access that rank card!"
+    },
+    "rewards": {
+      "reward": "Level {level} ----> {role}",
+      "title": ":crown: Leveling Rewards",
+      "noRewards": "{blue_x} No leveling rewards have been set for this server!"
+    },
+    "top": {
+      "guild": {
+        "name": "Guild Leaderboards",
+        "more": ":sparkles: **More?** `/top {type}`",
+        "title": "TOP 5 {type} {emote}"
+      },
+      "leveling": {
+        "name": "Leveling Leaderboard",
+        "empty": "Nobody has earned any XP or levels yet!\nSend some messages in chat and use `/rank` to get started!",
+        "entry": "#{rank} | {user} XP: `{xp}`"
+      },
+      "economy": {
+        "name": "Economy Leaderboard",
+        "empty": "Nobody has earned any money yet!\nUse `/work` and `/balance` to get started!",
+        "entry": "#{rank} | {user} {currency} {amount}"
+      },
+      "footer": "Page {current}/{max}  •  Your rank: #{rank}"
+    }
+  },
+  "music": {
+    "listener": {
+      "connect": "Please connect to a voice channel first!",
+      "queueEmpty": ":sound: There are no songs in the queue!",
+      "differentChannel": "You are not in the same voice channel as TechnoBot!",
+      "songDuration": "Song Duration",
+      "position": "Position in Queue",
+      "addedBy": "Added By {username}",
+      "addSong": ":notes: | Added **{song}** to the queue.",
+      "addPlaylist": ":notes: | Added **{playlist}** with `{count}` songs to the queue.",
+      "invalidSong": "That is not a valid song!",
+      "invalidLink": "That is not a valid link!",
+      "trackStuck": "Track got stuck, attempting to fix..."
+    },
+    "nowPlaying": {
+      "notPlaying": ":sound: Not currently playing any music!",
+      "title": "Now Playing :musical_note:",
+      "durationTitle": "Duration",
+      "queueTitle": "Queue",
+      "volumeTitle": "Volume",
+      "requesterTitle": "Requester",
+      "linkTitle": "Link",
+      "link": "[`Click Here`]({url})",
+      "repeatTitle": "Repeat",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "pause": {
+      "success": ":pause_button: Paused the music player!",
+      "failure": "The player is already paused!"
+    },
+    "play": {
+      "differentChannel": "You are not in the same voice channel as TechnoBot!",
+      "tooManySongs": "You cannot queue more than 100 songs!",
+      "specifySong": "Please specify a song to play."
+    },
+    "queue": {
+      "empty": ":sound: There are no songs in the queue!",
+      "title": "Music Queue :musical_note:",
+      "song": "Song",
+      "songPlural": "Songs",
+      "footer": "**{count} {songs} in Queue | {time} Total Length**",
+      "nowPlaying": "__Now Playing:__",
+      "upNext": "__Up Next:__"
+    },
+    "repeat": {
+      "enabled": ":repeat: Repeat has been enabled!",
+      "disabled": ":repeat: Repeat has been disabled!"
+    },
+    "resume": {
+      "success": ":play_pause: Resuming the music player!",
+      "failure": "The player is not paused!"
+    },
+    "seek": {
+      "success": ":fast_forward: Set position to `{time}`",
+      "tooLong": "The timestamp cannot be longer than the song!",
+      "invalidTimestamp": "That is not a valid timestamp!"
+    },
+    "skip": {
+      "skipping": ":fast_forward: Skipping...",
+      "queueEmpty": ":sound: The music queue is now empty!"
+    },
+    "stop": {
+      "success": "{blue_tick} Stopped the music player!",
+      "failure": "The music player is already stopped!"
+    },
+    "volume": {
+      "success": ":loud_sound: Set volume to {volume}%",
+      "failure": "You must specify a volume between 0 and 100!"
+    }
+  },
+  "staff": {
+    "cases": {
+      "actions": {
+        "ban": "Ban",
+        "kick": "Kick",
+        "warn": "Warn"
+      },
+      "server": "**Server:** {name}",
+      "actionedBy": "**Actioned By:** {mention}",
+      "action": "**Action:** {action}",
+      "duration": "**Duration:** {time}",
+      "reason": "**Reason:** {reason}"
+    },
+    "ban": {
+      "banBot": "Did you seriously expect me to ban myself?",
+      "tooHighRole": "This member cannot be banned. I need my role moved higher than theirs.",
+      "duration": "{amount} Days",
+      "message": "{name} has been banned{time}"
+    },
+    "clear": {
+      "success": ":ballot_box_with_check: I have deleted `{count} messages!`",
+      "failure": "You cannot clear messages older than 2 weeks!"
+    },
+    "kick": {
+      "kickForeign": "That user is not in this server!",
+      "kickBot": "Did you seriously expect me to kick myself?",
+      "tooHighRole": "This member cannot be kicked. I need my role moved higher than theirs.",
+      "message": "{name} has been kicked"
+    },
+    "lock": {
+      "success": ":lock: {channel} has been locked.",
+      "failure": "That is not a valid channel!"
+    },
+    "mute": {
+      "muteForeign": "That user is not in this server!",
+      "muteBot": "Did you seriously expect me to mute myself?",
+      "tooHighRole": "This member cannot be muted. I need my role moved higher than theirs.",
+      "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
+      "alreadyMuted": "This user is already muted!",
+      "message": "{name} has been muted"
+    },
+    "muteRole": {
+      "noPerm": "I am unable to create roles. Please check my permissions and role position.",
+      "botManagedRole": "I cannot set bot/managed roles as the mute role!",
+      "success": "{blue_tick} The {mention} role will be user for the `/mute` command."
+    },
+    "removeWarn": {
+      "successId": "{green_tick} Warning #{id} has been removed.",
+      "failureId": "Unable to find a warning with that ID!",
+      "successUser": "{green_tick} {count} warnings have been removed for {mention}.",
+      "failureUser": "That user has no warnings!",
+      "failure": "You must specify a user or a warning ID!"
+    },
+    "role": {
+      "roleForeign": "That user is not in this server!",
+      "botManagedRole": "I cannot give/remove bot/managed roles!",
+      "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs.",
+      "message": "{green_tick} Changed roles for {name}, "
+    },
+    "setNick": {
+      "nickForeign": "That user is not in this server!",
+      "set": "{green_tick} **{name}**'s nickname has been changed to **{nickname}**.",
+      "reset": "{green_tick} **{name}**'s nickname has been reset.",
+      "tooHighRole": "This member cannot be updated. I need my role moved higher than theirs."
+    },
+    "slowMode": {
+      "failureThread": "You cannot set slow mode on threads!",
+      "disable": ":stopwatch: Slow mode has been disabled in this channel.",
+      "tooHigh": "Time should be less than or equal to **6 hours**.",
+      "set": ":stopwatch: This channel slow mode delay has been set to **{amount}**.",
+      "display": ":stopwatch: This channel slow mode delay is **{amount}**.",
+      "format": {
+        "hours": "{amount} hours",
+        "minutes": "{amount} minutes",
+        "seconds": "{amount} seconds"
+      }
+    },
+    "unban": {
+      "unbanSelf": "Ah yes, let me just unban myself...",
+      "success": "{name} has been unbanned",
+      "noUser": "That user does not exist!",
+      "invalidUser": "That is not a valid user ID!"
+    },
+    "unlock": {
+      "invalidChannel": "That is not a valid channel!",
+      "noPerms": "I am lacking some permissions require to unlock channels.",
+      "success": ":unlock: {channel} has been unlocked."
+    },
+    "unmute": {
+      "unmuteForeign": "That user is not in this server!",
+      "unmuteBot": "Do you seriously expect me to unmute myself?",
+      "tooHighRole": "This member cannot be unmuted. I need my role moved higher than theirs.",
+      "noRole": "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.",
+      "notMuted": "This user is not muted!",
+      "message": "{name} has been unmuted"
+    },
+    "warn": {
+      "warnForeign": "That user is not in this server!",
+      "warnBot": "Why would I warn myself... silly human!",
+      "warnSelf": "You cannot warn yourself!",
+      "message": "{name} has been warned"
+    },
+    "warnings": {
+      "noWarnings": "{name} has no infractions!",
+      "title": "{name}'s Infractions",
+      "lastDay": "Last 24 hours",
+      "lastWeek": "Last 7 days",
+      "total": "Total",
+      "last10": "[ID] Last 10 Warnings",
+      "message": "{count} warnings"
+    },
+    "reasonUnspecified": "Unspecified"
+  },
+  "starboard": {
+    "create": "{blue_tick} Set the starboard channel to {channel}",
+    "jumpLink": {
+      "title": "Source",
+      "message": "[Jump to message!]({message_link})"
+    },
+    "attachmentTitle": "Attachment",
+    "limit": {
+      "set": "{blue_tick} Messages now require {amount} stars to show up on the starboard.",
+      "reset": "{blue_tick} Reset the star limit to default."
+    },
+    "blacklist": {
+      "add": "{blue_tick} Starboard will now ignore reactions from {channel}",
+      "reset": "{blue_tick} Reset the starboard blacklist!"
+    },
+    "unblacklist": {
+      "remove": "{blue_x} Removed {channel} from the starboard blacklist!",
+      "reset": "{blue_tick} Reset the starboard blacklist!"
+    },
+    "lock": {
+      "lock": "{blue_tick} Locked the starboard!",
+      "unlock": "{blue_x} Unlocked the starboard!"
+    },
+    "jump": {
+      "enable": "{blue_tick} Enabled jump links on starboard posts!",
+      "disable": "{blue_x} Disabled jump links on starboard posts!"
+    },
+    "nsfw": {
+      "enable": "{blue_tick} Users can now star messages in NSFW channels!",
+      "disable": "{blue_x} Users can no longer star messages in NSFW channels!"
+    },
+    "self": {
+      "enable": "{blue_tick} Users can now star their own messages!",
+      "disable": "{blue_x} Users can no longer star their own messages!"
+    },
+    "config": {
+      "threshold": "**Threshold:** {amount}",
+      "channel": "**Channel:** {channel_or_none}",
+      "allowNsfw": "**Allow NSFW:** {boolean}",
+      "allowSelf": "**Allow Self Stars:** {boolean}",
+      "showJumpLinks": "**Show Jump Links:** {boolean}",
+      "locked": "**Locked:** {boolean}",
+      "blacklistedChannels": "**Blacklisted Channels:** {list}"
+    }
+  },
+  "suggestions": {
+    "respond": {
+      "responses": {
+        "approved": "Approved",
+        "denied": "Denied",
+        "considered": "Considered",
+        "implemented": "Implemented"
+      },
+      "noReason": "No reason given",
+      "title": "Suggestion #{id} • {response}",
+      "reason": "Reason from {userTag}",
+      "message": "Suggestion #{id} has been {response}!",
+      "dmText": "Your suggestion has been {response} by {userTag}",
+      "noSuggestion": "Could not find a suggestion with that ID.",
+      "noMessage": "Could not find that message, was the channel deleted or changed?"
+    },
+    "suggest": {
+      "noChannel": "The suggestion channel has not been set!",
+      "title": "Suggestion #{id}",
+      "anonymousAuthor": "Anonymous",
+      "channelDeleted": "The suggestion channel has been deleted, please set a new one!",
+      "message": "{blue_tick} Your suggestion has been added to {channel}!"
+    },
+    "suggestions": {
+      "create": {
+        "create": "{blue_tick} Created a new suggestion channel!",
+        "set": "{blue_tick} Set the suggestion channel to {channel}!",
+        "failure": "You can only set a text channel as the suggestion board!"
+      },
+      "dm": {
+        "enable": "{blue_tick} Suggestion response DMs have been **enabled**!",
+        "disable": "{blue_x} Suggestion response DMs have been **disabled**!"
+      },
+      "anonymous": {
+        "enable": "{blue_tick} Anonymous suggestions have been **enabled**!",
+        "disable": "{blue_x} Anonymous suggestions have been **disabled**!"
+      },
+      "config": {
+        "channel": "**Channel:** {channel_or_none}",
+        "dm": "**Reponse DMs:** {boolean}",
+        "anonymous": "**Anonymous Suggestions:** {boolean}"
+      },
+      "reset": "Would you like to reset the suggestions system?\nThis will delete **ALL** data!"
+    }
+  },
+  "utility": {
+    "afk": ":wave: | **{username}** has gone AFK. See you later!",
+    "avatar": "Avatar Link",
+    "help": {
+      "categories": {
+        "automation": "Automation",
+        "economy": "Economy",
+        "fun": "Fun",
+        "greetings": "Greetings",
+        "levels": "Levels",
+        "music": "Music",
+        "staff": "Staff",
+        "starboard": "Starboard",
+        "suggestions": "Suggestions",
+        "utility": "Utility",
+        "casino": "Casino",
+        "pets": "Pets"
+      },
+      "categoryTitle": "{emoji} **{category} Commands**",
+      "noPermissions": "None",
+      "oneArgument": "Please only give one optional argument and try again",
+      "comingSoon": "Coming soon...",
+      "commandTitle": "Command: {cmdName}",
+      "commandUsage": "Usage:",
+      "commandPerms": "Permission:",
+      "noCommand": "No command called {cmdName} found.",
+      "defaultTitle": "TechnoBot Commands"
+    },
+    "invite": {
+      "message": ":robot: Click the button below to invite TechnoBot to your servers!",
+      "inviteButton": "Invite TechnoBot",
+      "serverButton": "Support Server",
+      "dashboardButton": "Dashboard"
+    },
+    "math": {
+      "expression": "Expression",
+      "result": "Result",
+      "failure": "That is not a valid math expression! Example: `{example}`"
+    },
+    "ping": {
+      "ping": ":signal_strength: Ping!",
+      "pong": ":ping_pong: Pong!",
+      "latency": "Latency",
+      "discordApi": "DiscordAPI",
+      "value": "{latency}ms"
+    },
+    "poll": {
+      "tooManyChoices": "You cannot have more than 10 choices!",
+      "message": "**{username} asks:** {question}"
+    },
+    "premium": {
+      "title": "TechnoBot Premium",
+      "description1": "Premium features are coming soon! But in the meantime, feel free to donate [HERE](https://www.patreon.com/TechnoVision)!",
+      "description2": "TechnoBot is developed by one guy who pays for server costs out of pocket! I appreciate any support :heart:",
+      "features": "Premium Features",
+      "list": "⦁ Add up to 10 auto-roles\n⦁ More coming soon...",
+      "button": "Buy Premium"
+    },
+    "roles": "All Roles",
+    "roll": ":game_die: You rolled a {sides}-sided die and got: **{result}**",
+    "server": {
+      "id": ":id: Server ID:",
+      "createdOn": ":calendar: Created on:",
+      "owner": ":crown: Owner:",
+      "boosts": "**{boosts}** Boosts :sparkles:",
+      "members": ":busts_in_silhouette: Members ({count})",
+      "channels": ":speech_balloon: Channels ({count})",
+      "channelTypes": "**{text}** Text\n**{voice}** Voice",
+      "verification": "**Verification Level:** {level}",
+      "other": ":earth_africa: Other:",
+      "roles": ":closed_lock_with_key: Roles ({count})",
+      "rolesList": "To see a list with all roles use **`/roles`**."
+    },
+    "support": {
+      "title": "TechnoBot Support",
+      "description": "Hey {username}, how can I help you?",
+      "serverTitle": "Server",
+      "askAQuestion": "[Ask a question.]({link})",
+      "bugReportTitle": "Bug Report",
+      "reportAnIssue": "[Report an issue.]({link})"
+    },
+    "twitter": {
+      "failure": "I was unable to find that user!",
+      "footer": "Following: {count} | Followers: {count}"
+    },
+    "user": {
+      "joinedDiscord": ":calendar: Joined Discord:",
+      "joinedServer": ":calendar: Joined Server:",
+      "discordId": ":id: Discord ID:"
+    },
+    "vote": {
+      "cooldown": ":stopwatch: Your daily vote is on cooldown!",
+      "thanks": "Thanks so much for voting for me today! :heart_eyes:",
+      "dontForget": "Don't forget to vote every 12 hours [here]({link}).",
+      "voteAvailable": "{blue_tick} Your daily vote is available!",
+      "clickHere": "Click [here]({link}) to vote for me!",
+      "voteEvery12h": "You can vote every 12 hours!",
+      "button": "Vote Here",
+      "noLink": "I was unable to find the vote link!"
+    },
+    "youtube": {
+      "channel": "{name} | YouTube Channel",
+      "statsTitle": "Statistics",
+      "stats": "**Subscribers:** {subscribers}\n**Views:** {views}\n**Videos:** {videos}",
+      "failure": "I was unable to find that YouTube channel!"
+    }
+  },
+  "general": {
+    "afk": "{username} is currently AFK.",
+    "reset": {
+      "success": "{systemName} system was successfully reset!",
+      "failure": "{systemName} system was **NOT** reset!"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "error": "An error occurred! {exception}"
+}

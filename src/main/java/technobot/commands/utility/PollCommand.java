@@ -1,6 +1,5 @@
 package technobot.commands.utility;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -10,9 +9,13 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
+import technobot.util.localization.Poll;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static technobot.util.Localization.format;
+import static technobot.util.Localization.get;
 
 /**
  * Command that creates a quick poll with options and reactions.
@@ -22,16 +25,8 @@ import java.util.List;
 public class PollCommand extends Command {
 
     private static final List<String> NUMBER_EMOJIS = Arrays.asList(
-            "\u0031\u20E3",
-            "\u0032\u20E3",
-            "\u0033\u20E3",
-            "\u0034\u20E3",
-            "\u0035\u20E3",
-            "\u0036\u20E3",
-            "\u0037\u20E3",
-            "\u0038\u20E3",
-            "\u0039\u20E3",
-            "\uD83D\uDD1F");
+            "1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣", "🔟"
+    );
 
     public PollCommand(TechnoBot bot) {
         super(bot);
@@ -46,14 +41,18 @@ public class PollCommand extends Command {
         // Get user
         event.deferReply().queue();
         String question = event.getOption("question").getAsString();
-        StringBuilder poll = new StringBuilder("**" + event.getUser().getName() + " asks:** " + question);
+
+        Poll pollText = get(s -> s.utility.poll);
+        StringBuilder poll = new StringBuilder(format(pollText.message, event.getUser().getName()));
 
         OptionMapping choicesOption = event.getOption("choices");
         if (choicesOption != null) {
             // Create multi-choice poll
             String[] choices = choicesOption.getAsString().strip().split("\\s+");
             if (choices.length > 10) {
-                event.getHook().sendMessageEmbeds(EmbedUtils.createError("You cannot have more than 10 choices!")).queue();
+                event.getHook().sendMessageEmbeds(EmbedUtils.createError(
+                        pollText.tooManyChoices
+                )).queue();
                 return;
             }
             poll.append("\n");
@@ -69,9 +68,10 @@ public class PollCommand extends Command {
             // Create simply upvote/downvote poll
             event.getHook().sendMessage(poll.toString()).queue(msg -> {
                 try {
-                    msg.addReaction("\uD83D\uDC4D").queue();
-                    msg.addReaction("\uD83D\uDC4E").queue();
-                } catch (InsufficientPermissionException ignored) { }
+                    msg.addReaction("👍").queue();
+                    msg.addReaction("👎").queue();
+                } catch (InsufficientPermissionException ignored) {
+                }
             });
         }
     }

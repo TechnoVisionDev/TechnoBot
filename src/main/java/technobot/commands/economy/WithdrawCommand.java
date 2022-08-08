@@ -12,7 +12,8 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
-import technobot.util.embeds.EmbedUtils;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that withdraws cash from the user's bank.
@@ -32,13 +33,12 @@ public class WithdrawCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         User user = event.getUser();
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
-        String currency = economyHandler.getCurrency();
         long bank = economyHandler.getBank(user.getIdLong());
 
         EmbedBuilder embed = new EmbedBuilder().setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl());
         if (bank <= 0) {
             // Bank is at 0
-            embed.setDescription(EmbedUtils.RED_X + " You don't have any money in your bank to withdraw!");
+            embed.setDescription(get(s -> s.economy.withdraw.noMoney));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
             return;
@@ -50,8 +50,7 @@ public class WithdrawCommand extends Command {
             amount = amountOption.getAsLong();
             if (amount > bank) {
                 // Amount is higher than balance
-                String value = currency + " " + EconomyHandler.FORMATTER.format(bank);
-                embed.setDescription(EmbedUtils.RED_X + " You cannot withdraw more than " + value + "!");
+                embed.setDescription(get(s -> s.economy.withdraw.tooMuch, bank));
                 embed.setColor(EmbedColor.ERROR.color);
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 return;
@@ -62,8 +61,7 @@ public class WithdrawCommand extends Command {
         economyHandler.withdraw(user.getIdLong(), amount);
 
         // Send embed message
-        String value = currency + " " + EconomyHandler.FORMATTER.format(amount);
-        embed.setDescription(EmbedUtils.GREEN_TICK + " Withdrew " + value + " from your bank!");
+        embed.setDescription(get(s -> s.economy.withdraw.success, amount));
         embed.setColor(EmbedColor.SUCCESS.color);
         event.replyEmbeds(embed.build()).queue();
     }

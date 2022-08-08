@@ -10,6 +10,8 @@ import technobot.handlers.economy.EconomyHandler;
 import technobot.handlers.economy.EconomyReply;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that adds money to your balance.
  *
@@ -34,15 +36,15 @@ public class WorkCommand extends Command {
         if (timeout != null && System.currentTimeMillis() < timeout) {
             // On timeout
             String timestamp = economyHandler.formatTimeout(timeout);
-            embed.setDescription(":stopwatch: You can next work " + timestamp + ".");
+            embed.setDescription(get(s -> s.economy.work.timeout, timestamp));
             embed.setColor(EmbedColor.ERROR.color);
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } else {
             // Work
             EconomyReply reply = economyHandler.work(user);
-            embed.setDescription(reply.getResponse());
+            embed.setDescription(reply.response());
             embed.setColor(EmbedColor.SUCCESS.color);
-            embed.setFooter("Reply #"+reply.getId());
+            embed.setFooter(get(s -> s.economy.replyId, reply.id()));
             event.replyEmbeds(embed.build()).queue();
         }
     }

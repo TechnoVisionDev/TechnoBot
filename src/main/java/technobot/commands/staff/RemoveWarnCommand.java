@@ -13,7 +13,7 @@ import technobot.commands.Command;
 import technobot.data.GuildData;
 import technobot.util.embeds.EmbedUtils;
 
-import static technobot.util.embeds.EmbedUtils.GREEN_TICK;
+import static technobot.util.Localization.get;
 
 /**
  * Command that removes a warning by user or id.
@@ -43,9 +43,14 @@ public class RemoveWarnCommand extends Command {
             // Remove warning with this ID
             int count = data.moderationHandler.removeWarning(idOption.getAsInt());
             if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK + " Warning `#"+idOption.getAsInt()+"` has been removed.");
+                embed = EmbedUtils.createDefault(get(
+                        s -> s.staff.removeWarn.successId,
+                        idOption.getAsInt()
+                ));
             } else {
-                embed = EmbedUtils.createError("Unable to find a warning with that ID!");
+                embed = EmbedUtils.createError(
+                        get(s -> s.staff.removeWarn.failureId)
+                );
                 event.replyEmbeds(embed).setEphemeral(true).queue();
                 return;
             }
@@ -55,18 +60,21 @@ public class RemoveWarnCommand extends Command {
             User target = userOption.getAsUser();
             int count = data.moderationHandler.clearWarnings(target.getIdLong());
             if (count > 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" "+count+" warnings have been removed for <@!"+target.getId()+">.");
-            } else if (count == 1) {
-                embed = EmbedUtils.createDefault(GREEN_TICK+" 1 warning has been removed for <@!"+target.getId()+">.");
+                embed = EmbedUtils.createDefault(get(
+                        s -> s.staff.removeWarn.successUser,
+                        target.getId()
+                ));
             } else {
-                embed = EmbedUtils.createError("That user does not have any warnings!");
+                embed = EmbedUtils.createError(get(s -> s.staff.removeWarn.failureUser));
                 event.replyEmbeds(embed).setEphemeral(true).queue();
                 return;
             }
             event.replyEmbeds(embed).queue();
         } else {
             // No user or ID specified
-            event.replyEmbeds(EmbedUtils.createError("You must specify a user or a warning ID!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.removeWarn.failure)
+            )).setEphemeral(true).queue();
         }
     }
 }

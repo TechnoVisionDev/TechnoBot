@@ -18,6 +18,8 @@ import technobot.util.embeds.EmbedColor;
 
 import java.util.*;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that shows a user's inventory.
  *
@@ -38,20 +40,17 @@ public class InventoryCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildData guildData = GuildData.get(event.getGuild());
-        OptionMapping userOption = event.getOption("user");
-        User user = (userOption != null) ? userOption.getAsUser() : event.getUser();
+        User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
 
-        // Build embed template
-        String info = "Use an item with the `/use <item>` command.";
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setAuthor(user.getAsTag()+"'s Inventory", null, user.getEffectiveAvatarUrl())
-                .setDescription(info);
+                .setAuthor(get(s -> s.economy.inventory.user, user.getAsTag()), null, user.getEffectiveAvatarUrl())
+                .setDescription(get(s -> s.economy.inventory.description));
 
         // Get inventory data for user
         LinkedHashMap<String,Long> inv = guildData.economyHandler.getInventory(user.getIdLong());
         if (inv == null || inv.isEmpty()) {
-            embed.setDescription("You do not have any items!");
+            embed.setDescription(get(s -> s.economy.inventory.noItems));
             event.replyEmbeds(embed.build()).queue();
             return;
         }
@@ -71,7 +70,7 @@ public class InventoryCommand extends Command {
                 count++;
                 if (count % ITEMS_PER_PAGE == 0) {
                     embeds.add(embed.build());
-                    embed.setDescription(info);
+                    embed.setDescription(get(s -> s.economy.inventory.description));
                 }
             }
         }

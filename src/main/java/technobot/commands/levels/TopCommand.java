@@ -23,7 +23,11 @@ import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedColor;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that displays various leaderboards.
@@ -36,7 +40,8 @@ public class TopCommand extends Command {
     private static final String ECONOMY_ICON = "https://images.emojiterra.com/google/noto-emoji/v2.034/512px/1f4b0.png";
     private static final String LEVELING_ICON = "https://images.emojiterra.com/twitter/v13.1/512px/1f4c8.png";
     private static final String LEADERBOARD_ICON = "https://cdn-icons-png.flaticon.com/512/1657/1657088.png";
-    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");;
+    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
+    ;
 
     public TopCommand(TechnoBot bot) {
         super(bot);
@@ -66,8 +71,8 @@ public class TopCommand extends Command {
                 if (embeds.isEmpty()) {
                     event.getHook().sendMessageEmbeds(new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)
-                            .setAuthor("Leveling Leaderboard", null, LEVELING_ICON)
-                            .setDescription("Nobody has earned any XP or levels yet!\nSend some messages in chat and use `/rank` to get started!")
+                            .setAuthor(get(s -> s.levels.top.leveling.name), null, LEVELING_ICON)
+                            .setDescription(get(s -> s.levels.top.leveling.empty))
                             .build()
                     ).queue();
                     return;
@@ -79,8 +84,8 @@ public class TopCommand extends Command {
                 if (embeds.isEmpty()) {
                     event.getHook().sendMessageEmbeds(new EmbedBuilder()
                             .setColor(EmbedColor.DEFAULT.color)
-                            .setAuthor("Economy Leaderboard", null, ECONOMY_ICON)
-                            .setDescription("Nobody has earned any money yet!\nUse `/work` and `/balance` to get started!")
+                            .setAuthor(get(s -> s.levels.top.economy.name), null, ECONOMY_ICON)
+                            .setDescription(get(s -> s.levels.top.economy.empty))
                             .build()
                     ).queue();
                     return;
@@ -88,8 +93,11 @@ public class TopCommand extends Command {
             }
             // Send paginated embeds
             WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(embeds.get(0));
-            if (embeds.size() == 1) { action.queue(); }
-            else { ButtonListener.sendPaginatedMenu(String.valueOf(userID), action, embeds); }
+            if (embeds.size() == 1) {
+                action.queue();
+            } else {
+                ButtonListener.sendPaginatedMenu(String.valueOf(userID), action, embeds);
+            }
         } else {
             // Top 5 for all leaderboards
             FindIterable<Leveling> levelLeaderboard = data.levelingHandler.getLeaderboard();
@@ -97,7 +105,7 @@ public class TopCommand extends Command {
 
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .setAuthor("Guild Leaderboards", null, LEADERBOARD_ICON)
+                    .setAuthor(get(s -> s.levels.top.guild.name), null, LEADERBOARD_ICON)
                     .setTimestamp(new Date().toInstant());
 
             int counter = 1;
@@ -105,37 +113,45 @@ public class TopCommand extends Command {
             for (Leveling profile : levelLeaderboard) {
                 if (counter == 6) break;
                 if (counter == 1) levelDesc.append("**");
-                levelDesc.append("#").append(counter)
-                        .append(" | <@!")
-                        .append(profile.getUser())
-                        .append("> XP: `")
-                        .append(FORMATTER.format(profile.getTotalXP()))
-                        .append("`\n");
+                levelDesc.append(get(
+                                s -> s.levels.top.leveling.entry,
+                                counter,
+                                profile.getUser(),
+                                FORMATTER.format(profile.getTotalXP())
+                        ) + "")
+                        .append("\n");
                 if (counter == 1) levelDesc.append("**");
                 counter++;
             }
-            levelDesc.append(":sparkles: **More?** `/top leveling`");
-            embed.addField("TOP 5 LEVELING :chart_with_upwards_trend:", levelDesc.toString(), true);
+            levelDesc.append(get(s -> s.levels.top.guild.more, "leveling") + "");
+            embed.addField(
+                    get(s -> s.levels.top.guild.title, "LEVELING", ":chart_with_upwards_trend:"),
+                    levelDesc.toString(),
+                    true
+            );
 
             counter = 1;
             StringBuilder econDesc = new StringBuilder();
             for (Economy profile : econLeaderboard) {
                 if (counter == 6) break;
                 if (counter == 1) econDesc.append("**");
-                long networth = calculateNetworth(profile.getBalance(), profile.getBank());
-                econDesc.append("#").append(counter)
-                        .append(" | <@!")
-                        .append(profile.getUser())
-                        .append("> ")
-                        .append(data.economyHandler.getCurrency())
-                        .append(" ")
-                        .append(FORMATTER.format(networth))
+                long netWorth = calculateNetWorth(profile.getBalance(), profile.getBank());
+                econDesc.append(get(
+                                s -> s.levels.top.economy.entry,
+                                counter,
+                                profile.getUser(),
+                                FORMATTER.format(netWorth)
+                        ) + "")
                         .append("\n");
                 if (counter == 1) econDesc.append("**");
                 counter++;
             }
-            econDesc.append(":sparkles: **More?** `/top economy`");
-            embed.addField("TOP 5 ECONOMY :moneybag:", econDesc.toString(), true);
+            econDesc.append(get(s -> s.levels.top.guild.more, "economy") + "");
+            embed.addField(
+                    get(s -> s.levels.top.guild.title,
+                            "ECONOMY",
+                            "moneybag"), econDesc.toString(), true
+            );
 
             event.getHook().sendMessageEmbeds(embed.build()).queue();
         }
@@ -145,8 +161,8 @@ public class TopCommand extends Command {
      * Build a economy leaderboard with paginated embeds.
      *
      * @param economyHandler the guild's economy handler instance.
-     * @param guildID the ID of the guild.
-     * @param userID the ID of the user who ran this command.
+     * @param guildID        the ID of the guild.
+     * @param userID         the ID of the user who ran this command.
      * @return a list of economy leaderboard pages.
      */
     private List<MessageEmbed> buildEconomyLeaderboard(EconomyHandler economyHandler, long guildID, long userID) {
@@ -156,7 +172,6 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        String rank = ordinalSuffixOf(economyHandler.getRank(userID));
 
         embed.setAuthor("Economy Leaderboard", null, ECONOMY_ICON);
         AggregateIterable<Economy> leaderboard = economyHandler.getLeaderboard();
@@ -164,22 +179,21 @@ public class TopCommand extends Command {
         if (size % 10 == 0) size--;
         long maxPages = 1 + (size / 10);
         for (Economy profile : leaderboard) {
-            long networth = calculateNetworth(profile.getBalance(), profile.getBank());
+            long netWorth = calculateNetWorth(profile.getBalance(), profile.getBank());
             if (counter == 0 && page == 1) description.append("**");
-            description.append("#").append(currRank)
-                    .append(" | <@!")
-                    .append(profile.getUser())
-                    .append("> ")
-                    .append(economyHandler.getCurrency())
-                    .append(" ")
-                    .append(FORMATTER.format(networth))
+            description.append(get(
+                            s -> s.levels.top.economy.entry,
+                            currRank,
+                            profile.getUser(),
+                            FORMATTER.format(netWorth)
+                    ) + "")
                     .append("\n");
             if (counter == 0 && page == 1) description.append("**");
             counter++;
             currRank++;
             if (counter % USERS_PER_PAGE == 0) {
                 embed.setDescription(description);
-                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
+                embed.setFooter("Page " + page + "/" + maxPages + "  •  Your rank: " + currRank);
                 embeds.add(embed.build());
                 description = new StringBuilder();
                 counter = 0;
@@ -188,7 +202,7 @@ public class TopCommand extends Command {
         }
         if (counter != 0) {
             embed.setDescription(description);
-            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
+            embed.setFooter("Page " + page + "/" + maxPages + "  •  Your rank: " + currRank);
             embeds.add(embed.build());
         }
         return embeds;
@@ -198,8 +212,8 @@ public class TopCommand extends Command {
      * Build a leveling leaderboard with paginated embeds.
      *
      * @param levelingHandler the guild's leveling handler instance.
-     * @param guildID the ID of the guild.
-     * @param userID the ID of the user who ran this command.
+     * @param guildID         the ID of the guild.
+     * @param userID          the ID of the user who ran this command.
      * @return a list of leveling leaderboard pages.
      */
     private List<MessageEmbed> buildLevelingLeaderboard(LevelingHandler levelingHandler, long guildID, long userID) {
@@ -209,7 +223,6 @@ public class TopCommand extends Command {
         int currRank = 1;
         int counter = 0;
         int page = 1;
-        String rank = ordinalSuffixOf(levelingHandler.getRank(userID));
 
         embed.setAuthor("Leveling Leaderboard", null, LEVELING_ICON);
         FindIterable<Leveling> leaderboard = levelingHandler.getLeaderboard();
@@ -218,18 +231,24 @@ public class TopCommand extends Command {
         long maxPages = 1 + (size / 10);
         for (Leveling profile : leaderboard) {
             if (counter == 0 && page == 1) description.append("**");
-            description.append("#").append(currRank)
-                    .append(" | <@!")
-                    .append(profile.getUser())
-                    .append("> XP: `")
-                    .append(FORMATTER.format(profile.getTotalXP()))
-                    .append("`\n");
+            description.append(get(
+                            s -> s.levels.top.leveling.entry,
+                            currRank,
+                            profile.getUser(),
+                            FORMATTER.format(profile.getTotalXP())
+                    ) + "")
+                    .append("\n");
             if (counter == 0 && page == 1) description.append("**");
             counter++;
             currRank++;
             if (counter % USERS_PER_PAGE == 0) {
                 embed.setDescription(description);
-                embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
+                embed.setFooter(get(
+                        s -> s.levels.top.footer,
+                        page,
+                        maxPages,
+                        currRank
+                ));
                 embeds.add(embed.build());
                 description = new StringBuilder();
                 counter = 0;
@@ -238,7 +257,12 @@ public class TopCommand extends Command {
         }
         if (counter != 0) {
             embed.setDescription(description);
-            embed.setFooter("Page "+page+"/"+maxPages + "  •  Your rank: " + rank);
+            embed.setFooter(get(
+                    s -> s.levels.top.footer,
+                    page,
+                    maxPages,
+                    currRank
+            ));
             embeds.add(embed.build());
         }
         return embeds;
@@ -248,32 +272,12 @@ public class TopCommand extends Command {
      * Calculates a user's networth, taking into account null values.
      *
      * @param balance user's cash balance.
-     * @param bank user's bank balance.
+     * @param bank    user's bank balance.
      * @return the user's cash and bank balance combined.
      */
-    private long calculateNetworth(Long balance, Long bank) {
+    private long calculateNetWorth(Long balance, Long bank) {
         if (balance == null) balance = 0L;
         if (bank == null) bank = 0L;
         return balance + bank;
-    }
-
-    /**
-     * Get the string ordinal suffix of a number (1st, 2nd, 3rd, 4th, etc).
-     *
-     * @param i the number to format.
-     * @return ordinal suffix of number in string form.
-     */
-    private String ordinalSuffixOf(int i) {
-        int j = i % 10, k = i % 100;
-        if (j == 1 && k != 11) {
-            return i + "st";
-        }
-        if (j == 2 && k != 12) {
-            return i + "nd";
-        }
-        if (j == 3 && k != 13) {
-            return i + "rd";
-        }
-        return i + "th";
     }
 }

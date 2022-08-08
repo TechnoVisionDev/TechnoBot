@@ -18,6 +18,8 @@ import technobot.handlers.ModerationHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that adds a muted role to a user in the guild.
  *
@@ -42,39 +44,48 @@ public class MuteCommand extends Command {
         User user = event.getOption("user").getAsUser();
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in this server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.mute.muteForeign)
+            )).setEphemeral(true).queue();
             return;
         } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            event.replyEmbeds(EmbedUtils.createError("Do you seriously expect me to mute myself?")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.mute.muteBot)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Check target role position
         ModerationHandler moderationHandler = GuildData.get(event.getGuild()).moderationHandler;
         if (!moderationHandler.canTargetMember(target)) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be muted. I need my role moved higher than theirs.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.mute.tooHighRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Get command line options
-        OptionMapping reasonOption = event.getOption("reason");
-        String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
+        var reason = event.getOption(
+                "reason",
+                get(s -> s.staff.reasonUnspecified) + "",
+                OptionMapping::getAsString
+        );
 
         // Check that muted role is valid and not already added to user
         Role muteRole = moderationHandler.getMuteRole();
         if (muteRole == null) {
-            String text = "This server does not have a mute role, use `/mute-role <role>` to set one or `/mute-role create [name]` to create one.";
+            String text = get(s -> s.staff.mute.noRole);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
         if (target.getRoles().contains(muteRole)) {
-            String text = "That user is already muted!";
+            String text = get(s -> s.staff.mute.alreadyMuted);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
         int botPos = event.getGuild().getBotRole().getPosition();
         if (muteRole.getPosition() >= botPos) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be muted. I need my role moved higher than the mute role.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(get(s -> s.staff.mute.tooHighRole))).setEphemeral(true).queue();
             return;
         }
 
@@ -85,12 +96,13 @@ public class MuteCommand extends Command {
             // Private message user with reason for kick
             MessageEmbed msg = moderationHandler.createCaseMessage(event.getUser().getIdLong(), "Mute", reason, EmbedColor.WARNING.color);
             privateChannel.sendMessageEmbeds(msg).queue();
-        }, fail -> {});
+        }, fail -> {
+        });
 
         // Send confirmation message
         event.replyEmbeds(new EmbedBuilder()
-                .setAuthor(user.getAsTag() + " has been muted", null, user.getEffectiveAvatarUrl())
-                .setDescription("**Reason:** " + reason)
+                .setAuthor(get(s -> s.staff.mute.message, user.getAsTag()), null, user.getEffectiveAvatarUrl())
+                .setDescription(get(s -> s.staff.cases.reason, reason))
                 .setColor(EmbedColor.DEFAULT.color)
                 .build()
         ).queue();

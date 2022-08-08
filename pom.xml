@@ -37,13 +37,13 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.10</version>
+            <version>3.12.11</version>
         </dependency>
         <!-- https://github.com/cdimascio/dotenv-java -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
         <!-- https://github.com/Walkyst/lavaplayer-fork -->
         <dependency>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.0</version>
         </dependency>
         <!-- http://javaluator.sourceforge.net/en/home/ -->
         <dependency>
@@ -98,11 +98,36 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- https://github.com/pwall567/json-kotlin-maven -->
+            <plugin>
+                <groupId>org.jsonschema2pojo</groupId>
+                <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                <version>1.1.2</version>
+                <configuration>
+                    <sourceDirectory>src/main/resources/localization/en_us.json</sourceDirectory>
+                    <targetPackage>technobot.util.localization</targetPackage>
+                    <includeAdditionalProperties>false</includeAdditionalProperties>
+                    <includeConstructors>true</includeConstructors>
+                    <includeGetters>false</includeGetters>
+                    <includeSetters>false</includeSetters>
+                    <annotationStyle>gson</annotationStyle>
+                    <sourceType>json</sourceType>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -17,6 +17,8 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that generates an image to match an emotion.
  *
@@ -56,27 +58,27 @@ public class EmoteCommand extends Command {
         String emote = event.getOption("emote").getAsString();
         url += emote;
 
-        String text = event.getUser().getName() + " ";
-        switch (emote) {
-            case "mad" -> text += "doesn't like that.";
-            case "blush" -> text += "has turned into a tomato.";
-            case "celebrate" -> text += "is ready to celebrate!";
-            case "clap" -> text += "claps excitedly.";
-            case "confused" -> text += "is really confused.";
-            case "cry" -> text += "needs a hug...";
-            case "dance" -> text += "is dancing!";
-            case "facepalm" -> text += "is in disbelief.";
-            case "happy" -> text += "smiles.";
-            case "laugh" -> text += "laughs out loud.";
-            case "pout" -> text += "is in a bad mood.";
-            case "shrug" -> text += "doesn't care...";
-            case "shy" -> text += "is feeling timid.";
-            case "sigh" -> text += "is disappointed.";
-            case "slowclap" -> text += "is not amused.";
-            case "scared" -> text += "fears for their life.";
-            case "sleep" -> text += "falls into a deep sleep.";
-            case "yawn" -> text += "is getting very sleepy.";
-        }
+        String text = event.getUser().getName() + switch (emote) {
+            case "mad" -> get(s -> s.fun.emote.mad);
+            case "blush" -> get(s -> s.fun.emote.blush);
+            case "celebrate" -> get(s -> s.fun.emote.celebrate);
+            case "clap" -> get(s -> s.fun.emote.clap);
+            case "confused" -> get(s -> s.fun.emote.confused);
+            case "cry" -> get(s -> s.fun.emote.cry);
+            case "dance" -> get(s -> s.fun.emote.dance);
+            case "facepalm" -> get(s -> s.fun.emote.facepalm);
+            case "happy" -> get(s -> s.fun.emote.happy);
+            case "laugh" -> get(s -> s.fun.emote.laugh);
+            case "pout" -> get(s -> s.fun.emote.pout);
+            case "shrug" -> get(s -> s.fun.emote.shrug);
+            case "shy" -> get(s -> s.fun.emote.shy);
+            case "sigh" -> get(s -> s.fun.emote.sigh);
+            case "slowclap" -> get(s -> s.fun.emote.slowClap);
+            case "scared" -> get(s -> s.fun.emote.scared);
+            case "sleep" -> get(s -> s.fun.emote.sleep);
+            case "yawn" -> get(s -> s.fun.emote.yawn);
+            default -> "";
+        };
 
         // Asynchronous API call
         Request request = new Request.Builder().url(url).build();

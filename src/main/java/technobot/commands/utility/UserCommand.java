@@ -12,6 +12,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays information about a user.
  *
@@ -30,17 +32,17 @@ public class UserCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
-        OptionMapping userOption = event.getOption("user");
-        User user = userOption != null ? userOption.getAsUser() : event.getUser();
+        User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
+
         event.getGuild().retrieveMember(user).queue(member -> {
             // Create and send embed
             String joinedDiscord = TimeFormat.RELATIVE.format(member.getTimeCreated().toInstant().toEpochMilli());
             String joinedServer = TimeFormat.RELATIVE.format(member.getTimeJoined().toInstant().toEpochMilli());
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .addField("Joined Discord", joinedDiscord, true)
-                    .addField("Joined Server", joinedServer, true)
-                    .addField("Discord ID", user.getId(), false)
+                    .addField(get(s -> s.utility.user.joinedDiscord), joinedDiscord, true)
+                    .addField(get(s -> s.utility.user.joinedServer), joinedServer, true)
+                    .addField(get(s -> s.utility.user.discordId), user.getId(), false)
                     .setThumbnail(user.getEffectiveAvatarUrl())
                     .setFooter(user.getAsTag(), user.getEffectiveAvatarUrl());
             event.replyEmbeds(embed.build()).queue();

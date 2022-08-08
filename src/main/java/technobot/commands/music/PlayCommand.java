@@ -13,6 +13,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that searches and plays music.
  *
@@ -36,14 +38,14 @@ public class PlayCommand extends Command {
         // Check if member is in the right voice channel
         AudioChannel channel = event.getMember().getVoiceState().getChannel();
         if (music.getPlayChannel() != channel) {
-            String text = "You are not in the same voice channel as TechnoBot!";
+            String text = get(s -> s.music.play.differentChannel);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
 
         // Cannot have more than 100 songs in the queue
         if (music.getQueue().size() >= 100) {
-            String text = "You cannot queue more than 100 songs!";
+            String text = get(s -> s.music.play.tooManySongs);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return;
         }
@@ -56,13 +58,13 @@ public class PlayCommand extends Command {
                 // Check for real URL
                 url = new URL(song).toString();
             } catch (MalformedURLException e) {
-                // Else search youtube using args
+                // Else search YouTube using args
                 url = "ytsearch:" + song;
                 music.setLogChannel(event.getTextChannel());
                 bot.musicListener.addTrack(event, url, userID);
                 return;
             }
-            // Search youtube if using a soundcloud link
+            // Search YouTube if using a soundcloud link
             if (url.contains("https://soundcloud.com/")) {
                 String[] contents = url.split("/");
                 url = "ytsearch:" + contents[3] + "/" + contents[4];
@@ -71,7 +73,7 @@ public class PlayCommand extends Command {
             music.setLogChannel(event.getTextChannel());
             bot.musicListener.addTrack(event, url, userID);
         } catch (IndexOutOfBoundsException e) {
-            String text = "Please specify a song a to play.";
+            String text = get(s -> s.music.play.specifySong);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
         }
     }

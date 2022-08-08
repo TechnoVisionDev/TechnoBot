@@ -6,9 +6,14 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates a funny inspiring quote.
@@ -33,7 +38,7 @@ public class InspireCommand extends Command {
             String pictureUrl = new BufferedReader(new InputStreamReader(input)).readLine();
             event.reply(pictureUrl).queue();
         } catch (IOException e) {
-            String text = "I was unable to fetch an inspiring quote!";
+            String text = get(s -> s.fun.inspire);
             event.replyEmbeds(EmbedUtils.createError(text)).queue();
         }
     }

@@ -1,6 +1,5 @@
 package technobot.listeners;
 
-import com.github.topislavalinkplugins.topissourcemanagers.ISRCAudioTrack;
 import com.github.topislavalinkplugins.topissourcemanagers.applemusic.AppleMusicSourceManager;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifyConfig;
 import com.github.topislavalinkplugins.topissourcemanagers.spotify.SpotifySourceManager;
@@ -11,8 +10,9 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.AudioChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -23,12 +23,13 @@ import org.jetbrains.annotations.Nullable;
 import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
 import technobot.util.SecurityUtils;
-import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 import java.net.MalformedURLException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static technobot.util.Localization.get;
 
 /**
  * Module for music player backend and voice channel events.
@@ -90,7 +91,7 @@ public class MusicListener extends ListenerAdapter {
         GuildData settings = GuildData.get(event.getGuild());
         // Check if user is in voice channel
         if (!inChannel(Objects.requireNonNull(event.getMember()))) {
-            String text = "Please connect to a voice channel first!";
+            String text = get(s -> s.music.listener.connect);
             event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
             return null;
         }
@@ -103,13 +104,13 @@ public class MusicListener extends ListenerAdapter {
         // Check if music is playing in this guild
         if (!skipQueueCheck) {
             if (settings.musicHandler == null || settings.musicHandler.getQueue().isEmpty()) {
-                String text = ":sound: There are no songs in the queue!";
+                String text = get(s -> s.music.listener.queueEmpty);
                 event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
                 return null;
             }
             // Check if member is in the right voice channel
             if (settings.musicHandler.getPlayChannel() != channel) {
-                String text = "You are not in the same voice channel as TechnoBot!";
+                String text = get(s -> s.music.listener.differentChannel);
                 event.replyEmbeds(EmbedUtils.createError(text)).setEphemeral(true).queue();
                 return null;
             }
@@ -120,9 +121,9 @@ public class MusicListener extends ListenerAdapter {
     /**
      * Joins a voice channel.
      *
-     * @para guildData    The GuilData instance for this guild.
      * @param channel    The Voice Channel.
      * @param logChannel A log channel to notify users.
+     * @para guildData    The GuilData instance for this guild.
      */
     public void joinChannel(@NotNull GuildData guildData, @NotNull AudioChannel channel, TextChannel logChannel) {
         AudioManager manager = channel.getGuild().getAudioManager();
@@ -151,7 +152,7 @@ public class MusicListener extends ListenerAdapter {
      *
      * @param event  A slash command event.
      * @param url    The track URL.
-     * @param userID   The ID of the user that added this track.
+     * @param userID The ID of the user that added this track.
      */
     public void addTrack(SlashCommandInteractionEvent event, String url, String userID) {
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
@@ -160,22 +161,26 @@ public class MusicListener extends ListenerAdapter {
         // Check for SSRF vulnerability with whitelist
         try {
             boolean isWhitelisted = SecurityUtils.isUrlWhitelisted(url);
-            if(!isWhitelisted) {
+            if (!isWhitelisted) {
                 url = "";
             }
-        } catch(MalformedURLException ignored) {}
+        } catch (MalformedURLException ignored) {
+        }
         playerManager.loadItem(url, new AudioLoadResultHandler() {
 
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
                 audioTrack.setUserData(userID);
                 music.enqueue(audioTrack);
-                event.reply(":notes: | Added **"+audioTrack.getInfo().title+"** to the queue.").queue();
+                event.reply(get(
+                        s -> s.music.listener.addSong,
+                        audioTrack.getInfo().title
+                ) + "").queue();
             }
 
             @Override
             public void playlistLoaded(@NotNull AudioPlaylist audioPlaylist) {
-                // Queue first result if youtube search
+                // Queue first result if YouTube search
                 if (audioPlaylist.isSearchResult()) {
                     trackLoaded(audioPlaylist.getTracks().get(0));
                     return;
@@ -184,7 +189,9 @@ public class MusicListener extends ListenerAdapter {
                 // Otherwise load first 100 tracks from playlist
                 int total = audioPlaylist.getTracks().size();
                 if (total > 100) total = 100;
-                event.reply(":notes: | Added **"+audioPlaylist.getName()+"** with `"+total+"` songs to the queue.").queue();
+                event.reply(get(
+                        s -> s.music.listener.addPlaylist, audioPlaylist.getName(), total
+                ) + "").queue();
 
                 total = music.getQueue().size();
                 for (AudioTrack track : audioPlaylist.getTracks()) {
@@ -197,13 +204,13 @@ public class MusicListener extends ListenerAdapter {
 
             @Override
             public void noMatches() {
-                String msg = "That is not a valid song!";
+                String msg = get(s -> s.music.listener.invalidSong);
                 event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                String msg = "That is not a valid link!";
+                String msg = get(s -> s.music.listener.invalidLink);
                 event.replyEmbeds(EmbedUtils.createError(msg)).setEphemeral(true).queue();
             }
         });

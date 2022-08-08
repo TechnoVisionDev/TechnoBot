@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static technobot.util.Localization.get;
+
 /**
  * Listener that handles leveling system backend.
  *
@@ -32,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class LevelingListener extends ListenerAdapter {
 
-    public static final String DEFAULT_LEVEL_MESSAGE = "Congrats {user_mention}, you just advanced to **Level {level}**! :tada:";
+    public static final String DEFAULT_LEVEL_MESSAGE = get(s -> s.levels.defaultMessage);
 
     private final TechnoBot bot;
     private final HashMap<Long, Long> timestamps;

@@ -10,6 +10,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Purges a channel of a specified number of messages.
  *
@@ -36,12 +38,12 @@ public class ClearCommand extends Command {
             try {
                 // Delete messages and notify user
                 ((TextChannel) event.getChannel()).deleteMessages(messages).queue(result -> {
-                    String text = ":ballot_box_with_check: I have deleted `%d messages!`".formatted(amount);
+                    String text = get(s -> s.staff.clear.success, amount);
                     event.getHook().sendMessage(text).queue();
                 });
             } catch (IllegalArgumentException e) {
                 // Messages were older than 2 weeks
-                String text = "You cannot clear messages older than 2 weeks!";
+                String text = get(s -> s.staff.clear.failure);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             }
         });

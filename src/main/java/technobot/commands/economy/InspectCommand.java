@@ -10,6 +10,8 @@ import technobot.data.GuildData;
 import technobot.data.cache.Item;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays details about a shop item
  *
@@ -32,7 +34,9 @@ public class InspectCommand extends Command {
 
         Item item = guildData.configHandler.getItem(event.getOption("item").getAsString());
         if (item == null) {
-            event.replyEmbeds(EmbedUtils.createError("That item is not currently in the store!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.economy.inspect)
+            )).setEphemeral(true).queue();
             return;
         }
         event.replyEmbeds(item.toEmbed(currency)).queue();

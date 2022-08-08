@@ -13,6 +13,8 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.text.DecimalFormat;
 
+import static technobot.util.Localization.get;
+
 /**
  * Solves expressions like a calculator.
  *
@@ -37,11 +39,14 @@ public class MathCommand extends Command {
             Double result = new DoubleEvaluator().evaluate(expression);
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .addField("Expression", "`"+expression+"`", false)
-                    .addField("Result", FORMATTER.format(result), false);
+                    .addField(get(s -> s.utility.math.expression), "`" + expression + "`", false)
+                    .addField(get(s -> s.utility.math.result), FORMATTER.format(result), false);
             event.replyEmbeds(embed.build()).queue();
         } catch (IllegalArgumentException e) {
-            event.replyEmbeds(EmbedUtils.createError("That is not a valid math expression! Example: `(2^3-1)*sin(pi/4)/ln(pi^2)`")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(get(
+                    s -> s.utility.math.failure,
+                    "(2 ^ 3 - 1) * sin(pi / 4) / ln(pi ^ 2)"
+            ))).setEphemeral(true).queue();
         }
     }
 }

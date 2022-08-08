@@ -15,6 +15,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that puts a channel in slowmode with specified time.
  *
@@ -37,7 +39,9 @@ public class SlowmodeCommand extends Command {
         // Prevent slowmode in threads
         ChannelType type = event.getChannelType();
         if (type == ChannelType.GUILD_PUBLIC_THREAD || type == ChannelType.GUILD_NEWS_THREAD || type == ChannelType.GUILD_PRIVATE_THREAD) {
-            event.replyEmbeds(EmbedUtils.createError("You cannot set slowmode on threads!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.slowMode.failureThread)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -58,21 +62,28 @@ public class SlowmodeCommand extends Command {
             } catch (NumberFormatException e2) {
                 // Disable slowmode
                 event.getTextChannel().getManager().setSlowmode(0).queue();
-                event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: Slowmode has been disabled from this channel.")).queue();
+                event.replyEmbeds(EmbedUtils.createDefault(get(s -> s.staff.slowMode.disable)
+                )).queue();
                 return;
             }
             // Set slowmode timer
             if (time > TextChannel.MAX_SLOWMODE) {
-                event.replyEmbeds(EmbedUtils.createError("Time should be less than or equal to **6 hours**.")).setEphemeral(true).queue();
+                event.replyEmbeds(EmbedUtils.createError(
+                        get(s -> s.staff.slowMode.tooHigh)
+                )).setEphemeral(true).queue();
                 return;
             }
             event.getTextChannel().getManager().setSlowmode(time).queue();
-            event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode has been set to **"+formatTime(time)+"**.")).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(
+                    get(s -> s.staff.slowMode.set, formatTime(time))
+            )).queue();
         } else {
             // Display current slowmode timer
             int totalSecs = event.getTextChannel().getSlowmode();
             String timeString = formatTime(totalSecs);
-            event.replyEmbeds(EmbedUtils.createDefault(":stopwatch: This channel's slowmode is **"+timeString+"**.")).queue();
+            event.replyEmbeds(EmbedUtils.createDefault(
+                    get(s -> s.staff.slowMode.display, timeString)
+            )).queue();
         }
     }
 
@@ -88,18 +99,17 @@ public class SlowmodeCommand extends Command {
         int seconds = totalSeconds % 60;
         String time = "";
         if (hours > 0) {
-            time += hours + " hour";
-            if (hours > 1) time += "s";
+            time += get(s -> s.staff.slowMode.format.hours, hours);
+
             if (minutes > 0) time += ", ";
         }
         if (minutes > 0) {
-            time += minutes + " minute";
-            if (minutes > 1) time += "s";
+            time += get(s -> s.staff.slowMode.format.minutes, minutes);
+
             if (seconds > 0) time += ", ";
         }
         if (seconds > 0) {
-            time += seconds + " second";
-            if (seconds > 1) time += "s";
+            time += get(s -> s.staff.slowMode.format.seconds, seconds);
         }
         return time;
     }

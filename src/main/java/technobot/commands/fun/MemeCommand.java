@@ -5,7 +5,10 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
@@ -15,6 +18,8 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that generates a meme from the r/dankmemes subreddit.
@@ -55,7 +60,7 @@ public class MemeCommand extends Command {
         bot.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                String text = "I was unable to fetch any memes!";
+                String text = get(s -> s.fun.meme);
                 event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
             }
 

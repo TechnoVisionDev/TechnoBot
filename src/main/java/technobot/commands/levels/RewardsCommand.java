@@ -15,6 +15,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays leveling rewards.
  *
@@ -39,24 +41,28 @@ public class RewardsCommand extends Command {
                 .forEachOrdered(x -> rewards.put(x.getKey(), x.getValue()));
 
         StringBuilder content = new StringBuilder();
-        for (Map.Entry<String,Integer> reward : rewards.entrySet()) {
+        for (Map.Entry<String, Integer> reward : rewards.entrySet()) {
             if (event.getGuild().getRoleById(reward.getKey()) != null) {
-                content.append("Level ").append(reward.getValue()).append(" ----> <@&").append(reward.getKey()).append(">\n");
+                //noinspection StringConcatenationInsideStringBufferAppend
+                content.append(get(
+                        s -> s.levels.rewards.reward,
+                        reward.getValue(), reward.getKey()
+                ) + "").append("\n");
             } else {
                 // Remove any deleted roles from database
                 Bson filter = Filters.eq("guild", event.getGuild().getIdLong());
-                bot.database.config.updateOne(filter, Updates.unset("rewards."+reward.getKey()));
+                bot.database.config.updateOne(filter, Updates.unset("rewards." + reward.getKey()));
             }
         }
 
         if (!content.isEmpty()) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setColor(EmbedColor.DEFAULT.color)
-                    .setTitle(":crown: Leveling Rewards")
+                    .setTitle(get(s -> s.levels.rewards.title))
                     .setDescription(content);
             event.getHook().sendMessageEmbeds(embed.build()).queue();
             return;
         }
-        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(EmbedUtils.BLUE_X + " No leveling rewards have been set for this server!")).queue();
+        event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(get(s -> s.levels.rewards.noRewards))).queue();
     }
 }

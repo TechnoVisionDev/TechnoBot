@@ -15,6 +15,8 @@ import technobot.util.embeds.EmbedColor;
 
 import java.util.*;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays the server shop and available items.
  *
@@ -35,17 +37,16 @@ public class ShopCommand extends Command {
         // Create base embed template
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setAuthor(event.getGuild().getName()+" Store", null, event.getGuild().getIconUrl());
+                .setAuthor(event.getGuild().getName() + " Store", null, event.getGuild().getIconUrl());
 
         // Check if shop is empty
         GuildData guildData = GuildData.get(event.getGuild());
         if (guildData.configHandler.getConfig().getShop().isEmpty()) {
-            embed.setDescription("There are no items in this shop!\nUse the `/item create <name>` command to add some.");
+            embed.setDescription(get(s -> s.economy.shop.empty));
             event.replyEmbeds(embed.build()).queue();
             return;
         }
-        String info = "Buy an item with the `/buy <item> [quantity]` command.\n"+"For more information on an item use the `/inspect <item>` command.";
-        embed.setDescription(info);
+        embed.setDescription(get(s -> s.economy.shop.info));
 
         // Create paginated embeds
         List<MessageEmbed> embeds = new ArrayList<>();
@@ -61,7 +62,7 @@ public class ShopCommand extends Command {
             count++;
             if (count % ITEMS_PER_PAGE == 0) {
                 embeds.add(embed.build());
-                embed.setDescription(info);
+                embed.setDescription(get(s -> s.economy.shop.info));
             }
         }
         if (count % ITEMS_PER_PAGE != 0) {

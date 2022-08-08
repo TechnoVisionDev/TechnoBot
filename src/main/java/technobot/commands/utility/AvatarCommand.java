@@ -11,6 +11,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays a user's avatar and link.
  *
@@ -28,20 +30,14 @@ public class AvatarCommand extends Command {
 
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
-        OptionMapping option = event.getOption("user");
-        User user;
-        if (option != null) {
-            user = option.getAsUser();
-        } else {
-            user = event.getUser();
-        }
+        User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
 
         // Create and send embed
         String avatarUrl = user.getEffectiveAvatarUrl() + "?size=1024";
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
                 .setAuthor(user.getAsTag(), null, avatarUrl)
-                .setTitle("Avatar Link", avatarUrl)
+                .setTitle(get(s -> s.utility.avatar), avatarUrl)
                 .setImage(avatarUrl);
         event.replyEmbeds(embed.build()).queue();
     }

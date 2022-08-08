@@ -17,7 +17,8 @@ import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
 import java.awt.*;
-import java.util.Date;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that adds a warning to user's account.
@@ -42,18 +43,26 @@ public class WarnCommand extends Command {
         User user = event.getOption("user").getAsUser();
         Member target = event.getGuild().getMemberById(user.getIdLong());
         if (target == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in this server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.warn.warnForeign)
+            )).setEphemeral(true).queue();
             return;
         } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            event.replyEmbeds(EmbedUtils.createError("Why would I warn myself... silly human!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.warn.warnBot)
+            )).setEphemeral(true).queue();
             return;
         }
-        OptionMapping reasonOption = event.getOption("reason");
-        String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
+        String reason = event.getOption(
+                "reason",
+                get(s -> s.staff.reasonUnspecified) + "",
+                OptionMapping::getAsString
+        );
 
         // Check that target is not the same as author
         if (target.getIdLong() == event.getUser().getIdLong()) {
-            event.replyEmbeds(EmbedUtils.createError("You cannot warn yourself!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(get(s -> s.staff.warn.warnSelf)
+            )).setEphemeral(true).queue();
             return;
         }
 
@@ -63,14 +72,14 @@ public class WarnCommand extends Command {
 
         // Private message user with reason for warn
         user.openPrivateChannel().queue(privateChannel -> {
-            MessageEmbed msg = data.moderationHandler.createCaseMessage(event.getUser().getIdLong(), "Warn", reason, Color.yellow.getRGB());
+            MessageEmbed msg = data.moderationHandler.createCaseMessage(event.getUser().getIdLong(), get(s -> s.staff.cases.actions.warn), reason, Color.yellow.getRGB());
             privateChannel.sendMessageEmbeds(msg).queue();
         }, fail -> { });
 
         // Send confirmation message
         event.replyEmbeds(new EmbedBuilder()
-                .setAuthor(user.getAsTag() + " has been warned", null, user.getEffectiveAvatarUrl())
-                .setDescription("**Reason:** " + reason)
+                .setAuthor(get(s -> s.staff.warn.message, user.getAsTag()), null, user.getEffectiveAvatarUrl())
+                .setDescription(get(s -> s.staff.cases.reason, reason))
                 .setColor(EmbedColor.DEFAULT.color)
                 .build()
         ).queue();

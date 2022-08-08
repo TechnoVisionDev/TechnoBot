@@ -12,6 +12,8 @@ import technobot.data.GuildData;
 import technobot.handlers.GreetingHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that configures auto join DMs.
  *
@@ -37,14 +39,14 @@ public class JoinDMCommand extends Command {
         // Remove farewell message
         if (farewellOption == null) {
             greetingHandler.removeJoinDM();
-            String text = EmbedUtils.BLUE_X + " Join DM message successfully removed!";
+            String text = get(s -> s.greeting.joinDm.reset);
             event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }
 
         // Set greeting message
         greetingHandler.setJoinDM(farewellOption.getAsString());
-        String text = EmbedUtils.BLUE_TICK + " Join DM message successfully updated!";
+        String text = get(s -> s.greeting.joinDm.set);
         event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
     }
 }

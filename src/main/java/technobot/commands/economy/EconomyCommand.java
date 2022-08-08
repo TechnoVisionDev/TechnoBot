@@ -43,7 +43,7 @@ public class EconomyCommand extends Command {
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
 
         String text = "";
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "currency" -> {
                 OptionMapping symbolOption = event.getOption("symbol");
                 if (symbolOption != null) {

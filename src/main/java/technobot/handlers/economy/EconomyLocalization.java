@@ -1,13 +1,11 @@
 package technobot.handlers.economy;
 
-import com.google.gson.Gson;
-import technobot.data.json.EconomyResponses;
+import technobot.util.Localization;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static technobot.util.Localization.format;
 
 /**
  * Handles localized responses to economy commands.
@@ -16,22 +14,18 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EconomyLocalization {
 
-    private static final String PATH = "localization/economy.json";
-
-    private final String[] work;
-    private final String[] crimeSuccess;
-    private final String[] crimeFail;
+    private final List<String> work;
+    private final List<String> crimeSuccess;
+    private final List<String> crimeFailure;
 
     /**
-     * Reads economy.json responses into local memory
+     * Reads economy responses into local memory
      */
     public EconomyLocalization() {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PATH);
-        Reader reader = new BufferedReader(new InputStreamReader(inputStream));
-        EconomyResponses responses = new Gson().fromJson(reader, EconomyResponses.class);
-        work = responses.getWork();
-        crimeSuccess = responses.getCrimeSuccess();
-        crimeFail = responses.getCrimeFail();
+        var responses = Localization.get(s -> s.economy);
+        work = responses.work.success;
+        crimeSuccess = responses.crime.success;
+        crimeFailure = responses.crime.failure;
     }
 
     /**
@@ -40,11 +34,10 @@ public class EconomyLocalization {
      * @param amount the amount of money earned.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getWorkResponse(long amount, String currency) {
-        int index = ThreadLocalRandom.current().nextInt(work.length);
-        String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = work[index].replace("{amount}", value);
-        return new EconomyReply(reply, index+1);
+    public EconomyReply getWorkResponse(long amount) {
+        int index = ThreadLocalRandom.current().nextInt(work.size());
+
+        return new EconomyReply(format(work.get(index), amount), index + 1);
     }
 
     /**
@@ -53,11 +46,13 @@ public class EconomyLocalization {
      * @param amount the amount of money earned.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getCrimeSuccessResponse(long amount, String currency) {
-        int index = ThreadLocalRandom.current().nextInt(crimeSuccess.length);
-        String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = crimeSuccess[index].replaceAll("\\{amount}", value);
-        return new EconomyReply(reply, index+1, true);
+    public EconomyReply getCrimeSuccessResponse(long amount) {
+        int index = ThreadLocalRandom.current().nextInt(crimeSuccess.size());
+
+        return new EconomyReply(
+                format(crimeSuccess.get(index), amount),
+                index + 1
+        );
     }
 
     /**
@@ -66,10 +61,13 @@ public class EconomyLocalization {
      * @param amount the amount of money list.
      * @return an EconomyReply object with response and ID number.
      */
-    public EconomyReply getCrimeFailResponse(long amount, String currency) {
-        int index = ThreadLocalRandom.current().nextInt(crimeFail.length);
-        String value = currency+" "+EconomyHandler.FORMATTER.format(amount);
-        String reply = crimeFail[index].replaceAll("\\{amount}", value);
-        return new EconomyReply(reply, index+1, false);
+    public EconomyReply getCrimeFailResponse(long amount) {
+        int index = ThreadLocalRandom.current().nextInt(crimeFailure.size());
+
+        return new EconomyReply(
+                format(crimeFailure.get(index), amount),
+                index + 1,
+                false
+        );
     }
 }

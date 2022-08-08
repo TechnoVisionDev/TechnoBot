@@ -44,6 +44,9 @@ public class Config {
 
     private LinkedHashMap<String, String> shop; //Maps item names to ids
 
+    @BsonProperty("locale")
+    private String locale;
+
     public Config() {
         this.autoRoles = new HashSet<>();
         this.items = new LinkedHashMap<>();
@@ -63,6 +66,7 @@ public class Config {
         this.autoRoles = new HashSet<>();
         this.items = new LinkedHashMap<>();
         this.shop = new LinkedHashMap<>();
+        this.locale = "en_US";
     }
 
     public long getGuild() {
@@ -194,5 +198,13 @@ public class Config {
     public Item eraseItem(String name) {
         String uuid = this.shop.remove(name.toLowerCase());
         return this.items.remove(uuid);
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

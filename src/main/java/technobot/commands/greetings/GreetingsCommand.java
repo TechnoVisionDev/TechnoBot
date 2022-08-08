@@ -18,6 +18,8 @@ import technobot.handlers.GreetingHandler;
 import technobot.listeners.ButtonListener;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays and modifies greetings config.
  *
@@ -44,18 +46,18 @@ public class GreetingsCommand extends Command {
         GreetingHandler greetingHandler = GuildData.get(event.getGuild()).greetingHandler;
 
         String text = "";
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "channel" -> {
                 OptionMapping channelOption = event.getOption("channel");
                 if (channelOption == null) {
                     // Remove welcome channel if not specified
                     greetingHandler.removeChannel();
-                    text = EmbedUtils.BLUE_X + " Welcome channel successfully removed!";
+                    text = get(s -> s.greeting.greetings.removed);
                 } else {
                     // Set welcome channel
                     Long channelID = channelOption.getAsGuildChannel().getIdLong();
                     greetingHandler.setChannel(channelID);
-                    text = EmbedUtils.BLUE_X + " Welcome channel set to <#" + channelID + ">";
+                    text = get(s -> s.greeting.greetings.set, channelID);
                 }
             }
             case "config" -> {
@@ -64,7 +66,7 @@ public class GreetingsCommand extends Command {
                 return;
             }
             case "reset" -> {
-                text = "Would you like to reset the greeting system?\nThis will delete **ALL** data!";
+                text = get(s -> s.greeting.greetings.reset);
                 WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
                 ButtonListener.sendResetMenu(event.getUser().getId(), "Greeting", action);
                 return;
@@ -81,26 +83,18 @@ public class GreetingsCommand extends Command {
      */
     private String configToString(Greetings greetings) {
         String text = "";
-        if (greetings.getWelcomeChannel() == null) {
-            text += "**Welcome Channel:** none\n";
-        } else {
-            text += "**Welcome Channel:** <#" + greetings.getWelcomeChannel() + ">\n";
-        }
-        if (greetings.getGreeting() == null) {
-            text += "**Greeting:** none\n";
-        } else {
-            text += "**Greeting:** " + greetings.getGreeting() + "\n";
-        }
-        if (greetings.getFarewell() == null) {
-            text += "**Farewell:** none\n";
-        } else {
-            text += "**Farewell:** " + greetings.getFarewell() + "\n";
-        }
-        if (greetings.getJoinDM() == null) {
-            text += "**Join DM:** none\n";
-        } else {
-            text += "**Join DM:** " + greetings.getJoinDM() + "\n";
-        }
+        text += get(s -> s.greeting.greetings.welcomeConfig,
+                greetings.getWelcomeChannel() == null ? "none" : "<#" + greetings.getWelcomeChannel() + ">") + "\n";
+
+        text += get(s -> s.greeting.greetings.greetingConfig,
+                greetings.getGreeting() == null ? "none" : greetings.getGreeting()) + "\n";
+
+        text += get(s -> s.greeting.greetings.farewellConfig,
+                greetings.getFarewell() == null ? "none" : greetings.getFarewell()) + "\n";
+
+        text += get(s -> s.greeting.greetings.joinDmConfig,
+                greetings.getJoinDM() == null ? "none" : greetings.getJoinDM()) + "\n";
+
         return text;
     }
 }

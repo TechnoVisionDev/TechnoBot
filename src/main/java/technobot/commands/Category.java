@@ -1,5 +1,7 @@
 package technobot.commands;
 
+import static technobot.util.Localization.get;
+
 /**
  * Category that represents a group of similar commands.
  * Each category has a name and an emoji.
@@ -7,18 +9,18 @@ package technobot.commands;
  * @author TechnoVision
  */
 public enum Category {
-    STAFF(":computer:", "Staff"),
-    LEVELS(":chart_with_upwards_trend:", "Levels"),
-    MUSIC(":musical_note:", "Music"),
-    ECONOMY(":moneybag:", "Economy"),
-    STARBOARD(":star:", "Starboard"),
-    FUN(":smile:", "Fun"),
-    AUTOMATION(":gear:", "Automation"),
-    UTILITY(":tools:", "Utility"),
-    GREETINGS(":wave:", "Greetings"),
-    SUGGESTIONS(":thought_balloon:", "Suggestions"),
-    CASINO(":game_die:", "Casino"),
-    PETS(":dog:", "Pets");
+    STAFF(":computer:", get(s -> s.utility.help.categories.staff)),
+    LEVELS(":chart_with_upwards_trend:", get(s -> s.utility.help.categories.levels)),
+    MUSIC(":musical_note:", get(s -> s.utility.help.categories.music)),
+    ECONOMY(":moneybag:", get(s -> s.utility.help.categories.economy)),
+    STARBOARD(":star:", get(s -> s.utility.help.categories.starboard)),
+    FUN(":smile:", get(s -> s.utility.help.categories.fun)),
+    AUTOMATION(":gear:", get(s -> s.utility.help.categories.automation)),
+    UTILITY(":tools:", get(s -> s.utility.help.categories.utility)),
+    GREETINGS(":wave:", get(s -> s.utility.help.categories.greetings)),
+    SUGGESTIONS(":thought_balloon:", get(s -> s.utility.help.categories.suggestions)),
+    CASINO(":game_die:", get(s -> s.utility.help.categories.casino)),
+    PETS(":dog:", get(s -> s.utility.help.categories.pets));
 
     public final String emoji;
     public final String name;

@@ -8,6 +8,8 @@ import technobot.commands.Command;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that skips the current song.
  *
@@ -23,13 +25,18 @@ public class SkipCommand extends Command {
     }
 
     public void execute(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
         MusicHandler music = bot.musicListener.getMusic(event, false);
         if (music == null) return;
 
         music.skipTrack();
-        ReplyCallbackAction action = event.reply(":fast_forward: Skipping...");
+        ReplyCallbackAction action = event.reply(
+                get(s -> s.music.skip.skipping) + ""
+        );
         if (music.getQueue().size() == 1) {
-            action = action.addEmbeds(EmbedUtils.createDefault(":sound: The music queue is now empty!"));
+            action = action.addEmbeds(EmbedUtils.createDefault(
+                    get(s -> s.music.skip.queueEmpty)
+            ));
         }
         action.queue();
     }

@@ -17,6 +17,8 @@ import technobot.handlers.ModerationHandler;
 import technobot.util.embeds.EmbedColor;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that kicks a user from the guild.
  *
@@ -41,26 +43,35 @@ public class KickCommand extends Command {
         User user = event.getOption("user").getAsUser();
         Member target = event.getOption("user").getAsMember();
         if (target == null) {
-            event.replyEmbeds(EmbedUtils.createError("That user is not in this server!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.kick.kickForeign)
+            )).setEphemeral(true).queue();
             return;
         } else if (target.getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
-            event.replyEmbeds(EmbedUtils.createError("Do you seriously expect me to kick myself?")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.kick.kickBot)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Check target role position
         ModerationHandler moderationHandler = GuildData.get(event.getGuild()).moderationHandler;
         if (!moderationHandler.canTargetMember(target)) {
-            event.replyEmbeds(EmbedUtils.createError("This member cannot be kicked. I need my role moved higher than theirs.")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.kick.tooHighRole)
+            )).setEphemeral(true).queue();
             return;
         }
 
         // Kick user from guild
-        OptionMapping reasonOption = event.getOption("reason");
-        String reason = reasonOption != null ? reasonOption.getAsString() : "Unspecified";
+        String reason = event.getOption(
+                "reason",
+                get(s -> s.staff.reasonUnspecified) + "",
+                OptionMapping::getAsString
+        );
         user.openPrivateChannel().queue(privateChannel -> {
             // Private message user with reason for kick
-            MessageEmbed msg = moderationHandler.createCaseMessage(event.getUser().getIdLong(), "Kick", reason, EmbedColor.WARNING.color);
+            MessageEmbed msg = moderationHandler.createCaseMessage(event.getUser().getIdLong(), get(s -> s.staff.cases.actions.kick), reason, EmbedColor.WARNING.color);
             privateChannel.sendMessageEmbeds(msg).queue(
                     message -> target.kick(reason).queue(),
                     failure -> target.kick(reason).queue()
@@ -69,8 +80,8 @@ public class KickCommand extends Command {
 
         // Send confirmation message
         event.replyEmbeds(new EmbedBuilder()
-                .setAuthor(user.getAsTag() + " has been kicked", null, user.getEffectiveAvatarUrl())
-                .setDescription("**Reason:** " + reason)
+                .setAuthor(get(s -> s.staff.kick.message, user.getAsTag()), null, user.getEffectiveAvatarUrl())
+                .setDescription(get(s -> s.staff.cases.reason, reason))
                 .setColor(EmbedColor.DEFAULT.color)
                 .build()
         ).queue();

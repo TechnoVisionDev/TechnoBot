@@ -20,8 +20,10 @@ import technobot.util.embeds.EmbedUtils;
 
 import java.util.ArrayList;
 
+import static technobot.util.Localization.get;
+
 /**
- * Admin command to setup and modify the suggestion board.
+ * Admin command to set up and modify the suggestion board.
  *
  * @author TechnoVision
  */
@@ -49,7 +51,7 @@ public class SuggestionsCommand extends Command {
         SuggestionHandler suggestionHandler = GuildData.get(guild).suggestionHandler;
 
         String text = null;
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "create" -> {
                 // Setup suggestion board
                 OptionMapping channelOption = event.getOption("channel");
@@ -67,16 +69,15 @@ public class SuggestionsCommand extends Command {
                         channel.upsertPermissionOverride(guild.getPublicRole()).deny(denyPerms).setAllowed(allowPerms).queue();
                         suggestionHandler.setChannel(channel.getIdLong());
                     });
-                    text = EmbedUtils.BLUE_TICK + " Created a new suggestion channel!";
+                    text = get(s -> s.suggestions.suggestions.create.create);
                 } else {
                     // Set suggestion board to mentioned channel
                     try {
                         long channel = channelOption.getAsGuildChannel().getIdLong();
-                        String channelMention = "<#" + channel + ">";
                         suggestionHandler.setChannel(channel);
-                        text = EmbedUtils.BLUE_TICK + " Set the suggestion channel to " + channelMention;
+                        text = get(s -> s.suggestions.suggestions.create.set, channel);
                     } catch (NullPointerException e) {
-                        text = "You can only set a text channel as the suggestion board!";
+                        text = get(s -> s.suggestions.suggestions.create.failure);
                         event.getHook().sendMessageEmbeds(EmbedUtils.createError(text)).queue();
                         return;
                     }
@@ -85,33 +86,35 @@ public class SuggestionsCommand extends Command {
             case "dm" -> {
                 boolean isEnabled = suggestionHandler.toggleResponseDM();
                 if (isEnabled) {
-                    text = EmbedUtils.BLUE_TICK + " Response DMs have been **enabled** for suggestions!";
+                    text = get(s -> s.suggestions.suggestions.dm.enable);
                 } else {
-                    text = EmbedUtils.BLUE_X + " Response DMs have been **disabled** for suggestions!";
+                    text = get(s -> s.suggestions.suggestions.dm.disable);
                 }
             }
             case "anonymous" -> {
                 boolean isEnabled = suggestionHandler.toggleAnonymous();
                 if (isEnabled) {
-                    text = EmbedUtils.BLUE_TICK + " Anonymous mode has been **enabled** for suggestions!";
+                    text = get(s -> s.suggestions.suggestions.anonymous.enable);
                 } else {
-                    text = EmbedUtils.BLUE_X + " Anonymous mode has been **disabled** for suggestions!";
+                    text = get(s -> s.suggestions.suggestions.dm.disable);
                 }
             }
             case "config" -> {
                 text = "";
-                if (suggestionHandler.getChannel() != null) {
-                    text += "\n**Channel:** <#" + suggestionHandler.getChannel() + ">";
-                } else {
-                    text += "\n**Channel:** none";
-                }
-                text += "\n**DM on Response:** " + suggestionHandler.hasResponseDM();
-                text += "\n**Anonymous Mode:** " + suggestionHandler.isAnonymous();
+                text += "\n" + get(
+                        s -> s.suggestions.suggestions.config.channel,
+                        suggestionHandler.getChannel() != null
+                                ? "<#" + suggestionHandler.getChannel() + ">"
+                                : "none"
+                );
+                text += "\n" + get(s -> s.suggestions.suggestions.config.dm, suggestionHandler.hasResponseDM());
+                text += "\n" + get(s -> s.suggestions.suggestions.config.anonymous, suggestionHandler.isAnonymous());
+
                 event.getHook().sendMessage(text).queue();
                 return;
             }
             case "reset" -> {
-                text = "Would you like to reset the suggestions system?\nThis will delete **ALL** data!";
+                text = get(s -> s.suggestions.suggestions.reset);
                 WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
                 ButtonListener.sendResetMenu(event.getUser().getId(), "Suggestion", action);
                 return;

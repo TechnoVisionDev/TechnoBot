@@ -8,6 +8,8 @@ import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Creates button links to the Patreon to buy premium.
  *
@@ -26,10 +28,10 @@ public class PremiumCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setColor(EmbedColor.DEFAULT.color)
-                .setTitle("TechnoBot Premium")
-                .setDescription("Premium features are coming soon! But in the meantime, feel free to donate [HERE](https://www.patreon.com/TechnoVision)! ")
-                .appendDescription("TechnoBot is developed by one guy who pays for server costs out of pocket! I appreciate any support :heart:")
-                .addField("Premium Features", "⦁ Add up to 10 auto-roles\n⦁ More coming soon...", true);
-        event.replyEmbeds(embed.build()).addActionRow(Button.link("https://www.patreon.com/TechnoVision", "Buy Premium")).queue();
+                .setTitle(get(s -> s.utility.premium.title))
+                .setDescription(get(s -> s.utility.premium.description1))
+                .appendDescription(get(s -> s.utility.premium.description2))
+                .addField(get(s -> s.utility.premium.features), get(s -> s.utility.premium.list), true);
+        event.replyEmbeds(embed.build()).addActionRow(Button.link("https://www.patreon.com/TechnoVision", get(s -> s.utility.premium.button) + "")).queue();
     }
 }

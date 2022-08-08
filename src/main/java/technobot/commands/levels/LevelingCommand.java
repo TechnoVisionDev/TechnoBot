@@ -3,7 +3,10 @@ package technobot.commands.levels;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -23,6 +26,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that displays and modifies leveling config.
@@ -66,18 +71,18 @@ public class LevelingCommand extends Command {
 
         String text = "";
         Bson update = null;
-        switch(event.getSubcommandName()) {
+        switch (event.getSubcommandName()) {
             case "channel" -> {
                 OptionMapping channelOption = event.getOption("channel");
                 if (channelOption != null) {
                     long channel = channelOption.getAsGuildChannel().getIdLong();
                     config.setLevelingChannel(channel);
                     update = Updates.set("leveling_channel", channel);
-                    text = EmbedUtils.BLUE_TICK + " Leveling messages will now only display in <#" + channel + ">.";
+                    text = get(s -> s.levels.leveling.channel.specific, channel);
                 } else {
                     config.setLevelingChannel(null);
                     update = Updates.unset("leveling_channel");
-                    text = EmbedUtils.BLUE_TICK + " Leveling messages will now display in the channel the user levels up in.";
+                    text = get(s -> s.levels.leveling.channel.user);
                 }
             }
             case "message" -> {
@@ -86,11 +91,11 @@ public class LevelingCommand extends Command {
                     String msg = messageOption.getAsString();
                     config.setLevelingMessage(msg);
                     update = Updates.set("leveling_message", msg);
-                    text = EmbedUtils.BLUE_TICK + " Successfully set a custom level-up message.";
+                    text = get(s -> s.levels.leveling.message.set);
                 } else {
                     config.setLevelingMessage(null);
                     update = Updates.unset("leveling_message");
-                    text = EmbedUtils.BLUE_TICK + " Reset level-up message to default.";
+                    text = get(s -> s.levels.leveling.message.reset);
                 }
             }
             case "dm" -> {
@@ -98,9 +103,9 @@ public class LevelingCommand extends Command {
                 config.setLevelingDM(isDM);
                 update = Updates.set("leveling_dm", isDM);
                 if (isDM) {
-                    text = EmbedUtils.BLUE_TICK + " Level-up messages will now be sent through DMs.";
+                    text = get(s -> s.levels.leveling.dm.enable);
                 } else {
-                    text = EmbedUtils.BLUE_X + " Level-up messages will no longer be sent through DMs.";
+                    text = get(s -> s.levels.leveling.dm.disable);
                 }
             }
             case "mod" -> {
@@ -108,9 +113,9 @@ public class LevelingCommand extends Command {
                 int mod = 1;
                 if (modOption != null) {
                     mod = modOption.getAsInt();
-                    text = EmbedUtils.BLUE_TICK + " Leveling messages will now only display every **" + mod + "** levels.";
+                    text = get(s -> s.levels.leveling.mod.set, mod);
                 } else {
-                    text = EmbedUtils.BLUE_TICK + " Leveling messages have been reset to display every level.";
+                    text = get(s -> s.levels.leveling.mod.reset);
                 }
                 config.setLevelingMod(mod);
                 update = Updates.set("leveling_mod", mod);
@@ -125,14 +130,14 @@ public class LevelingCommand extends Command {
                         test.getWidth();
                         config.setLevelingBackground(urlOption);
                         update = Updates.set("leveling_background", urlOption);
-                        text = EmbedUtils.BLUE_TICK + " Successfully updated the server rankcard background!";
+                        text = get(s -> s.levels.leveling.serverBackground.set);
                     } else {
                         config.setLevelingBackground(null);
                         update = Updates.unset("leveling_background");
-                        text = EmbedUtils.BLUE_TICK + " Reset the server rankcard background to default image!";
+                        text = get(s -> s.levels.leveling.serverBackground.reset);
                     }
                 } catch (IOException | NullPointerException | OutOfMemoryError e2) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("Unable to set that URL as the server rankcard background.")).queue();
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels.leveling.serverBackground.failure))).queue();
                     return;
                 }
             }
@@ -141,9 +146,9 @@ public class LevelingCommand extends Command {
                 config.setLevelingMute(isMute);
                 update = Updates.set("leveling_mute", isMute);
                 if (isMute) {
-                    text = EmbedUtils.BLUE_X + " Leveling messages have been muted and will not be displayed!";
+                    text = get(s -> s.levels.leveling.mute.disable);
                 } else {
-                    text = EmbedUtils.BLUE_TICK + " Leveling messages will now be displayed!";
+                    text = get(s -> s.levels.leveling.mute.enable);
                 }
             }
             case "reward" -> {
@@ -154,18 +159,18 @@ public class LevelingCommand extends Command {
                 Role role = event.getGuild().getRoleById(reward);
                 int botPos = event.getGuild().getBotRole().getPosition();
                 if (role == null || role.getPosition() >= botPos || role.isManaged()) {
-                    event.getHook().sendMessageEmbeds(EmbedUtils.createError("I cannot reward that role! Please check my permissions and role position.")).queue();
+                    event.getHook().sendMessageEmbeds(EmbedUtils.createError(get(s -> s.levels.leveling.reward.failure))).queue();
                     return;
                 }
                 Integer x = config.getRewards().get(reward);
                 if (x != null && x == level) {
                     config.removeReward(reward);
-                    update = Updates.unset("rewards."+reward);
-                    text = EmbedUtils.BLUE_TICK + " Successfully removed the <@&"+reward+"> reward role.";
+                    update = Updates.unset("rewards." + reward);
+                    text = get(s -> s.levels.leveling.reward.remove, role);
                 } else {
                     config.addReward(level, reward);
-                    update = Updates.set("rewards."+reward, level);
-                    text = EmbedUtils.BLUE_TICK + " Users will now receive the <@&"+reward+"> role at level **"+level+"**.";
+                    update = Updates.set("rewards." + reward, level);
+                    text = get(s -> s.levels.leveling.reward.add, role);
                 }
             }
             case "config" -> {
@@ -176,12 +181,12 @@ public class LevelingCommand extends Command {
             case "reset" -> {
                 User user = event.getOption("user").getAsUser();
                 data.levelingHandler.resetProfile(user.getIdLong());
-                text = EmbedUtils.BLUE_TICK + " All leveling data was reset for **" + user.getName() + "**.";
+                text = get(s -> s.levels.leveling.reset, user.getName());
                 event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text)).queue();
                 return;
             }
             case "reset-all" -> {
-                text = "Would you like to reset the leveling system?\nThis will delete **ALL** data!";
+                text = get(s -> s.levels.leveling.resetAll);
                 WebhookMessageAction<Message> action = event.getHook().sendMessageEmbeds(EmbedUtils.createDefault(text));
                 ButtonListener.sendResetMenu(event.getUser().getId(), "Leveling", action);
                 return;
@@ -199,24 +204,37 @@ public class LevelingCommand extends Command {
      */
     private String configToString(Config config) {
         String text = "";
-        if (config.getLevelingChannel() == null) {
-            text += "**Level-Up Channel:** none\n";
-        } else {
-            text += "**Level-Up Channel:** <#" + config.getLevelingChannel() + ">\n";
-        }
-        text += "**Leveling Modulus:** " + config.getLevelingMod() + "\n";
-        text += "**Is Muted:** " + config.isLevelingMute() + "\n";
-        text += "**Level-Up DMs:** " + config.isLevelingDM() + "\n";
-        if (config.getLevelingMessage() == null) {
-            text += "**Custom Message:** none\n";
-        } else {
-            text += "**Custom Message:** '" + config.getLevelingMessage() + "'\n";
-        }
-        if (config.getLevelingBackground() == null) {
-            text += "**Custom Background:** none\n";
-        } else {
-            text += "**Custom Background:** " + config.getLevelingBackground() + "\n";
-        }
+        text += get(
+                s -> s.levels.leveling.config.channel,
+                config.getLevelingChannel() == null ? "none" : config.getLevelingChannel()
+        ) + "\n";
+
+        text += get(
+                s -> s.levels.leveling.config.modulus,
+                config.getLevelingMod()
+        ) + "\n";
+
+
+        text += get(
+                s -> s.levels.leveling.config.muted,
+                config.isLevelingMute()
+        ) + "\n";
+
+        text += get(
+                s -> s.levels.leveling.config.dms,
+                config.isLevelingDM()
+        ) + "\n";
+
+        text += get(
+                s -> s.levels.leveling.config.message,
+                config.getLevelingMessage() == null ? "none" : config.getLevelingMessage()
+        ) + "\n";
+
+        text += get(
+                s -> s.levels.leveling.config.background,
+                config.getLevelingBackground() == null ? "none" : config.getLevelingBackground()
+        ) + "\n";
+
         return text;
     }
 }

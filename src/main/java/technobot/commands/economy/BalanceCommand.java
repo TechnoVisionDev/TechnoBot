@@ -14,6 +14,8 @@ import technobot.data.cache.Economy;
 import technobot.handlers.economy.EconomyHandler;
 import technobot.util.embeds.EmbedColor;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that shows your current cash and bank balance on the server.
  *
@@ -31,8 +33,7 @@ public class BalanceCommand extends Command {
 
     public void execute(SlashCommandInteractionEvent event) {
         // Get user
-        OptionMapping userOption = event.getOption("user");
-        User user = (userOption != null) ? userOption.getAsUser() : event.getUser();
+        User user = event.getOption("user", event.getUser(), OptionMapping::getAsUser);
 
         // Get balance and bank values
         EconomyHandler economyHandler = GuildData.get(event.getGuild()).economyHandler;
@@ -54,12 +55,12 @@ public class BalanceCommand extends Command {
         // Send embed message
         String currency = economyHandler.getCurrency();
         EmbedBuilder embed = new EmbedBuilder()
-            .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
-            .setDescription("Leaderboard Rank: #" + economyHandler.getRank(user.getIdLong()))
-            .addField("Cash:", currency + " " + EconomyHandler.FORMATTER.format(balance), true)
-            .addField("Bank:", currency + " " + EconomyHandler.FORMATTER.format(bank), true)
-            .addField("Total:", currency + " " + EconomyHandler.FORMATTER.format(total), true)
-            .setColor(EmbedColor.DEFAULT.color);
+                .setAuthor(user.getAsTag(), null, user.getEffectiveAvatarUrl())
+                .setDescription(get(s -> s.economy.balance.leaderboardRank, economyHandler.getRank(user.getIdLong())))
+                .addField(get(s -> s.economy.balance.cash), currency + " " + EconomyHandler.FORMATTER.format(balance), true)
+                .addField(get(s -> s.economy.balance.bank), currency + " " + EconomyHandler.FORMATTER.format(bank), true)
+                .addField(get(s -> s.economy.balance.total), currency + " " + EconomyHandler.FORMATTER.format(total), true)
+                .setColor(EmbedColor.DEFAULT.color);
         event.replyEmbeds(embed.build()).queue();
     }
 }

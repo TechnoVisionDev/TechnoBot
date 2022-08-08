@@ -9,6 +9,8 @@ import technobot.data.GuildData;
 import technobot.handlers.MusicHandler;
 import technobot.util.embeds.EmbedUtils;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that displays the currently playing song.
  *
@@ -28,7 +30,7 @@ public class NowPlayingCommand extends Command {
         // Verify the Music Manager isn't null.
         MusicHandler music = GuildData.get(event.getGuild()).musicHandler;
         if (music == null) {
-            String text = ":sound: Not currently playing any music!";
+            String text = get(s -> s.music.nowPlaying.notPlaying);
             event.replyEmbeds(EmbedUtils.createDefault(text)).setEphemeral(true).queue();
             return;
         }
@@ -36,7 +38,7 @@ public class NowPlayingCommand extends Command {
         // Get currently playing track
         AudioTrack nowPlaying = music.getQueue().size() > 0 ? music.getQueue().getFirst() : null;
         if (nowPlaying == null) {
-            String text = ":sound: Not currently playing any music!";
+            String text = get(s -> s.music.nowPlaying.notPlaying);
             event.replyEmbeds(EmbedUtils.createDefault(text)).queue();
             return;
         }

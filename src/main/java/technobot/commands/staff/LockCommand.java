@@ -2,7 +2,6 @@ package technobot.commands.staff;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -11,6 +10,8 @@ import technobot.TechnoBot;
 import technobot.commands.Category;
 import technobot.commands.Command;
 import technobot.util.embeds.EmbedUtils;
+
+import static technobot.util.Localization.get;
 
 /**
  * Command that prevents users from sending messages in a channel.
@@ -32,19 +33,22 @@ public class LockCommand extends Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        OptionMapping channelOption = event.getOption("channel");
-        TextChannel channel;
-
-        if (channelOption != null) { channel = channelOption.getAsTextChannel(); }
-        else { channel = event.getTextChannel(); }
+        var channel = event.getOption(
+                "channel",
+                event.getTextChannel(),
+                OptionMapping::getAsTextChannel
+        );
 
         if (channel == null) {
-            event.replyEmbeds(EmbedUtils.createError("That is not a valid channel!")).setEphemeral(true).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.staff.lock.failure)
+            )).setEphemeral(true).queue();
             return;
         }
 
         channel.upsertPermissionOverride(event.getGuild().getPublicRole()).deny(Permission.MESSAGE_SEND).queue();
-        String channelString = "<#"+channel.getId()+">";
-        event.replyEmbeds(EmbedUtils.createDefault(":lock: "+channelString+" has been locked.")).queue();
+        event.replyEmbeds(EmbedUtils.createDefault(
+                get(s -> s.staff.lock.success, channel.getId())
+        )).queue();
     }
 }

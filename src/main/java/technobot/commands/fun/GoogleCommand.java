@@ -11,6 +11,8 @@ import technobot.util.embeds.EmbedUtils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import static technobot.util.Localization.get;
+
 /**
  * Command that googles something for the user.
  *
@@ -30,7 +32,9 @@ public class GoogleCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         String question = event.getOption("question").getAsString();
         if (question.length() > 250) {
-            event.replyEmbeds(EmbedUtils.createError("google doesn't like questions longer than 250 characters!")).queue();
+            event.replyEmbeds(EmbedUtils.createError(
+                    get(s -> s.fun.google)
+            )).queue();
             return;
         }
         String query = URLEncoder.encode(question, StandardCharsets.UTF_8);
