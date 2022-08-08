@@ -27,11 +27,10 @@
     </repositories>
 
     <dependencies>
-        <!-- https://github.com/DV8FromTheWorld/JDA -->
         <dependency>
-            <groupId>com.github.Xirado</groupId>
+            <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>feature~permsv2-v3.7.1-gd4ffc64-949</version>
+            <version>5.0.0-alpha.13</version>
         </dependency>
         <!-- https://mongodb.github.io/mongo-java-driver -->
         <dependency>
